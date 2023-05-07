@@ -1,0 +1,11 @@
+name: ModPackIntegrated
+version: '${project.version}'
+main: me.msicraft.modpackintegrated.ModPackIntegrated
+api-version: 1.16
+authors: [ msicraft ]
+description: Modpack intergrated plugin
+commands:
+  modpackintegrated:
+    description: Main command
+    aliases: [mpi]
+    permission-message: You don't have permission

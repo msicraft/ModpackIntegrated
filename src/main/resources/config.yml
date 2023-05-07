@@ -1,0 +1,109 @@
+Debug-Enabled: false
+Setting:
+  Disable-Mount: true
+  Disable-BoneMeal: true
+  Reduce-ArrowDamage: #player
+    Enabled: false
+    Percent: 0.5
+  Respawn-KeepState:
+    Enabled: false
+    Min-Health: 6
+  ReplaceNoDamageTicks:
+    Enabled: false
+    Ticks: 5
+  KeepGlowingEffect:
+    Enabled: false
+  DisplayItem:
+    Enabled: false
+    Cooldown: 5
+  ShowDeathLocation:
+    Enabled: false
+  MendingEnchant:
+    Enabled: false
+    Chance: 0.01
+  FixHealthRegen:
+    Enabled: false
+
+Kill-Point-Setting:
+  Enabled: false
+  DistributionKillPointExp: false
+  Fix-DeathEvent: false
+  Required-Exp: 1000
+  PerEntity-MaxExpValue: 500 #Maximum value that can be obtained at one time
+  KillPointExpEquations: "(H + D + (A * 1.15) + (AT * 1.5))"
+  KillPointExpSpread: 0.25
+
+SpawnLocation: ""
+CraftingEquipment:
+  DefenseEquations: "DA * (1 - (DE / (5 * DA + DE)))"
+  MaxKillPoint: 20
+  SpecialAbility:
+    KillPoint: 2
+  MeleeDamage:
+    KillPoint: 1
+    AddRange: "0.1:1.5"
+    RemoveRange: "0:0.5"
+  ProjectileDamage:
+    KillPoint: 1
+    AddRange: "0.1:1.5"
+    RemoveRange: "0:0.5"
+  Defense:
+    KillPoint: 1
+    AddRange: "1:5"
+    RemoveRange: "0:3"
+  AttackSpeed:
+    KillPoint: 1
+    AddRange: "0.1:0.5"
+    RemoveRange: "0:0.25"
+
+KillPoint-Shop:
+  MoveSpawn:
+    Enabled: false
+    Required-KillPoint: 1
+    Material: Compass
+    Name: "스폰 이동"
+    Lore:
+      - "&e필요 킬 포인트: &7 <requiredKillPoint>"
+      - ""
+      - "&f스폰 지점으로 이동"
+  BackDeathLocation:
+    Enabled: false
+    Required-KillPoint: 1
+    Material: Skeleton_skull
+    Name: "마지막으로 죽은 위치로 이동"
+    Lore:
+      - "&e필요 킬 포인트: &7 <requiredKillPoint>"
+      - ""
+      - "&f마지막으로 죽은 위치로 이동"
+      - "&7 <DeathLocation>"
+  RerollSpecialAbility:
+    Enabled: false
+    Required-KillPoint: 1
+    Material: black_banner
+    Name: '&f제작 장비 특수 능력 재설정'
+    Lore:
+      - '&e필요 킬 포인트: &7 <requiredKillPoint>'
+      - ''
+      - '&f손에있는 제작장비의 특수 능력을 재설정 한다.'
+      - ''
+      - '&f제작 장비의 특수 능력이 없을 경우 사용 불가'
+  ApplySpecialAbility:
+    Enabled: false
+    Required-KillPoint: 4
+    Material: white_banner
+    Name: '&f제작 장비 특수 능력 부여'
+    Lore:
+      - '&e필요 킬 포인트: &7 <requiredKillPoint>'
+      - ''
+      - '&f손에있는 제작장비에 특수 능력을 부여한다.'
+      - ''
+      - '&f제작 장비의 특수능력이 없을 경우 사용가능.'
+  ResetCraftingInfo:
+    Enabled: false
+    Required-KillPoint: 10
+    Material: crafting_table
+    Name: '&f제작 장비 초기화'
+    Lore:
+     - '&e필요 킬 포인트: &7 <requiredKillPoint>'
+     - ''
+     - '&f손에있는 제작장비를 초기화한다.'
