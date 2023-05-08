@@ -14,12 +14,7 @@ public class SpecialAbilityUtil {
     }
 
     public static boolean isNight(Player player) {
-        boolean check = true;
-        long time = player.getWorld().getTime();
-        if (time > 1000 && time < 13000) {
-            check = false;
-        }
-        return check;
+        return !isDay(player);
     }
 
 }

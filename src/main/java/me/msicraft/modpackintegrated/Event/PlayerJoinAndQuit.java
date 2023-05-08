@@ -1,7 +1,9 @@
 package me.msicraft.modpackintegrated.Event;
 
+import me.msicraft.modpackintegrated.CraftingEquip.Task.CraftingEquipStatTask;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipSpecialAbility;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipStatUtil;
+import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipUtil;
 import me.msicraft.modpackintegrated.KillPoint.KillPointUtil;
 import me.msicraft.modpackintegrated.ModPackIntegrated;
 import me.msicraft.modpackintegrated.PlayerData.File.PlayerDataFile;
@@ -24,6 +26,17 @@ public class PlayerJoinAndQuit implements Listener {
     private final CraftingEquipStatUtil craftingEquipStatUtil = new CraftingEquipStatUtil();
 
     private final ItemStack airStack = new ItemStack(Material.AIR, 1);
+
+    private void updateInventory(Player player) {
+        ItemStack[] itemStacks = player.getInventory().getContents();
+        for (ItemStack itemStack : itemStacks) {
+            if (itemStack != null && itemStack.getType() != Material.AIR) {
+                if (CraftingEquipUtil.isCraftingEquipment(itemStack)) {
+                    CraftingEquipStatUtil.updateAbilityLore(itemStack);
+                }
+            }
+        }
+    }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onJoin(PlayerJoinEvent e) {
@@ -48,6 +61,7 @@ public class PlayerJoinAndQuit implements Listener {
             if (!ModPackIntegrated.exportEnchantMap.containsKey(player.getUniqueId())) {
                 ModPackIntegrated.exportEnchantMap.put(player.getUniqueId(), airStack);
             }
+            updateInventory(player);
         }
     }
 
@@ -60,6 +74,7 @@ public class PlayerJoinAndQuit implements Listener {
         PlayerRelated.removeLastDeathLocationMap(player);
         ModPackIntegrated.exportEnchantMap.remove(player.getUniqueId());
         CraftingEquipSpecialAbility.removeAbilityMap(player);
+        CraftingEquipStatTask.removeMap(player);
     }
 
 }

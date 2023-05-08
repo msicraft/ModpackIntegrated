@@ -1,6 +1,5 @@
 package me.msicraft.modpackintegrated.CraftingEquip.Event;
 
-import me.msicraft.modpackintegrated.CraftingEquip.DamageIndicator;
 import me.msicraft.modpackintegrated.CraftingEquip.Enum.SpecialAbility;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipSpecialAbility;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipStatUtil;
@@ -9,10 +8,8 @@ import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -55,7 +52,7 @@ public class CraftingEquipEvent implements Listener {
             if (e.getCause() != EntityDamageEvent.DamageCause.PROJECTILE) {
                 double originalDamage = e.getDamage();
                 double cal = originalDamage + CraftingEquipStatUtil.getMeleeValue(player);
-                if (CraftingEquipStatUtil.hasSpecialAbility(player)) {
+                if (CraftingEquipStatUtil.hasSpecialAbilityEquipment(player)) {
                     List<SpecialAbility> list = CraftingEquipStatUtil.getContainSpecialAbilities(player);
                     if (!list.isEmpty()) {
                         List<SpecialAbility> lowPriorities = new ArrayList<>();
@@ -87,7 +84,7 @@ public class CraftingEquipEvent implements Listener {
                 if (arrow.getShooter() instanceof Player player) {
                     double originalDamage = e.getDamage();
                     double cal = originalDamage + CraftingEquipStatUtil.getProjectileValue(player);
-                    if (CraftingEquipStatUtil.hasSpecialAbility(player)) {
+                    if (CraftingEquipStatUtil.hasSpecialAbilityEquipment(player)) {
                         List<SpecialAbility> list = CraftingEquipStatUtil.getContainSpecialAbilities(player);
                         if (!list.isEmpty()) {
                             List<SpecialAbility> lowPriorities = new ArrayList<>();

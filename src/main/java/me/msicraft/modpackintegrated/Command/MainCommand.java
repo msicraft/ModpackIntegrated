@@ -32,6 +32,20 @@ public class MainCommand implements CommandExecutor {
                 String var = args[0];
                 if (var != null) {
                     switch (var) {
+                        case "test" -> {
+                            Player target = Bukkit.getPlayer(args[1]);
+                            if (target != null && target.isOnline()) {
+                                AttributeInstance instance = target.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
+                                if (instance != null) {
+                                    sender.sendMessage("플레이어: " + target);
+                                    sender.sendMessage("값: " + instance.getValue());
+                                    for (AttributeModifier modifier : instance.getModifiers()) {
+                                        sender.sendMessage("Modifier: " + modifier.getName());
+                                        sender.sendMessage("Amount: " + modifier.getAmount());
+                                    }
+                                }
+                            }
+                        }
                         case "craftingequipment" -> { //mpi craftingequipment [get,set] [ability] [optional: abilityName]
                             if (sender instanceof Player player) {
                                 if (player.isOp()) {

@@ -9,7 +9,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -52,9 +51,6 @@ public class CraftingEquipStatUtil {
     public static double getDefenseValue(Player player) { return getStatMap(player).get("Defense"); }
 
     public static double getAttackSpeedStat(Player player) { return getStatMap(player).get("AttackSpeed"); }
-
-    private static final List<EquipmentSlot> armorSlot = new ArrayList<>(Arrays.asList(EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET));
-    private static final List<EquipmentSlot> weaponSlot = new ArrayList<>(Arrays.asList(EquipmentSlot.HAND, EquipmentSlot.OFF_HAND));
 
     public static EquipmentType getEquipmentType(ItemStack itemStack) {
         EquipmentType type = null;
@@ -196,7 +192,7 @@ public class CraftingEquipStatUtil {
         return check;
     }
 
-    public static boolean hasSpecialAbility(Player player) {
+    public static boolean hasSpecialAbilityEquipment(Player player) {
         boolean check = false;
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             ItemStack itemStack = player.getInventory().getItem(slot);
