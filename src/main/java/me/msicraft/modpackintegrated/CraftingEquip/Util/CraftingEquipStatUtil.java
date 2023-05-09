@@ -37,6 +37,7 @@ public class CraftingEquipStatUtil {
         map.put("ProjectileDamage", 0.0);
         map.put("AttackSpeed", 0.0);
         map.put("Defense", 0.0);
+        map.put("Health", 0.0);
         equipStatMap.put(player.getUniqueId(), map);
     }
 
@@ -50,6 +51,7 @@ public class CraftingEquipStatUtil {
     public static double getProjectileValue(Player player) { return getStatMap(player).get("ProjectileDamage"); }
     public static double getDefenseValue(Player player) { return getStatMap(player).get("Defense"); }
 
+    public static double getHealthStat(Player player) { return getStatMap(player).get("Health"); }
     public static double getAttackSpeedStat(Player player) { return getStatMap(player).get("AttackSpeed"); }
 
     public static EquipmentType getEquipmentType(ItemStack itemStack) {
@@ -73,12 +75,14 @@ public class CraftingEquipStatUtil {
     public static void setProjectileStat(Player player, double amount) { getStatMap(player).put("ProjectileDamage", amount); }
     public static void setAttackSpeedStat(Player player, double amount) { getStatMap(player).put("AttackSpeed", amount); }
     public static void setDefenseStat(Player player, double amount) { getStatMap(player).put("Defense", amount); }
+    public static void setHealthStat(Player player, double amount) { getStatMap(player).put("Health", amount); }
 
     public static void applyEquipmentStatToMap(Player player) {
         double melee = 0;
         double projectile = 0;
         double attackSpeed = 0;
         double defense = 0;
+        double health = 0;
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             ItemStack itemStack = player.getInventory().getItem(slot);
             if (itemStack != null && itemStack.getType() != Material.AIR) {
@@ -86,12 +90,14 @@ public class CraftingEquipStatUtil {
                 projectile = projectile + getProjectileDamage(itemStack);
                 attackSpeed = attackSpeed + getAttackSpeed(itemStack);
                 defense = defense + getDefense(itemStack);
+                health = health + getHealth(itemStack);
             }
         }
         setMeleeStat(player, melee);
         setProjectileStat(player, projectile);
         setAttackSpeedStat(player, attackSpeed);
         setDefenseStat(player, defense);
+        setHealthStat(player, health);
     }
 
     public static double getTotalMeleeDamageStat(Player player) {
@@ -133,6 +139,17 @@ public class CraftingEquipStatUtil {
             ItemStack itemStack = player.getInventory().getItem(slot);
             if (itemStack != null && itemStack.getType() != Material.AIR) {
                 value = value + getDefense(itemStack);
+            }
+        }
+        return value;
+    }
+
+    public static double getTotalHealthStat(Player player) {
+        double value = 0;
+        for (EquipmentSlot slot : EquipmentSlot.values()) {
+            ItemStack itemStack = player.getInventory().getItem(slot);
+            if (itemStack != null && itemStack.getType() != Material.AIR) {
+                value = value + getHealth(itemStack);
             }
         }
         return value;
@@ -190,6 +207,21 @@ public class CraftingEquipStatUtil {
             PersistentDataContainer data = itemMeta.getPersistentDataContainer();
             if (data.has(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-Defense"), PersistentDataType.STRING)) {
                 String s = data.get(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-Defense"), PersistentDataType.STRING);
+                if (s != null) {
+                    value = Double.parseDouble(s);
+                }
+            }
+        }
+        return value;
+    }
+
+    public static double getHealth(ItemStack itemStack) {
+        double value = 0;
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (itemMeta != null) {
+            PersistentDataContainer data = itemMeta.getPersistentDataContainer();
+            if (data.has(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-Health"), PersistentDataType.STRING)) {
+                String s = data.get(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-Health"), PersistentDataType.STRING);
                 if (s != null) {
                     value = Double.parseDouble(s);
                 }

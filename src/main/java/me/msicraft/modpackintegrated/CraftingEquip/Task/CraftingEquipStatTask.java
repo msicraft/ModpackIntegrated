@@ -8,12 +8,12 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class CraftingEquipStatTask extends BukkitRunnable {
 
@@ -21,11 +21,9 @@ public class CraftingEquipStatTask extends BukkitRunnable {
 
     private final UUID attackSpeedUUID = UUID.fromString("45f9581f-b5a0-45d1-8b8d-d4fd8ebf4662");
 
-    private static final Map<UUID, Double> beforeAttackSpeedMap = new HashMap<>();
+    private static final Map<UUID, Double> beforeMaxHealthMap = new HashMap<>();
 
-    public static void removeMap(Player player) {
-        beforeAttackSpeedMap.remove(player.getUniqueId());
-    }
+    public static void removeMap(Player player) { beforeMaxHealthMap.remove(player.getUniqueId()); }
 
     public CraftingEquipStatTask(Player player) {
         this.player = player;
@@ -36,6 +34,8 @@ public class CraftingEquipStatTask extends BukkitRunnable {
         if (player.isOnline()) {
             double currentAttackSpeed = CraftingEquipStatUtil.getAttackSpeedStat(player);
             double afterAttackSpeed = CraftingEquipStatUtil.getTotalAttackSpeedStat(player);
+            double currentMaxHealth = CraftingEquipStatUtil.getHealthStat(player);
+            double afterMaxHealth = CraftingEquipStatUtil.getTotalHealthStat(player);
             CraftingEquipStatUtil.applyEquipmentStatToMap(player);
             if (Double.compare(currentAttackSpeed, afterAttackSpeed) != 0) {
                 AttributeInstance instance = player.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
@@ -43,6 +43,15 @@ public class CraftingEquipStatTask extends BukkitRunnable {
                     AttributeModifier attackSpeedModifier = new AttributeModifier(attackSpeedUUID, "MPI-CE-AttackSpeedModifier", afterAttackSpeed, AttributeModifier.Operation.ADD_NUMBER);
                     instance.removeModifier(attackSpeedModifier);
                     instance.addModifier(attackSpeedModifier);
+                }
+            }
+            if (Double.compare(currentMaxHealth, afterMaxHealth) != 0) {
+                AttributeInstance instance = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+                if (instance != null) {
+                    int last = (int) afterMaxHealth;
+                    AttributeModifier m = getFlatMaxHealthModifier(player, last);
+                    instance.removeModifier(m);
+                    instance.addModifier(m);
                 }
             }
             Bukkit.getScheduler().runTask(ModPackIntegrated.getPlugin(), ()-> {
@@ -62,7 +71,7 @@ public class CraftingEquipStatTask extends BukkitRunnable {
                 if (attackSpeedM != 0) {
                     AttributeInstance instance = player.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
                     if (instance != null) {
-                        AttributeModifier modifier = getAttackSpeedModifier(player, attackSpeedM);
+                        AttributeModifier modifier = getMultipleAttackSpeedModifier(player, attackSpeedM);
                         if (modifier != null) {
                             instance.addModifier(modifier);
                         }
@@ -71,7 +80,7 @@ public class CraftingEquipStatTask extends BukkitRunnable {
                 if (movementSpeedM != 0) {
                     AttributeInstance instance = player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
                     if (instance != null) {
-                        AttributeModifier modifier = getMovementSpeedModifier(player, movementSpeedM);
+                        AttributeModifier modifier = getMultipleMovementSpeedModifier(player, movementSpeedM);
                         if (modifier != null) {
                             instance.addModifier(modifier);
                         }
@@ -89,29 +98,28 @@ public class CraftingEquipStatTask extends BukkitRunnable {
         }
     }
 
-    private double getAttackSpeed(Player player) {
-        double value = 0;
-        AttributeInstance attackSpeedInstance = player.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
-        if (attackSpeedInstance != null) {
-            value = attackSpeedInstance.getValue();
-        }
-        return value;
-    }
-
     private void removeAbilityModifier(Player player) {
         AttributeInstance attackSpeedInstance = player.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
         if (attackSpeedInstance != null) {
-            AttributeModifier modifier = getAttackSpeedModifier(player, 0);
+            AttributeModifier modifier = getMultipleAttackSpeedModifier(player, 0);
             attackSpeedInstance.removeModifier(modifier);
         }
         AttributeInstance movementSpeedInstance = player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
         if (movementSpeedInstance != null) {
-            AttributeModifier modifier = getMovementSpeedModifier(player, 0);
+            AttributeModifier modifier = getMultipleMovementSpeedModifier(player, 0);
             movementSpeedInstance.removeModifier(modifier);
         }
     }
 
-    private AttributeModifier getAttackSpeedModifier(Player player, int amount) {
+    private void removeHealthModifier(Player player) {
+        AttributeInstance maxHealthInstance = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        if (maxHealthInstance != null) {
+            AttributeModifier modifier = getFlatMaxHealthModifier(player, 0);
+            maxHealthInstance.removeModifier(modifier);
+        }
+    }
+
+    private AttributeModifier getMultipleAttackSpeedModifier(Player player, int amount) {
         AttributeModifier modifier = null;
         AttributeInstance instance = player.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
         if (instance != null) {
@@ -122,13 +130,22 @@ public class CraftingEquipStatTask extends BukkitRunnable {
         return modifier;
     }
 
-    private AttributeModifier getMovementSpeedModifier(Player player, int amount) {
+    private AttributeModifier getMultipleMovementSpeedModifier(Player player, int amount) {
         AttributeModifier modifier = null;
         AttributeInstance instance = player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
         if (instance != null) {
             double value = instance.getValue();
             double cal = value * (amount / 100.0);
             modifier = new AttributeModifier(UUID.fromString("6bb865cb-7e1f-48fd-86d4-494395e10dbe"), "MPI-CE-ExtraAttackSpeedModifier", cal, AttributeModifier.Operation.ADD_NUMBER);
+        }
+        return modifier;
+    }
+
+    private AttributeModifier getFlatMaxHealthModifier(Player player, double amount) {
+        AttributeModifier modifier = null;
+        AttributeInstance instance = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        if (instance != null) {
+            modifier = new AttributeModifier(UUID.fromString("54a659f6-4ec9-4f3c-803e-993023a7cba3"), "MPI-CE-ExtraMaxHealthModifier", amount, AttributeModifier.Operation.ADD_NUMBER);
         }
         return modifier;
     }

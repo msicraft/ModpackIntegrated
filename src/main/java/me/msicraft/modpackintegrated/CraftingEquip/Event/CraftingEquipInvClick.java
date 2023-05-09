@@ -151,6 +151,19 @@ public class CraftingEquipInvClick implements Listener {
                                     craftingInfo.setAddDefense(cal);
                                 }
                             }
+                            case "addMaxHealth" -> {
+                                int value = craftingInfo.getAddMaxHealth();
+                                if (e.isLeftClick()) {
+                                    int cal = value + 1;
+                                    craftingInfo.setAddMaxHealth(cal);
+                                } else if (e.isRightClick()) {
+                                    int cal = value - 1;
+                                    if (cal <= 0) {
+                                        cal = 0;
+                                    }
+                                    craftingInfo.setAddMaxHealth(cal);
+                                }
+                            }
                         }
                         if (isRefresh) {
                             craftingInfo.saveInfo();

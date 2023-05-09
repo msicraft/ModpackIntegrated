@@ -16,7 +16,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 public class CraftingEquipEvent implements Listener {
 
@@ -24,6 +27,10 @@ public class CraftingEquipEvent implements Listener {
 
     private static String defenseEquations = null;
     private static Expression expression = null;
+
+    public static String getDefenseEquations() {
+        return defenseEquations;
+    }
 
     public static void reloadVariables() {
         defenseEquations = ModPackIntegrated.getPlugin().getConfig().contains("CraftingEquipment.DefenseEquations") ? ModPackIntegrated.getPlugin().getConfig().getString("CraftingEquipment.DefenseEquations") : null;

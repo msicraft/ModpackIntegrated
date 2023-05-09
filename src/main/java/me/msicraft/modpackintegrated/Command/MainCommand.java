@@ -3,7 +3,6 @@ package me.msicraft.modpackintegrated.Command;
 import me.msicraft.modpackintegrated.CraftingEquip.Enum.SpecialAbility;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipStatUtil;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipUtil;
-import me.msicraft.modpackintegrated.Event.EntityRelated;
 import me.msicraft.modpackintegrated.KillPoint.KillPointUtil;
 import me.msicraft.modpackintegrated.MainMenu.Inventory.MainMenuInv;
 import me.msicraft.modpackintegrated.ModPackIntegrated;
@@ -44,6 +43,27 @@ public class MainCommand implements CommandExecutor {
                             }
                             if (target != null && target.isOnline()) {
                                 AttributeInstance instance = target.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
+                                if (instance != null) {
+                                    sender.sendMessage("플레이어: " + target);
+                                    sender.sendMessage("값: " + instance.getValue());
+                                    for (AttributeModifier modifier : instance.getModifiers()) {
+                                        sender.sendMessage("Modifier: " + modifier.getName());
+                                        sender.sendMessage("Amount: " + modifier.getAmount());
+                                    }
+                                }
+                            }
+                        }
+                        case "test2" -> {
+                            Player target = null;
+                            try {
+                                target = Bukkit.getPlayer(args[1]);
+                            } catch (ArrayIndexOutOfBoundsException e) {
+                                if (sender instanceof Player player) {
+                                    target = player;
+                                }
+                            }
+                            if (target != null && target.isOnline()) {
+                                AttributeInstance instance = target.getAttribute(Attribute.GENERIC_MAX_HEALTH);
                                 if (instance != null) {
                                     sender.sendMessage("플레이어: " + target);
                                     sender.sendMessage("값: " + instance.getValue());

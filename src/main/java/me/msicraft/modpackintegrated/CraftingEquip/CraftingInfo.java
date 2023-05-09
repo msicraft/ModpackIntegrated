@@ -18,7 +18,7 @@ public class CraftingInfo {
     private ItemStack baseItemStack = airStack; //BaseItemStack
     private boolean applySpecialAbility = false; // ApplySpecialAbility
     private EquipmentType equipmentType = EquipmentType.weapon;
-    private int requiredKillPoint,addMeleeDamage,addProjectileDamage,addDefense,addAttackSpeed;
+    private int requiredKillPoint,addMeleeDamage,addProjectileDamage,addDefense,addAttackSpeed,addMaxHealth;
     private int maxInvestKillPoint = 0;
 
     public CraftingInfo(Player player) {
@@ -37,6 +37,7 @@ public class CraftingInfo {
             addProjectileDamage = dataFile.getConfig().contains("CraftingEquipment.AddProjectileDamage") ? dataFile.getConfig().getInt("CraftingEquipment.AddProjectileDamage") : 0;
             addDefense = dataFile.getConfig().contains("CraftingEquipment.AddDefense") ? dataFile.getConfig().getInt("CraftingEquipment.AddDefense") : 0;
             addAttackSpeed = dataFile.getConfig().contains("CraftingEquipment.AddAttackSpeed") ? dataFile.getConfig().getInt("CraftingEquipment.AddAttackSpeed") : 0;
+            addMaxHealth = dataFile.getConfig().contains("CraftingEquipment.MaxHealth") ? dataFile.getConfig().getInt("CraftingEquipment.MaxHealth") : 0;
         } else {
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "플레이어 데이터가 존재하지 않음: " + ChatColor.GREEN + player.getName() + "\n" + player.getUniqueId());
             player.kickPlayer(ChatColor.RED + "플레이어 데이터가 존재하지 않습니다\n재접속 해주시기 바랍니다.");
@@ -51,6 +52,7 @@ public class CraftingInfo {
         dataFile.getConfig().set("CraftingEquipment.AddProjectileDamage", addProjectileDamage);
         dataFile.getConfig().set("CraftingEquipment.AddDefense", addDefense);
         dataFile.getConfig().set("CraftingEquipment.AddAttackSpeed", addAttackSpeed);
+        dataFile.getConfig().set("CraftingEquipment.MaxHealth", addMaxHealth);
         dataFile.getConfig().set("CraftingEquipment.EquipmentType", equipmentType.name());
         dataFile.saveConfig();
     }
@@ -71,13 +73,14 @@ public class CraftingInfo {
         dataFile.getConfig().set("CraftingEquipment.AddProjectileDamage", addProjectileDamage);
         dataFile.getConfig().set("CraftingEquipment.AddDefense", addDefense);
         dataFile.getConfig().set("CraftingEquipment.AddAttackSpeed", addAttackSpeed);
+        dataFile.getConfig().set("CraftingEquipment.MaxHealth", addMaxHealth);
         dataFile.getConfig().set("CraftingEquipment.EquipmentType", equipmentType.name());
         dataFile.saveConfig();
     }
 
     public int getTotalKillPoint() {
         int value = (addMeleeDamage * CraftingEquipUtil.requiredMeleeDamage()) + (addProjectileDamage * CraftingEquipUtil.requiredProjectileDamage())
-                + (addAttackSpeed * CraftingEquipUtil.requiredAttackSpeed()) + (addDefense * CraftingEquipUtil.requiredDefense());
+                + (addAttackSpeed * CraftingEquipUtil.requiredAttackSpeed()) + (addDefense * CraftingEquipUtil.requiredDefense()) + (addMaxHealth * CraftingEquipUtil.requiredMaxHealth());
         if (applySpecialAbility) {
             value = value + CraftingEquipUtil.requiredSpecialAbility();
         }
@@ -162,5 +165,13 @@ public class CraftingInfo {
 
     public int getMaxInvestKillPoint() {
         return maxInvestKillPoint;
+    }
+
+    public int getAddMaxHealth() {
+        return addMaxHealth;
+    }
+
+    public void setAddMaxHealth(int addMaxHealth) {
+        this.addMaxHealth = addMaxHealth;
     }
 }

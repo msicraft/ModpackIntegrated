@@ -81,6 +81,14 @@ public class CraftingEquipUtil {
         return value;
     }
 
+    public static int requiredMaxHealth() {
+        int value = 0;
+        if (ModPackIntegrated.getPlugin().getConfig().contains("CraftingEquipment.MaxHealth.KillPoint")) {
+            value = ModPackIntegrated.getPlugin().getConfig().getInt("CraftingEquipment.MaxHealth.KillPoint");
+        }
+        return value;
+    }
+
     public static void sendPlayerToCraftingInfo(Player player, ItemStack itemStack, int playerSlot) {
         if (isCraftingEquipment(itemStack)) {
             player.sendMessage(ChatColor.RED + "이미 제작된 장비 입니다.");
@@ -140,10 +148,12 @@ public class CraftingEquipUtil {
                 int getProjectile = craftingInfo.getAddProjectileDamage();
                 int getAttackSpeed = craftingInfo.getAddAttackSpeed();
                 int getDefense = craftingInfo.getAddDefense();
+                int getMaxHealth = craftingInfo.getAddMaxHealth();
                 double maxMeleeValue = 0,minMeleeValue = 0;
                 double maxProjectileValue = 0,minProjectileValue = 0;
                 double maxAttackSpeedValue = 0,minAttackSpeedValue = 0;
                 double maxDefenseValue = 0,minDefenseValue = 0;
+                double maxMaxHealthValue = 0, minMaxHealthValue = 0;
                 for (int a = 0; a<getMelee; a++) {
                     maxMeleeValue += getMeleeMaxAddRange();
                     minMeleeValue += getMeleeMinAddRange();
@@ -165,14 +175,23 @@ public class CraftingEquipUtil {
                 for (int a = 0; a<getDefense; a++) {
                     maxDefenseValue += getDefenseMaxAddRange();
                     minDefenseValue += getDefenseMinAddRange();
-                    int randomV = random.nextInt(2);
+                    int randomV = random.nextInt(3);
                     if (randomV == 0) {
                         minMeleeValue -= getMeleeMaxRemoveRange();
                         maxMeleeValue -= getMeleeMinRemoveRange();
-                    } else {
+                    } else if (randomV == 1){
                         minProjectileValue -= getProjectileMaxRemoveRange();
                         maxProjectileValue -= getProjectileMinRemoveRange();
+                    } else {
+                        minMaxHealthValue -= getMaxHealthMaxRemoveRange();
+                        maxMaxHealthValue -= getMaxHealthMinRemoveRange();
                     }
+                }
+                for (int a = 0; a<getMaxHealth; a++) {
+                    maxMaxHealthValue += getMaxHealthMaxAddRange();
+                    minMaxHealthValue += getMaxHealthMinAddRange();
+                    minDefenseValue -= getDefenseMaxRemoveRange();
+                    maxDefenseValue -= getDefenseMinRemoveRange();
                 }
                 if (isApplySpecialAbility) {
                     if (equipmentType == EquipmentType.weapon || equipmentType == EquipmentType.armor) {
@@ -185,6 +204,7 @@ public class CraftingEquipUtil {
                 String projectile1, projectile2;
                 String attackSpeed1, attackSpeed2;
                 String defense1, defense2;
+                String health1, health2;
                 if (minMeleeValue > 0) {
                     melee1 = ChatColor.GREEN + "" + minMeleeValue;
                 } else if (minMeleeValue == 0) {
@@ -241,10 +261,25 @@ public class CraftingEquipUtil {
                 } else {
                     defense2 = ChatColor.RED + "" + maxDefenseValue;
                 }
+                if (minMaxHealthValue > 0) {
+                    health1 = ChatColor.GREEN + "" + minMaxHealthValue;
+                } else if (minMaxHealthValue == 0) {
+                    health1 = ChatColor.WHITE + "" + minMaxHealthValue;
+                } else {
+                    health1 = ChatColor.RED + "" + minMaxHealthValue;
+                }
+                if (maxMaxHealthValue > 0) {
+                    health2 = ChatColor.GREEN + "" + maxMaxHealthValue;
+                } else if (maxMaxHealthValue == 0) {
+                    health2 = ChatColor.WHITE + "" + maxMaxHealthValue;
+                } else {
+                    health2 = ChatColor.RED + "" + maxMaxHealthValue;
+                }
                 lore.add(ChatColor.GREEN + "추가 근접 데미지: " + melee1 + ChatColor.GRAY + " ~ " + melee2);
                 lore.add(ChatColor.GREEN + "추가 발사체 데미지: " + projectile1 + ChatColor.GRAY + " ~ " + projectile2);
                 lore.add(ChatColor.GREEN + "추가 공격속도: " + attackSpeed1 + ChatColor.GRAY + " ~ " + attackSpeed2);
                 lore.add(ChatColor.GREEN + "추가 방어력: " + defense1 + ChatColor.GRAY + " ~ " + defense2);
+                lore.add(ChatColor.GREEN + "추가 체력: " + health1 + ChatColor.GRAY + " ~ " + health2);
                 itemMeta.setLore(lore);
                 tempStack.setItemMeta(itemMeta);
                 return tempStack;
@@ -280,6 +315,9 @@ public class CraftingEquipUtil {
             if (data.has(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-Defense"), PersistentDataType.STRING)) {
                 data.remove(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-Defense"));
             }
+            if (data.has(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-Health"), PersistentDataType.STRING)) {
+                data.remove(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-Health"));
+            }
             if (data.has(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CraftingEquipment"), PersistentDataType.STRING)) {
                 data.remove(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CraftingEquipment"));
             }
@@ -307,10 +345,12 @@ public class CraftingEquipUtil {
                     int getProjectile = craftingInfo.getAddProjectileDamage();
                     int getAttackSpeed = craftingInfo.getAddAttackSpeed();
                     int getDefense = craftingInfo.getAddDefense();
+                    int getMaxHealth = craftingInfo.getAddMaxHealth();
                     double meleeValue = 0;
                     double projectileValue = 0;
                     double attackSpeedValue = 0;
                     double defenseValue = 0;
+                    double maxHealthValue = 0;
                     data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-TotalKillPoint"), PersistentDataType.STRING, String.valueOf(totalKillPoint));
                     data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-EquipmentType"), PersistentDataType.STRING, equipmentType.name());
                     lore.add(ChatColor.GREEN + "장비 유형: " + ChatColor.GRAY + equipmentType.name());
@@ -350,20 +390,30 @@ public class CraftingEquipUtil {
                     for (int a = 0; a<getDefense; a++) {
                         double randomDefenseV = getRandomValue(getDefenseMaxAddRange(), getDefenseMinAddRange());
                         defenseValue += randomDefenseV;
-                        int randomV = random.nextInt(2);
+                        int randomV = random.nextInt(3);
                         if (randomV == 0) {
                             double randomMeleeV = getRandomValue(getMeleeMaxRemoveRange(), getMeleeMinRemoveRange());
                             meleeValue -= randomMeleeV;
-                        } else {
+                        } else if (randomV == 1){
                             double randomProjectileV = getRandomValue(getProjectileMaxRemoveRange(), getProjectileMinRemoveRange());
                             projectileValue -= randomProjectileV;
+                        } else {
+                            double randomMaxHealth = getRandomValue(getMaxHealthMaxRemoveRange(), getMaxHealthMinRemoveRange());
+                            maxHealthValue -= randomMaxHealth;
                         }
+                    }
+                    for (int a = 0; a<getMaxHealth; a++) {
+                        double randomMaxHealthV = getRandomValue(getMaxHealthMaxAddRange(), getMaxHealthMinAddRange());
+                        maxHealthValue += randomMaxHealthV;
+                        double randomDefenseV = getRandomValue(getDefenseMaxRemoveRange(), getDefenseMinRemoveRange());
+                        defenseValue -= randomDefenseV;
                     }
                     meleeValue = Math.floor(meleeValue * 100.0) / 100.0;
                     projectileValue = Math.floor(projectileValue * 100.0) / 100.0;
                     attackSpeedValue = Math.floor(attackSpeedValue * 100.0) / 100.0;
                     defenseValue = Math.floor(defenseValue * 100.0) / 100.0;
-                    String melee, projectile, attackSpeed, defense;
+                    maxHealthValue = Math.floor(maxHealthValue * 100.0) / 100.0;
+                    String melee, projectile, attackSpeed, defense, maxHealth;
                     if (meleeValue > 0) {
                         melee = ChatColor.GREEN + "" + meleeValue;
                     } else if (meleeValue == 0) {
@@ -392,6 +442,13 @@ public class CraftingEquipUtil {
                     } else {
                         defense = ChatColor.RED + "" + defenseValue;
                     }
+                    if (maxHealthValue > 0) {
+                        maxHealth = ChatColor.GREEN + "" + maxHealthValue;
+                    } else if (maxHealthValue == 0) {
+                        maxHealth = ChatColor.WHITE + "" + maxHealthValue;
+                    } else {
+                        maxHealth = ChatColor.RED + "" + maxHealthValue;
+                    }
                     if (meleeValue != 0) {
                         lore.add(ChatColor.GRAY + "추가 근접 데미지: " + melee);
                     }
@@ -404,10 +461,14 @@ public class CraftingEquipUtil {
                     if (defenseValue != 0) {
                         lore.add(ChatColor.GRAY + "추가 방어력: " + defense);
                     }
+                    if (maxHealthValue != 0) {
+                        lore.add(ChatColor.GRAY + "추가 체력: " + maxHealth);
+                    }
                     data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-Melee"), PersistentDataType.STRING, String.valueOf(meleeValue));
                     data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-Projectile"), PersistentDataType.STRING, String.valueOf(projectileValue));
                     data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-AttackSpeed"), PersistentDataType.STRING, String.valueOf(attackSpeedValue));
                     data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-Defense"), PersistentDataType.STRING, String.valueOf(defenseValue));
+                    data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-Health"), PersistentDataType.STRING, String.valueOf(maxHealthValue));
                     itemMeta.setLore(lore);
                     itemStack.setItemMeta(itemMeta);
                     applyCraftingEquipmentTag(itemStack);
@@ -521,6 +582,30 @@ public class CraftingEquipUtil {
         return value;
     }
 
+    public static double getMaxHealthMinAddRange() {
+        double value = 0;
+        if (ModPackIntegrated.getPlugin().getConfig().contains("CraftingEquipment.MaxHealth.AddRange")) {
+            String s = ModPackIntegrated.getPlugin().getConfig().getString("CraftingEquipment.MaxHealth.AddRange");
+            if (s != null) {
+                String[] a = s.split(":");
+                value = Double.parseDouble(a[0]);
+            }
+        }
+        return value;
+    }
+
+    public static double getMaxHealthMaxAddRange() {
+        double value = 0;
+        if (ModPackIntegrated.getPlugin().getConfig().contains("CraftingEquipment.MaxHealth.AddRange")) {
+            String s = ModPackIntegrated.getPlugin().getConfig().getString("CraftingEquipment.MaxHealth.AddRange");
+            if (s != null) {
+                String[] a = s.split(":");
+                value = Double.parseDouble(a[1]);
+            }
+        }
+        return value;
+    }
+
     //
 
     public static double getMeleeMinRemoveRange() {
@@ -611,6 +696,30 @@ public class CraftingEquipUtil {
         double value = 0;
         if (ModPackIntegrated.getPlugin().getConfig().contains("CraftingEquipment.AttackSpeed.RemoveRange")) {
             String s = ModPackIntegrated.getPlugin().getConfig().getString("CraftingEquipment.AttackSpeed.RemoveRange");
+            if (s != null) {
+                String[] a = s.split(":");
+                value = Double.parseDouble(a[1]);
+            }
+        }
+        return value;
+    }
+
+    public static double getMaxHealthMinRemoveRange() {
+        double value = 0;
+        if (ModPackIntegrated.getPlugin().getConfig().contains("CraftingEquipment.MaxHealth.RemoveRange")) {
+            String s = ModPackIntegrated.getPlugin().getConfig().getString("CraftingEquipment.MaxHealth.RemoveRange");
+            if (s != null) {
+                String[] a = s.split(":");
+                value = Double.parseDouble(a[0]);
+            }
+        }
+        return value;
+    }
+
+    public static double getMaxHealthMaxRemoveRange() {
+        double value = 0;
+        if (ModPackIntegrated.getPlugin().getConfig().contains("CraftingEquipment.MaxHealth.RemoveRange")) {
+            String s = ModPackIntegrated.getPlugin().getConfig().getString("CraftingEquipment.MaxHealth.RemoveRange");
             if (s != null) {
                 String[] a = s.split(":");
                 value = Double.parseDouble(a[1]);

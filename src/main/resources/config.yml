@@ -49,12 +49,16 @@ CraftingEquipment:
     RemoveRange: "0:1"
   Defense:
     KillPoint: 1
-    AddRange: "0:5"
-    RemoveRange: "0:2.5"
+    AddRange: "0:4"
+    RemoveRange: "0:2"
   AttackSpeed:
     KillPoint: 1
     AddRange: "0:0.3"
     RemoveRange: "0:0.15"
+  MaxHealth:
+    KillPoint: 1
+    AddRange: "0:2"
+    RemoveRange: "0:1"
 KillPoint-Shop:
   MoveSpawn:
     Enabled: true
