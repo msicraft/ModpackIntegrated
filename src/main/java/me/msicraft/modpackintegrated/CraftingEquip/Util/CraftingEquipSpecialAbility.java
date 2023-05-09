@@ -2,6 +2,8 @@ package me.msicraft.modpackintegrated.CraftingEquip.Util;
 
 import me.msicraft.modpackintegrated.CraftingEquip.DamageIndicator;
 import me.msicraft.modpackintegrated.CraftingEquip.Enum.SpecialAbility;
+import me.msicraft.modpackintegrated.ModPackIntegrated;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -221,6 +223,9 @@ public class CraftingEquipSpecialAbility {
                 }
                 double last = base + Math.ceil(player.getMaxHealth() * 0.05);
                 player.damage(last, entity);
+                Bukkit.getScheduler().runTask(ModPackIntegrated.getPlugin(), ()-> {
+                    player.setNoDamageTicks(1);
+                });
             }
         }
         return cal;

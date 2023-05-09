@@ -125,11 +125,11 @@ public class PlayerKillEntityEvent implements Listener {
                                 Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "플레이어 킬 포인트 경험치 분배");
                                 Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "Living Entity: " + ChatColor.GREEN + livingEntity.getCustomName() + " | " + livingEntity.getType() + " | " + livingEntity.getName());
                                 Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "Killer Player: " + ChatColor.GREEN + player.getName());
-                                Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "총 플레이어: " + ChatColor.GREEN + nearPlayers.size());
-                                Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "플레이어: " + ChatColor.GREEN + nearPlayers);
-                                Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "총 경험치: " + ChatColor.GREEN + exp);
-                                Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "분배 경험치: " + ChatColor.GREEN + perPlayerExp);
+                                Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "총 플레이어: " + ChatColor.GREEN + nearPlayers.size() + "| 플레이어: " + ChatColor.GREEN + nearPlayers);
+                                Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "총 경험치: " + ChatColor.GREEN + exp + " | 분배 경험치: " + ChatColor.GREEN + perPlayerExp);
                                 Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "스포너 몹: " + ChatColor.GREEN + isSpawner);
+                                Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "Health: " + ChatColor.GREEN + livingEntity.getMaxHealth() + " | Damage: " + getDamageValue(livingEntity));
+                                Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "Armor: " + ChatColor.GREEN + getArmorValue(livingEntity) + " | ArmorToughness: " + getArmorToughnessValue(livingEntity));
                                 Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "===================================");
                             }
                         }

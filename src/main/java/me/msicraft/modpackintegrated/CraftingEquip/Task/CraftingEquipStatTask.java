@@ -8,21 +8,24 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class CraftingEquipStatTask extends BukkitRunnable {
 
     private Player player;
 
     private final UUID attackSpeedUUID = UUID.fromString("45f9581f-b5a0-45d1-8b8d-d4fd8ebf4662");
-    private static final Map<UUID, Integer> beforeModifierSizeMap = new HashMap<>();
 
-    public static void removeMap(Player player) { beforeModifierSizeMap.remove(player.getUniqueId()); }
+    private static final Map<UUID, Double> beforeAttackSpeedMap = new HashMap<>();
+
+    public static void removeMap(Player player) {
+        beforeAttackSpeedMap.remove(player.getUniqueId());
+    }
 
     public CraftingEquipStatTask(Player player) {
         this.player = player;
@@ -42,47 +45,39 @@ public class CraftingEquipStatTask extends BukkitRunnable {
                     instance.addModifier(attackSpeedModifier);
                 }
             }
-            int modifierSize = 0;
-            if (beforeModifierSizeMap.containsKey(player.getUniqueId())) {
-                modifierSize = beforeModifierSizeMap.get(player.getUniqueId());
-            }
-            List<SpecialAbility> modifierAbilities = CraftingEquipStatUtil.getModifierAbility(player);
-            int afterModifierSize = modifierAbilities.size();
-            if (modifierSize != afterModifierSize) {
+            Bukkit.getScheduler().runTask(ModPackIntegrated.getPlugin(), ()-> {
+                List<SpecialAbility> modifierAbilities = CraftingEquipStatUtil.getModifierAbility(player);
                 removeAbilityModifier(player);
-                Bukkit.getScheduler().runTask(ModPackIntegrated.getPlugin(), ()-> {
-                    int attackSpeedM = 0;
-                    int movementSpeedM = 0;
-                    for (SpecialAbility specialAbility : modifierAbilities) {
-                        switch (specialAbility) {
-                            case extraAttackSpeed_5 -> attackSpeedM = attackSpeedM + 5;
-                            case extraAttackSpeed_10 -> attackSpeedM = attackSpeedM + 10;
-                            case extraAttackSpeed_15 -> attackSpeedM = attackSpeedM + 15;
-                            case extraMovementSpeed_5 -> movementSpeedM = movementSpeedM + 5;
-                            case extraMovementSpeed_10 -> movementSpeedM = movementSpeedM + 10;
+                int attackSpeedM = 0;
+                int movementSpeedM = 0;
+                for (SpecialAbility specialAbility : modifierAbilities) {
+                    switch (specialAbility) {
+                        case extraAttackSpeed_5 -> attackSpeedM = attackSpeedM + 5;
+                        case extraAttackSpeed_10 -> attackSpeedM = attackSpeedM + 10;
+                        case extraAttackSpeed_15 -> attackSpeedM = attackSpeedM + 15;
+                        case extraMovementSpeed_5 -> movementSpeedM = movementSpeedM + 5;
+                        case extraMovementSpeed_10 -> movementSpeedM = movementSpeedM + 10;
+                    }
+                }
+                if (attackSpeedM != 0) {
+                    AttributeInstance instance = player.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
+                    if (instance != null) {
+                        AttributeModifier modifier = getAttackSpeedModifier(player, attackSpeedM);
+                        if (modifier != null) {
+                            instance.addModifier(modifier);
                         }
                     }
-                    if (attackSpeedM != 0) {
-                        AttributeInstance instance = player.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
-                        if (instance != null) {
-                            AttributeModifier modifier = getAttackSpeedModifier(player, attackSpeedM);
-                            if (modifier != null) {
-                                instance.addModifier(modifier);
-                            }
+                }
+                if (movementSpeedM != 0) {
+                    AttributeInstance instance = player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
+                    if (instance != null) {
+                        AttributeModifier modifier = getMovementSpeedModifier(player, movementSpeedM);
+                        if (modifier != null) {
+                            instance.addModifier(modifier);
                         }
                     }
-                    if (movementSpeedM != 0) {
-                        AttributeInstance instance = player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
-                        if (instance != null) {
-                            AttributeModifier modifier = getMovementSpeedModifier(player, movementSpeedM);
-                            if (modifier != null) {
-                                instance.addModifier(modifier);
-                            }
-                        }
-                    }
-                    beforeModifierSizeMap.put(player.getUniqueId(), modifierAbilities.size());
-                });
-            }
+                }
+            });
         } else {
             if (Bukkit.getServer().getScheduler().isCurrentlyRunning(getTaskId())) {
                 if (ModPackIntegrated.isDebugEnabled) {
@@ -92,6 +87,15 @@ public class CraftingEquipStatTask extends BukkitRunnable {
                 cancel();
             }
         }
+    }
+
+    private double getAttackSpeed(Player player) {
+        double value = 0;
+        AttributeInstance attackSpeedInstance = player.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
+        if (attackSpeedInstance != null) {
+            value = attackSpeedInstance.getValue();
+        }
+        return value;
     }
 
     private void removeAbilityModifier(Player player) {

@@ -24,7 +24,7 @@ public class CraftingEquipStatUtil {
     private static final Map<UUID, Map<String, Double>> equipStatMap = new HashMap<>();
 
     public void registerStatMapTask(Player player) {
-        BukkitTask statTask = new CraftingEquipStatTask(player).runTaskTimer(ModPackIntegrated.getPlugin(), 20L, 5L);
+        BukkitTask statTask = new CraftingEquipStatTask(player).runTaskTimer(ModPackIntegrated.getPlugin(), 20L, 2L);
         PlayerRelated.addActiveTasks(player, statTask.getTaskId());
         if (ModPackIntegrated.isDebugEnabled) {
             Bukkit.getConsoleSender().sendMessage("장비 스탯 스케쥴러 등록: " + player.getName() + " | TaskId: " + statTask.getTaskId());

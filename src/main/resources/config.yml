@@ -3,81 +3,79 @@ Setting:
   Disable-Mount: true
   Disable-BoneMeal: true
   Reduce-ArrowDamage: #player
-    Enabled: false
+    Enabled: true
     Percent: 0.5
   Respawn-KeepState:
-    Enabled: false
+    Enabled: true
     Min-Health: 6
   ReplaceNoDamageTicks:
-    Enabled: false
+    Enabled: true
     Ticks: 5
   KeepGlowingEffect:
-    Enabled: false
+    Enabled: true
   DisplayItem:
-    Enabled: false
+    Enabled: true
     Cooldown: 5
   ShowDeathLocation:
-    Enabled: false
+    Enabled: true
   MendingEnchant:
-    Enabled: false
+    Enabled: true
     Chance: 0.01
   FixHealthRegen:
     Enabled: false
 
 Kill-Point-Setting:
-  Enabled: false
-  DistributionKillPointExp: false
+  Enabled: true
+  DistributionKillPointExp: true
   Fix-DeathEvent: false
-  Required-Exp: 1000
-  PerEntity-MaxExpValue: 500 #Maximum value that can be obtained at one time
-  KillPointExpEquations: "(H + D + (A * 1.15) + (AT * 1.5))"
+  Required-Exp: 800
+  PerEntity-MaxExpValue: 1600
+  KillPointExpEquations: "((H*0.25)+(D*3)+(A*1.5)+(AT*2))"
   KillPointExpSpread: 0.25
 
 SpawnLocation: ""
 CraftingEquipment:
   DefenseEquations: "DA * (1 - (DE / (5 * DA + DE)))"
-  MaxKillPoint: 20
+  MaxKillPoint: 10
   SpecialAbility:
     KillPoint: 2
   MeleeDamage:
     KillPoint: 1
-    AddRange: "0.1:1.5"
-    RemoveRange: "0:0.5"
+    AddRange: "0:2"
+    RemoveRange: "0:1"
   ProjectileDamage:
     KillPoint: 1
-    AddRange: "0.1:1.5"
-    RemoveRange: "0:0.5"
+    AddRange: "0:2"
+    RemoveRange: "0:1"
   Defense:
     KillPoint: 1
-    AddRange: "1:5"
-    RemoveRange: "0:3"
+    AddRange: "0:5"
+    RemoveRange: "0:2.5"
   AttackSpeed:
     KillPoint: 1
-    AddRange: "0.1:0.5"
-    RemoveRange: "0:0.25"
-
+    AddRange: "0:0.3"
+    RemoveRange: "0:0.15"
 KillPoint-Shop:
   MoveSpawn:
-    Enabled: false
+    Enabled: true
     Required-KillPoint: 1
     Material: Compass
-    Name: "스폰 이동"
+    Name: 스폰 이동
     Lore:
-      - "&e필요 킬 포인트: &7 <requiredKillPoint>"
-      - ""
-      - "&f스폰 지점으로 이동"
+      - '&e필요 킬 포인트: &7 <requiredKillPoint>'
+      - ''
+      - '&f스폰 지점으로 이동'
   BackDeathLocation:
-    Enabled: false
+    Enabled: true
     Required-KillPoint: 1
     Material: Skeleton_skull
-    Name: "마지막으로 죽은 위치로 이동"
+    Name: '&f마지막으로 죽은 위치로 이동'
     Lore:
-      - "&e필요 킬 포인트: &7 <requiredKillPoint>"
-      - ""
-      - "&f마지막으로 죽은 위치로 이동"
-      - "&7 <DeathLocation>"
+      - '&e필요 킬 포인트: &7 <requiredKillPoint>'
+      - ''
+      - '&f마지막으로 죽은 위치로 이동'
   RerollSpecialAbility:
-    Enabled: false
+    Enabled: true
     Required-KillPoint: 1
     Material: black_banner
     Name: '&f제작 장비 특수 능력 재설정'
@@ -88,7 +86,7 @@ KillPoint-Shop:
       - ''
       - '&f제작 장비의 특수 능력이 없을 경우 사용 불가'
   ApplySpecialAbility:
-    Enabled: false
+    Enabled: true
     Required-KillPoint: 4
     Material: white_banner
     Name: '&f제작 장비 특수 능력 부여'
@@ -98,12 +96,3 @@ KillPoint-Shop:
       - '&f손에있는 제작장비에 특수 능력을 부여한다.'
       - ''
       - '&f제작 장비의 특수능력이 없을 경우 사용가능.'
-  ResetCraftingInfo:
-    Enabled: false
-    Required-KillPoint: 10
-    Material: crafting_table
-    Name: '&f제작 장비 초기화'
-    Lore:
-     - '&e필요 킬 포인트: &7 <requiredKillPoint>'
-     - ''
-     - '&f손에있는 제작장비를 초기화한다.'
