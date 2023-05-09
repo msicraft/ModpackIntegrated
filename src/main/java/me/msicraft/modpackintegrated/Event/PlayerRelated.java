@@ -218,6 +218,8 @@ public class PlayerRelated implements Listener {
                         int amount = temp.getAmount();
                         if (itemMeta != null && itemMeta.hasDisplayName()) {
                             itemName = itemMeta.getDisplayName();
+                        } else if (itemMeta != null && itemMeta.hasLocalizedName()) {
+                            itemName = itemMeta.getLocalizedName();
                         } else {
                             itemName = temp.getType().name().toUpperCase();
                         }

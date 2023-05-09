@@ -106,7 +106,7 @@ public class PlayerKillEntityEvent implements Listener {
                     exp = KillPointUtil.getToEntityKillPointExp(maxHealth, damage, armor, armorToughness);
                     boolean isSpawner = hasSpawnerTag(livingEntity);
                     if (isSpawner) {
-                        exp = exp * 0.1;
+                        exp = exp * 0.25;
                     }
                     if (isEnabledDistributionKillPointExp) {
                         List<Player> nearPlayers = new ArrayList<>();

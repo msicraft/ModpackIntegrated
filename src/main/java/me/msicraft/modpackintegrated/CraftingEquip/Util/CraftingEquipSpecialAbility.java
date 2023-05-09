@@ -4,7 +4,7 @@ import me.msicraft.modpackintegrated.CraftingEquip.DamageIndicator;
 import me.msicraft.modpackintegrated.CraftingEquip.Enum.SpecialAbility;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -16,26 +16,19 @@ public class CraftingEquipSpecialAbility {
 
     private static final Random random = new Random();
     private enum abilityEnum {
-        none,doubleDamage,LifeDrain,extraDamage,extraDamagePlayerBaseHealth,extraDamageToDay,extraDamageToNight,extraDamageFullHealth
+        none,doubleDamage, lifeDrain,extraDamage,extraDamagePlayerBaseHealth,extraDamageToDay,extraDamageToNight,extraDamageFullHealth
+        ,increaseTakeDamageAndExtraDamage,takePlayerBaseHealthDamageAndExtraDamage
     }
 
     private static final Map<UUID, Map<abilityEnum, Long>> abilityCoolDown = new HashMap<>();
 
     public static void removeAbilityMap(Player player) { abilityCoolDown.remove(player.getUniqueId()); }
 
-    public static void applyLifeDrain(Player player, double amount) {
-        double calHealth = player.getHealth() + amount;
-        if (calHealth > player.getMaxHealth()) {
-            calHealth = player.getMaxHealth();
-        }
-        player.setHealth(calHealth);
-        player.sendMessage(ChatColor.DARK_GREEN + "생명력 흡수: " + ChatColor.GREEN + (Math.round(amount*100.0)/100.0));
-    }
-
-    public static double applySpecialAbility(Player player, double damage, SpecialAbility specialAbility, Location location) {
+    public static double applySpecialAbilityByPlayerAttack(Player player, double damage, SpecialAbility specialAbility, Entity entity) {
         double cal = damage;
         double coolDown = 0;
         abilityEnum abilityEnum = CraftingEquipSpecialAbility.abilityEnum.none;
+        Location location = entity.getLocation();
         switch (specialAbility) {
             case doubleDamage_5 -> {
                 if (Math.random() < 0.05) {
@@ -60,25 +53,25 @@ public class CraftingEquipSpecialAbility {
             }
             case lifeDrain_5_5 -> {
                 if (Math.random() < 0.05) {
-                    abilityEnum = CraftingEquipSpecialAbility.abilityEnum.LifeDrain;
+                    abilityEnum = CraftingEquipSpecialAbility.abilityEnum.lifeDrain;
                     coolDown = SpecialAbilityCoolDown.lifeDrain_5_5;
                 }
             }
             case lifeDrain_5_10 -> {
                 if (Math.random() < 0.1) {
-                    abilityEnum = CraftingEquipSpecialAbility.abilityEnum.LifeDrain;
+                    abilityEnum = CraftingEquipSpecialAbility.abilityEnum.lifeDrain;
                     coolDown = SpecialAbilityCoolDown.lifeDrain_5_10;
                 }
             }
             case lifeDrain_10_5 -> {
                 if (Math.random() < 0.05) {
-                    abilityEnum = CraftingEquipSpecialAbility.abilityEnum.LifeDrain;
+                    abilityEnum = CraftingEquipSpecialAbility.abilityEnum.lifeDrain;
                     coolDown = SpecialAbilityCoolDown.lifeDrain_10_5;
                 }
             }
             case lifeDrain_10_10 -> {
                 if (Math.random() < 0.1) {
-                    abilityEnum = CraftingEquipSpecialAbility.abilityEnum.LifeDrain;
+                    abilityEnum = CraftingEquipSpecialAbility.abilityEnum.lifeDrain;
                     coolDown = SpecialAbilityCoolDown.lifeDrain_10_10;
                 }
             }
@@ -160,6 +153,26 @@ public class CraftingEquipSpecialAbility {
                     coolDown = SpecialAbilityCoolDown.extraDamageFullHealth_25;
                 }
             }
+            case increaseTakeDamageAndExtraDamage_5_5 -> {
+                cal = cal + (cal * 0.05);
+                abilityEnum = CraftingEquipSpecialAbility.abilityEnum.increaseTakeDamageAndExtraDamage;
+                coolDown = SpecialAbilityCoolDown.increaseTakeDamageAndExtraDamage_5_5;
+            }
+            case increaseTakeDamageAndExtraDamage_10_10 -> {
+                cal = cal + (cal * 0.1);
+                abilityEnum = CraftingEquipSpecialAbility.abilityEnum.increaseTakeDamageAndExtraDamage;
+                coolDown = SpecialAbilityCoolDown.increaseTakeDamageAndExtraDamage_10_10;
+            }
+            case takePlayerBaseHealthDamageAndExtraDamage_5_20 -> {
+                cal = cal + (cal * 0.2);
+                abilityEnum = CraftingEquipSpecialAbility.abilityEnum.takePlayerBaseHealthDamageAndExtraDamage;
+                coolDown = SpecialAbilityCoolDown.takePlayerBaseHealthDamageAndExtraDamage_5_20;
+            }
+            case takePlayerBaseHealthDamageAndExtraDamage_5_25 -> {
+                cal = cal + (cal * 0.25);
+                abilityEnum = CraftingEquipSpecialAbility.abilityEnum.takePlayerBaseHealthDamageAndExtraDamage;
+                coolDown = SpecialAbilityCoolDown.takePlayerBaseHealthDamageAndExtraDamage_5_25;
+            }
         }
         if (abilityEnum == CraftingEquipSpecialAbility.abilityEnum.none) {
             return damage;
@@ -184,16 +197,43 @@ public class CraftingEquipSpecialAbility {
                 DamageIndicator.spawnCriticalIndicator(location, cal);
                 player.sendMessage(ChatColor.BOLD + "" + ChatColor.RED + "크리티컬");
             }
-            case LifeDrain -> {
+            case lifeDrain -> {
                 double drainH;
+                switch (specialAbility) {
+                    case lifeDrain_5_5,lifeDrain_10_5 -> {
+
+                    }
+                }
                 if (specialAbility == SpecialAbility.lifeDrain_5_5 || specialAbility == SpecialAbility.lifeDrain_5_10) {
                     drainH = cal * 0.05;
                 } else {
                     drainH = cal * 0.1;
                 }
                 drainH = Math.round(drainH*100.0)/100.0;
-                CraftingEquipSpecialAbility.applyLifeDrain(player, drainH);
+                SpecialAbilityUtil.applyLifeDrain(player, drainH);
                 DamageIndicator.spawnLifeStealIndicator(location, drainH);
+            }
+            case takePlayerBaseHealthDamageAndExtraDamage -> {
+                int base = 0;
+                switch (specialAbility) {
+                    case takePlayerBaseHealthDamageAndExtraDamage_5_20 -> base = 1;
+                    case takePlayerBaseHealthDamageAndExtraDamage_5_25 -> base = 2;
+                }
+                double last = base + Math.ceil(player.getMaxHealth() * 0.05);
+                player.damage(last, entity);
+            }
+        }
+        return cal;
+    }
+
+    public static double applySpecialAbilityByTakeDamage(Player player, double takeDamage, SpecialAbility specialAbility) {
+        double cal = takeDamage;
+        switch (specialAbility) {
+            case increaseTakeDamageAndExtraDamage_5_5 -> {
+                cal = takeDamage + (takeDamage * 0.05);
+            }
+            case increaseTakeDamageAndExtraDamage_10_10 -> {
+                cal = takeDamage + (takeDamage * 0.1);
             }
         }
         return cal;

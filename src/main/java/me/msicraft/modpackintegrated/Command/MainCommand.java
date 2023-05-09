@@ -2,7 +2,7 @@ package me.msicraft.modpackintegrated.Command;
 
 import me.msicraft.modpackintegrated.CraftingEquip.Enum.SpecialAbility;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipStatUtil;
-import me.msicraft.modpackintegrated.Event.EntityRelated;
+import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipUtil;
 import me.msicraft.modpackintegrated.KillPoint.KillPointUtil;
 import me.msicraft.modpackintegrated.MainMenu.Inventory.MainMenuInv;
 import me.msicraft.modpackintegrated.ModPackIntegrated;
@@ -33,7 +33,14 @@ public class MainCommand implements CommandExecutor {
                 if (var != null) {
                     switch (var) {
                         case "test" -> {
-                            Player target = Bukkit.getPlayer(args[1]);
+                            Player target = null;
+                            try {
+                                target = Bukkit.getPlayer(args[1]);
+                            } catch (ArrayIndexOutOfBoundsException e) {
+                                if (sender instanceof Player player) {
+                                    target = player;
+                                }
+                            }
                             if (target != null && target.isOnline()) {
                                 AttributeInstance instance = target.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
                                 if (instance != null) {
@@ -46,7 +53,7 @@ public class MainCommand implements CommandExecutor {
                                 }
                             }
                         }
-                        case "craftingequipment" -> { //mpi craftingequipment [get,set] [ability] [optional: abilityName]
+                        case "craftingequipment" -> { //mpi craftingequipment [ability,updateinventory] [get,set] [optional: abilityName]
                             if (sender instanceof Player player) {
                                 if (player.isOp()) {
                                     try {
@@ -54,19 +61,15 @@ public class MainCommand implements CommandExecutor {
                                         String var3 = args[2];
                                         SpecialAbility specialAbility;
                                         switch (var2) {
-                                            case "get" -> {
+                                            case "ability" -> {
                                                 switch (var3) {
-                                                    case "ability" -> {
+                                                    case "get" -> {
                                                         ItemStack itemStack = player.getInventory().getItemInMainHand();
                                                         if (itemStack != null && itemStack.getType() != Material.AIR) {
                                                             player.sendMessage("특수 능력: " + CraftingEquipStatUtil.getSpecialAbility(itemStack));
                                                         }
                                                     }
-                                                }
-                                            }
-                                            case "set" -> {
-                                                switch (var3) {
-                                                    case "ability" -> {
+                                                    case "set" -> {
                                                         try {
                                                             specialAbility = SpecialAbility.valueOf(args[3]);
                                                             ItemStack itemStack = player.getInventory().getItemInMainHand();
@@ -76,6 +79,24 @@ public class MainCommand implements CommandExecutor {
                                                             }
                                                         } catch (Exception e) {
                                                             player.sendMessage(ChatColor.RED + "잘못된 특수능력");
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            case "updateinventory" -> {
+                                                Player target = null;
+                                                try {
+                                                    target = Bukkit.getPlayer(var3);
+                                                } catch (ArrayIndexOutOfBoundsException e) {
+                                                    target = player;
+                                                }
+                                                if (target != null) {
+                                                    ItemStack[] itemStacks = target.getInventory().getContents();
+                                                    for (ItemStack itemStack : itemStacks) {
+                                                        if (itemStack != null && itemStack.getType() != Material.AIR) {
+                                                            if (CraftingEquipUtil.isCraftingEquipment(itemStack)) {
+                                                                CraftingEquipStatUtil.updateAbilityLore(itemStack);
+                                                            }
                                                         }
                                                     }
                                                 }

@@ -42,23 +42,24 @@ public class MainTabComplete implements TabCompleter {
             if (args.length == 2) {
                 if (args[0].equals("craftingequipment") && sender.isOp()) {
                     List<String> arguments = new ArrayList<>();
-                    arguments.add("get");
-                    arguments.add("set");
+                    arguments.add("ability");
+                    arguments.add("updateinventory");
                     return arguments;
                 }
             }
             if (args.length == 3) {
                 if (args[0].equals("craftingequipment") && sender.isOp()) {
-                    if (args[1].equals("set") || args[1].equals("get")) {
+                    if (args[1].equals("ability")) {
                         List<String> arguments = new ArrayList<>();
-                        arguments.add("ability");
+                        arguments.add("get");
+                        arguments.add("set");
                         return arguments;
                     }
                 }
             }
             if (args.length == 4) {
                 if (args[0].equals("craftingequipment") && sender.isOp()) {
-                    if (args[1].equals("set")) {
+                    if (args[1].equals("ability")) {
                         List<String> arguments = new ArrayList<>();
                         for (SpecialAbility specialAbility : SpecialAbility.values()) {
                             arguments.add(specialAbility.name());

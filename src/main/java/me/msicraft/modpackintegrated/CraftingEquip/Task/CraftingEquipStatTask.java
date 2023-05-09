@@ -8,10 +8,12 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class CraftingEquipStatTask extends BukkitRunnable {
 
@@ -31,11 +33,8 @@ public class CraftingEquipStatTask extends BukkitRunnable {
         if (player.isOnline()) {
             double currentAttackSpeed = CraftingEquipStatUtil.getAttackSpeedStat(player);
             double afterAttackSpeed = CraftingEquipStatUtil.getTotalAttackSpeedStat(player);
-            CraftingEquipStatUtil.setMeleeStat(player, CraftingEquipStatUtil.getTotalMeleeDamageStat(player));
-            CraftingEquipStatUtil.setProjectileStat(player, CraftingEquipStatUtil.getTotalProjectileDamageStat(player));
-            CraftingEquipStatUtil.setAttackSpeedStat(player, afterAttackSpeed);
-            CraftingEquipStatUtil.setDefenseStat(player, CraftingEquipStatUtil.getTotalDefenseStat(player));
-            if (currentAttackSpeed != afterAttackSpeed) {
+            CraftingEquipStatUtil.applyEquipmentStatToMap(player);
+            if (Double.compare(currentAttackSpeed, afterAttackSpeed) != 0) {
                 AttributeInstance instance = player.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
                 if (instance != null) {
                     AttributeModifier attackSpeedModifier = new AttributeModifier(attackSpeedUUID, "MPI-CE-AttackSpeedModifier", afterAttackSpeed, AttributeModifier.Operation.ADD_NUMBER);

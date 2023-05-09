@@ -142,6 +142,7 @@ public final class ModPackIntegrated extends JavaPlugin {
         EntityRelated.reloadVariables();
         KillPointShopSkill.reloadVariables();
         CraftingEquipEvent.reloadVariables();
+        specialAbilityInfoFile.reloadConfig();
         isDebugEnabled = getPlugin().getConfig().contains("Debug-Enabled") && getPlugin().getConfig().getBoolean("Debug-Enabled");
     }
 

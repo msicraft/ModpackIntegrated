@@ -1,5 +1,6 @@
 package me.msicraft.modpackintegrated.MainMenu.Event;
 
+import me.msicraft.modpackintegrated.CraftingEquip.Enum.SpecialAbility;
 import me.msicraft.modpackintegrated.CraftingEquip.Inventory.CraftingEquipInv;
 import me.msicraft.modpackintegrated.KillPoint.KillPointUtil;
 import me.msicraft.modpackintegrated.MainMenu.ExportEnchant.ExportEnchantUtil;
@@ -7,6 +8,7 @@ import me.msicraft.modpackintegrated.MainMenu.Inventory.MainMenuInv;
 import me.msicraft.modpackintegrated.MainMenu.KillPointShop.KillPointShopUtil;
 import me.msicraft.modpackintegrated.MainMenu.KillPointShop.Skill.KillPointShopSkill;
 import me.msicraft.modpackintegrated.ModPackIntegrated;
+import me.msicraft.modpackintegrated.PlayerData.File.PlayerDataFile;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -31,6 +33,15 @@ public class MainMenuEvent implements Listener {
         player.closeInventory();
         player.sendMessage(ChatColor.BOLD + "" + ChatColor.RED + "킬포인트 -" + requiredPoint);
         player.sendMessage(ChatColor.GREEN + "남은 킬포인트: " + ChatColor.GRAY + KillPointUtil.getKillPoint(player));
+    }
+
+    private int getSpecialAbilityPage(Player player) {
+        int p = 0;
+        PlayerDataFile playerDataFile = new PlayerDataFile(player);
+        if (playerDataFile.hasConfigFile()) {
+            p = playerDataFile.getConfig().contains("SpecialAbilityList-Page") ? playerDataFile.getConfig().getInt("SpecialAbilityList-Page") : 0;
+        }
+        return p;
     }
 
     @EventHandler
@@ -66,7 +77,7 @@ public class MainMenuEvent implements Listener {
                             }
                             case "SpecialAbilityInfoList" -> {
                                 player.openInventory(mainMenuInv.getInventory());
-                                mainMenuInv.setSpecialAbilityInfo();
+                                mainMenuInv.setSpecialAbilityInfo(player);
                             }
                         }
                     }
@@ -178,6 +189,39 @@ public class MainMenuEvent implements Listener {
                                     }
                                 } else {
                                     player.sendMessage(ChatColor.RED + "추출 아이템이 없습니다.");
+                                }
+                            }
+                        }
+                    }
+                } else if (data.has(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-SpecialAbilityList"), PersistentDataType.STRING)) {
+                    String var = data.get(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-SpecialAbilityList"), PersistentDataType.STRING);
+                    if (var != null) {
+                        PlayerDataFile playerDataFile = new PlayerDataFile(player);
+                        int page = getSpecialAbilityPage(player);
+                        int maxPage = SpecialAbility.values().length / 45;
+                        switch (var) {
+                            case "next" -> {
+                                int nextPage = page + 1;
+                                if (nextPage > maxPage) {
+                                    nextPage = 0;
+                                }
+                                if (page != nextPage) {
+                                    playerDataFile.getConfig().set("SpecialAbilityList-Page", nextPage);
+                                    playerDataFile.saveConfig();
+                                    player.openInventory(mainMenuInv.getInventory());
+                                    mainMenuInv.setSpecialAbilityInfo(player);
+                                }
+                            }
+                            case "previous" -> {
+                                int nextPage = page - 1;
+                                if (nextPage < 0) {
+                                    nextPage = maxPage;
+                                }
+                                if (page != nextPage) {
+                                    playerDataFile.getConfig().set("SpecialAbilityList-Page", nextPage);
+                                    playerDataFile.saveConfig();
+                                    player.openInventory(mainMenuInv.getInventory());
+                                    mainMenuInv.setSpecialAbilityInfo(player);
                                 }
                             }
                         }

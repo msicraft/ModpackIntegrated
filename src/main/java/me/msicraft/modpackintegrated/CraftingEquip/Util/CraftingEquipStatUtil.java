@@ -74,6 +74,26 @@ public class CraftingEquipStatUtil {
     public static void setAttackSpeedStat(Player player, double amount) { getStatMap(player).put("AttackSpeed", amount); }
     public static void setDefenseStat(Player player, double amount) { getStatMap(player).put("Defense", amount); }
 
+    public static void applyEquipmentStatToMap(Player player) {
+        double melee = 0;
+        double projectile = 0;
+        double attackSpeed = 0;
+        double defense = 0;
+        for (EquipmentSlot slot : EquipmentSlot.values()) {
+            ItemStack itemStack = player.getInventory().getItem(slot);
+            if (itemStack != null && itemStack.getType() != Material.AIR) {
+                melee = melee + getMeleeDamage(itemStack);
+                projectile = projectile + getProjectileDamage(itemStack);
+                attackSpeed = attackSpeed + getAttackSpeed(itemStack);
+                defense = defense + getDefense(itemStack);
+            }
+        }
+        setMeleeStat(player, melee);
+        setProjectileStat(player, projectile);
+        setAttackSpeedStat(player, attackSpeed);
+        setDefenseStat(player, defense);
+    }
+
     public static double getTotalMeleeDamageStat(Player player) {
         double value = 0;
         for (EquipmentSlot slot : EquipmentSlot.values()) {

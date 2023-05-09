@@ -48,6 +48,7 @@ public class CraftingEquipEvent implements Listener {
     @EventHandler
     public void onPlayerMeleeAttack(EntityDamageByEntityEvent e) {
         Entity damager = e.getDamager();
+        Entity entity = e.getEntity();
         if (damager instanceof Player player) {
             if (e.getCause() != EntityDamageEvent.DamageCause.PROJECTILE) {
                 double originalDamage = e.getDamage();
@@ -60,12 +61,12 @@ public class CraftingEquipEvent implements Listener {
                             if (lowPriorityAbilities.contains(specialAbility)) {
                                 lowPriorities.add(specialAbility);
                             } else {
-                                cal = CraftingEquipSpecialAbility.applySpecialAbility(player, cal, specialAbility, e.getEntity().getLocation());
+                                cal = CraftingEquipSpecialAbility.applySpecialAbilityByPlayerAttack(player, cal, specialAbility, entity);
                             }
                         }
                         if (!lowPriorities.isEmpty()) {
                             for (SpecialAbility specialAbility : lowPriorities) {
-                                cal = CraftingEquipSpecialAbility.applySpecialAbility(player, cal, specialAbility, e.getEntity().getLocation());
+                                cal = CraftingEquipSpecialAbility.applySpecialAbilityByPlayerAttack(player, cal, specialAbility, entity);
                             }
                         }
                         cal = Math.floor(cal*100)/100.0;
@@ -80,6 +81,7 @@ public class CraftingEquipEvent implements Listener {
     public void onPlayerArrowAttack(EntityDamageByEntityEvent e) {
         if (e.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
             Entity damager = e.getDamager();
+            Entity entity = e.getEntity();
             if (damager instanceof Arrow arrow) {
                 if (arrow.getShooter() instanceof Player player) {
                     double originalDamage = e.getDamage();
@@ -92,12 +94,12 @@ public class CraftingEquipEvent implements Listener {
                                 if (lowPriorityAbilities.contains(specialAbility)) {
                                     lowPriorities.add(specialAbility);
                                 } else {
-                                    cal = CraftingEquipSpecialAbility.applySpecialAbility(player, cal, specialAbility, e.getEntity().getLocation());
+                                    cal = CraftingEquipSpecialAbility.applySpecialAbilityByPlayerAttack(player, cal, specialAbility, entity);
                                 }
                             }
                             if (!lowPriorities.isEmpty()) {
                                 for (SpecialAbility specialAbility : lowPriorities) {
-                                    cal = CraftingEquipSpecialAbility.applySpecialAbility(player, cal, specialAbility, e.getEntity().getLocation());
+                                    cal = CraftingEquipSpecialAbility.applySpecialAbilityByPlayerAttack(player, cal, specialAbility, entity);
                                 }
                             }
                             cal = Math.floor(cal*100)/100.0;
@@ -118,14 +120,14 @@ public class CraftingEquipEvent implements Listener {
                 double getDefense = CraftingEquipStatUtil.getDefenseValue(player);
                 double v = expression.setVariable("DA", originalDamage).setVariable("DE",getDefense).evaluate();
                 v = Math.round(v*100.0) / 100.0;
-                /*
-                if (CraftingEquipStatUtil.hasSpecialAbility(player)) {
+                if (CraftingEquipStatUtil.hasSpecialAbilityEquipment(player)) {
                     List<SpecialAbility> list = CraftingEquipStatUtil.getContainSpecialAbilities(player);
                     if (!list.isEmpty()) {
+                        for (SpecialAbility specialAbility : list) {
+                            v = CraftingEquipSpecialAbility.applySpecialAbilityByTakeDamage(player, v, specialAbility);
+                        }
                     }
                 }
-
-                 */
                 e.setDamage(v);
             }
         }
