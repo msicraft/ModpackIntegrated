@@ -89,6 +89,8 @@ public class CraftingEquipInvClick implements Listener {
                                     if (equipmentType == EquipmentType.weapon) {
                                         craftingInfo.setEquipmentType(EquipmentType.armor);
                                     } else if (equipmentType == EquipmentType.armor) {
+                                        craftingInfo.setEquipmentType(EquipmentType.catalyst);
+                                    } else if (equipmentType == EquipmentType.catalyst) {
                                         craftingInfo.setEquipmentType(EquipmentType.weapon);
                                     }
                                 }

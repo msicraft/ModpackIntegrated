@@ -47,7 +47,7 @@ public class CraftingEquipEvent implements Listener {
     }
 
     private static final List<SpecialAbility> lowPriorityAbilities = new ArrayList<>(Arrays.asList(SpecialAbility.doubleDamage_5, SpecialAbility.doubleDamage_10,
-            SpecialAbility.doubleDamage_15, SpecialAbility.lifeDrain_5_5, SpecialAbility.lifeDrain_5_10, SpecialAbility.lifeDrain_10_5, SpecialAbility.lifeDrain_10_10));
+            SpecialAbility.doubleDamage_15, SpecialAbility.lifeDrain_5_25, SpecialAbility.lifeDrain_5_50, SpecialAbility.lifeDrain_10_25, SpecialAbility.lifeDrain_10_50));
 
     @EventHandler
     public void onPlayerMeleeAttack(EntityDamageByEntityEvent e) {

@@ -65,6 +65,7 @@ public class CraftingInfo {
         setAddProjectileDamage(0);
         setAddAttackSpeed(0);
         setAddDefense(0);
+        setAddMaxHealth(0);
         setEquipmentType(EquipmentType.weapon);
         dataFile.getConfig().set("CraftingEquipment.BaseItemStack", baseItemStack);
         dataFile.getConfig().set("CraftingEquipment.RequiredKillPoint", requiredKillPoint);

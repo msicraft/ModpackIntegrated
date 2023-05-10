@@ -109,7 +109,7 @@ public class CraftingEquipInv implements InventoryHolder {
         list.add(ChatColor.YELLOW + "우 클릭: 1 감소");
         list.add(ChatColor.WHITE + "현재 값: " + ChatColor.GRAY + craftingInfo.getAddMaxHealth());
         list.add("");
-        list.add(ChatColor.GREEN + "체력 증가, " + ChatColor.RED + " 방어력 감소");
+        list.add(ChatColor.GREEN + "체력 증가, " + ChatColor.RED + " 근접 데미지/원거리 데미지/방어력 중 랜덤 감소");
         itemStack = createNormalItem(Material.GOLDEN_APPLE, ChatColor.WHITE + "추가 체력 ("+CraftingEquipUtil.requiredMaxHealth()+")", list, tag, "addMaxHealth");
         craftingInv.setItem(32, itemStack);
         if (!list.isEmpty()) { list.clear(); }

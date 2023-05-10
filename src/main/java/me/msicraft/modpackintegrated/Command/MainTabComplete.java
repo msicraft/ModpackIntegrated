@@ -1,6 +1,7 @@
 package me.msicraft.modpackintegrated.Command;
 
 import me.msicraft.modpackintegrated.CraftingEquip.Enum.SpecialAbility;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -25,6 +26,7 @@ public class MainTabComplete implements TabCompleter {
                     arguments.add("setbasicgamerules");
                     arguments.add("setspawn");
                     arguments.add("craftingequipment");
+                    arguments.add("getattribute");
                 }
                 return arguments;
             }
@@ -66,6 +68,15 @@ public class MainTabComplete implements TabCompleter {
                         }
                         return arguments;
                     }
+                }
+            }
+            if (args.length == 3) {
+                if (args[0].equals("getattribute") && sender.isOp()) {
+                    List<String> attributes = new ArrayList<>();
+                    for (Attribute attribute : Attribute.values()) {
+                        attributes.add(attribute.name());
+                    }
+                    return attributes;
                 }
             }
         }

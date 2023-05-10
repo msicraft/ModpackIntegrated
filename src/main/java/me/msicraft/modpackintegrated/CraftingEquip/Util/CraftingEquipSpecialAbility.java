@@ -53,28 +53,28 @@ public class CraftingEquipSpecialAbility {
                     coolDown = SpecialAbilityCoolDown.doubleDamage_15;
                 }
             }
-            case lifeDrain_5_5 -> {
+            case lifeDrain_5_25 -> {
                 if (Math.random() < 0.05) {
                     abilityEnum = CraftingEquipSpecialAbility.abilityEnum.lifeDrain;
-                    coolDown = SpecialAbilityCoolDown.lifeDrain_5_5;
+                    coolDown = SpecialAbilityCoolDown.lifeDrain_5_25;
                 }
             }
-            case lifeDrain_5_10 -> {
+            case lifeDrain_5_50 -> {
                 if (Math.random() < 0.1) {
                     abilityEnum = CraftingEquipSpecialAbility.abilityEnum.lifeDrain;
-                    coolDown = SpecialAbilityCoolDown.lifeDrain_5_10;
+                    coolDown = SpecialAbilityCoolDown.lifeDrain_5_50;
                 }
             }
-            case lifeDrain_10_5 -> {
+            case lifeDrain_10_25 -> {
                 if (Math.random() < 0.05) {
                     abilityEnum = CraftingEquipSpecialAbility.abilityEnum.lifeDrain;
-                    coolDown = SpecialAbilityCoolDown.lifeDrain_10_5;
+                    coolDown = SpecialAbilityCoolDown.lifeDrain_10_25;
                 }
             }
-            case lifeDrain_10_10 -> {
+            case lifeDrain_10_50 -> {
                 if (Math.random() < 0.1) {
                     abilityEnum = CraftingEquipSpecialAbility.abilityEnum.lifeDrain;
-                    coolDown = SpecialAbilityCoolDown.lifeDrain_10_10;
+                    coolDown = SpecialAbilityCoolDown.lifeDrain_10_50;
                 }
             }
             case extraDamage_0_2 -> {
@@ -200,16 +200,10 @@ public class CraftingEquipSpecialAbility {
                 player.sendMessage(ChatColor.BOLD + "" + ChatColor.RED + "크리티컬");
             }
             case lifeDrain -> {
-                double drainH;
+                double drainH = 0;
                 switch (specialAbility) {
-                    case lifeDrain_5_5,lifeDrain_10_5 -> {
-
-                    }
-                }
-                if (specialAbility == SpecialAbility.lifeDrain_5_5 || specialAbility == SpecialAbility.lifeDrain_5_10) {
-                    drainH = cal * 0.05;
-                } else {
-                    drainH = cal * 0.1;
+                    case lifeDrain_5_25,lifeDrain_10_25 -> drainH = cal * 0.25;
+                    case lifeDrain_5_50,lifeDrain_10_50 -> drainH = cal * 0.5;
                 }
                 drainH = Math.round(drainH*100.0)/100.0;
                 SpecialAbilityUtil.applyLifeDrain(player, drainH);

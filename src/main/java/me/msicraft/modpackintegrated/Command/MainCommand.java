@@ -15,6 +15,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -33,43 +34,32 @@ public class MainCommand implements CommandExecutor {
                 if (var != null) {
                     switch (var) {
                         case "test" -> {
-                            Player target = null;
-                            try {
-                                target = Bukkit.getPlayer(args[1]);
-                            } catch (ArrayIndexOutOfBoundsException e) {
-                                if (sender instanceof Player player) {
-                                    target = player;
-                                }
-                            }
-                            if (target != null && target.isOnline()) {
-                                AttributeInstance instance = target.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
-                                if (instance != null) {
-                                    sender.sendMessage("플레이어: " + target);
-                                    sender.sendMessage("값: " + instance.getValue());
-                                    for (AttributeModifier modifier : instance.getModifiers()) {
-                                        sender.sendMessage("Modifier: " + modifier.getName());
-                                        sender.sendMessage("Amount: " + modifier.getAmount());
+                        }
+                        case "getattribute" -> { //mpi getattribute <player> <attribute>
+                            if (sender.isOp()) {
+                                Player target = null;
+                                try {
+                                    target = Bukkit.getPlayer(args[1]);
+                                } catch (ArrayIndexOutOfBoundsException e) {
+                                    if (sender instanceof Player player) {
+                                        target = player;
                                     }
                                 }
-                            }
-                        }
-                        case "test2" -> {
-                            Player target = null;
-                            try {
-                                target = Bukkit.getPlayer(args[1]);
-                            } catch (ArrayIndexOutOfBoundsException e) {
-                                if (sender instanceof Player player) {
-                                    target = player;
-                                }
-                            }
-                            if (target != null && target.isOnline()) {
-                                AttributeInstance instance = target.getAttribute(Attribute.GENERIC_MAX_HEALTH);
-                                if (instance != null) {
-                                    sender.sendMessage("플레이어: " + target);
-                                    sender.sendMessage("값: " + instance.getValue());
-                                    for (AttributeModifier modifier : instance.getModifiers()) {
-                                        sender.sendMessage("Modifier: " + modifier.getName());
-                                        sender.sendMessage("Amount: " + modifier.getAmount());
+                                if (target != null && target.isOnline()) {
+                                    Attribute attribute = Attribute.GENERIC_MAX_HEALTH;
+                                    try {
+                                        attribute = Attribute.valueOf(args[2].toUpperCase());
+                                    } catch (IllegalArgumentException | NullPointerException ignored) {
+                                    }
+                                    AttributeInstance instance = target.getAttribute(attribute);
+                                    if (instance != null) {
+                                        sender.sendMessage("Attribute: " + attribute.name());
+                                        sender.sendMessage("플레이어: " + target);
+                                        sender.sendMessage("값: " + instance.getValue());
+                                        for (AttributeModifier modifier : instance.getModifiers()) {
+                                            sender.sendMessage("Modifier: " + modifier.getName());
+                                            sender.sendMessage("Amount: " + modifier.getAmount());
+                                        }
                                     }
                                 }
                             }

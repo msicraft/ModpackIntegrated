@@ -122,9 +122,13 @@ public class CraftingEquipUtil {
 
     private static final Random random = new Random();
 
-    public static double getRandomValue(double max, double min) {
+    public static double getRandomValueDouble(double max, double min) {
         double randomValue = (Math.random() * (max - min)) + min;
         return (Math.floor(randomValue * 100) / 100.0);
+    }
+
+    public static int getRandomValueInt(int max, int min) {
+        return (int) ((Math.random() * (max - min) + 1) + min);
     }
 
     public static SpecialAbility getRandomAbility() {
@@ -175,23 +179,32 @@ public class CraftingEquipUtil {
                 for (int a = 0; a<getDefense; a++) {
                     maxDefenseValue += getDefenseMaxAddRange();
                     minDefenseValue += getDefenseMinAddRange();
-                    int randomV = random.nextInt(3);
-                    if (randomV == 0) {
-                        minMeleeValue -= getMeleeMaxRemoveRange();
-                        maxMeleeValue -= getMeleeMinRemoveRange();
-                    } else if (randomV == 1){
-                        minProjectileValue -= getProjectileMaxRemoveRange();
-                        maxProjectileValue -= getProjectileMinRemoveRange();
-                    } else {
+                    int randomV = getRandomValueInt(100, 1);
+                    if (1<= randomV && randomV <= 50) {
                         minMaxHealthValue -= getMaxHealthMaxRemoveRange();
                         maxMaxHealthValue -= getMaxHealthMinRemoveRange();
+                    } else if (51<= randomV && randomV <= 75) {
+                        minMeleeValue -= getMeleeMaxRemoveRange();
+                        maxMeleeValue -= getMeleeMinRemoveRange();
+                    } else {
+                        minProjectileValue -= getProjectileMaxRemoveRange();
+                        maxProjectileValue -= getProjectileMinRemoveRange();
                     }
                 }
                 for (int a = 0; a<getMaxHealth; a++) {
                     maxMaxHealthValue += getMaxHealthMaxAddRange();
                     minMaxHealthValue += getMaxHealthMinAddRange();
-                    minDefenseValue -= getDefenseMaxRemoveRange();
-                    maxDefenseValue -= getDefenseMinRemoveRange();
+                    int randomV = getRandomValueInt(100, 1);
+                    if (1<= randomV && randomV <= 50) {
+                        minDefenseValue -= getDefenseMaxRemoveRange();
+                        maxDefenseValue -= getDefenseMinRemoveRange();
+                    } else if (51<= randomV && randomV <= 75) {
+                        minMeleeValue -= getMeleeMaxRemoveRange();
+                        maxMeleeValue -= getMeleeMinRemoveRange();
+                    } else {
+                        minProjectileValue -= getProjectileMaxRemoveRange();
+                        maxProjectileValue -= getProjectileMinRemoveRange();
+                    }
                 }
                 if (isApplySpecialAbility) {
                     if (equipmentType == EquipmentType.weapon || equipmentType == EquipmentType.armor) {
@@ -221,7 +234,7 @@ public class CraftingEquipUtil {
                 }
                 if (minProjectileValue > 0) {
                     projectile1 = ChatColor.GREEN + "" + minProjectileValue;
-                } else if (minMeleeValue == 0) {
+                } else if (minProjectileValue == 0) {
                     projectile1 = ChatColor.WHITE + "" + minProjectileValue;
                 } else {
                     projectile1 = ChatColor.RED + "" + minProjectileValue;
@@ -249,14 +262,14 @@ public class CraftingEquipUtil {
                 }
                 if (minDefenseValue > 0) {
                     defense1 = ChatColor.GREEN + "" + minDefenseValue;
-                } else if (minAttackSpeedValue == 0) {
+                } else if (minDefenseValue == 0) {
                     defense1 = ChatColor.WHITE + "" + minDefenseValue;
                 } else {
                     defense1 = ChatColor.RED + "" + minDefenseValue;
                 }
                 if (maxDefenseValue > 0) {
                     defense2 = ChatColor.GREEN + "" + maxDefenseValue;
-                } else if (maxAttackSpeedValue == 0) {
+                } else if (maxDefenseValue == 0) {
                     defense2 = ChatColor.WHITE + "" + maxDefenseValue;
                 } else {
                     defense2 = ChatColor.RED + "" + maxDefenseValue;
@@ -370,49 +383,62 @@ public class CraftingEquipUtil {
                         }
                     }
                     for (int a = 0; a<getMelee; a++) {
-                        double randomMeleeV = getRandomValue(getMeleeMaxAddRange(), getMeleeMinAddRange());
+                        double randomMeleeV = getRandomValueDouble(getMeleeMaxAddRange(), getMeleeMinAddRange());
                         meleeValue += randomMeleeV;
-                        double randomAttackSpeedV = getRandomValue(getAttackSpeedMaxRemoveRange(), getAttackSpeedMinRemoveRange());
+                        double randomAttackSpeedV = getRandomValueDouble(getAttackSpeedMaxRemoveRange(), getAttackSpeedMinRemoveRange());
                         attackSpeedValue -= randomAttackSpeedV;
                     }
                     for (int a = 0; a<getProjectile; a++) {
-                        double randomProjectileV = getRandomValue(getProjectileMaxAddRange(), getProjectileMinAddRange());
+                        double randomProjectileV = getRandomValueDouble(getProjectileMaxAddRange(), getProjectileMinAddRange());
                         projectileValue += randomProjectileV;
-                        double randomDefenseV = getRandomValue(getDefenseMaxRemoveRange(), getDefenseMinRemoveRange());
+                        double randomDefenseV = getRandomValueDouble(getDefenseMaxRemoveRange(), getDefenseMinRemoveRange());
                         defenseValue -= randomDefenseV;
                     }
                     for (int a = 0; a<getAttackSpeed; a++) {
-                        double randomAttackSpeedV = getRandomValue(getAttackSpeedMaxAddRange(), getAttackSpeedMinAddRange());
+                        double randomAttackSpeedV = getRandomValueDouble(getAttackSpeedMaxAddRange(), getAttackSpeedMinAddRange());
                         attackSpeedValue += randomAttackSpeedV;
-                        double randomMeleeV = getRandomValue(getMeleeMaxRemoveRange(), getMeleeMinRemoveRange());
+                        double randomMeleeV = getRandomValueDouble(getMeleeMaxRemoveRange(), getMeleeMinRemoveRange());
                         meleeValue -= randomMeleeV;
                     }
                     for (int a = 0; a<getDefense; a++) {
-                        double randomDefenseV = getRandomValue(getDefenseMaxAddRange(), getDefenseMinAddRange());
+                        double randomDefenseV = getRandomValueDouble(getDefenseMaxAddRange(), getDefenseMinAddRange());
                         defenseValue += randomDefenseV;
-                        int randomV = random.nextInt(3);
-                        if (randomV == 0) {
-                            double randomMeleeV = getRandomValue(getMeleeMaxRemoveRange(), getMeleeMinRemoveRange());
-                            meleeValue -= randomMeleeV;
-                        } else if (randomV == 1){
-                            double randomProjectileV = getRandomValue(getProjectileMaxRemoveRange(), getProjectileMinRemoveRange());
-                            projectileValue -= randomProjectileV;
-                        } else {
-                            double randomMaxHealth = getRandomValue(getMaxHealthMaxRemoveRange(), getMaxHealthMinRemoveRange());
+                        int randomV = getRandomValueInt(100, 1);
+                        if (1<= randomV && randomV <= 50) {
+                            double randomMaxHealth = getRandomValueDouble(getMaxHealthMaxRemoveRange(), getMaxHealthMinRemoveRange());
                             maxHealthValue -= randomMaxHealth;
+                        } else if (51<= randomV && randomV <= 75) {
+                            double randomMeleeV = getRandomValueDouble(getMeleeMaxRemoveRange(), getMeleeMinRemoveRange());
+                            meleeValue -= randomMeleeV;
+                        } else {
+                            double randomProjectileV = getRandomValueDouble(getProjectileMaxRemoveRange(), getProjectileMinRemoveRange());
+                            projectileValue -= randomProjectileV;
                         }
                     }
                     for (int a = 0; a<getMaxHealth; a++) {
-                        double randomMaxHealthV = getRandomValue(getMaxHealthMaxAddRange(), getMaxHealthMinAddRange());
+                        double randomMaxHealthV = getRandomValueDouble(getMaxHealthMaxAddRange(), getMaxHealthMinAddRange());
                         maxHealthValue += randomMaxHealthV;
-                        double randomDefenseV = getRandomValue(getDefenseMaxRemoveRange(), getDefenseMinRemoveRange());
-                        defenseValue -= randomDefenseV;
+                        int randomV = getRandomValueInt(100, 1);
+                        if (1<= randomV && randomV <= 50) {
+                            double randomDefenseV = getRandomValueDouble(getDefenseMaxRemoveRange(), getDefenseMinRemoveRange());
+                            defenseValue -= randomDefenseV;
+                        } else if (51<= randomV && randomV <= 75) {
+                            double randomMeleeV = getRandomValueDouble(getMeleeMaxRemoveRange(), getMeleeMinRemoveRange());
+                            meleeValue -= randomMeleeV;
+                        } else {
+                            double randomProjectileV = getRandomValueDouble(getProjectileMaxRemoveRange(), getProjectileMinRemoveRange());
+                            projectileValue -= randomProjectileV;
+                        }
                     }
                     meleeValue = Math.floor(meleeValue * 100.0) / 100.0;
                     projectileValue = Math.floor(projectileValue * 100.0) / 100.0;
                     attackSpeedValue = Math.floor(attackSpeedValue * 100.0) / 100.0;
                     defenseValue = Math.floor(defenseValue * 100.0) / 100.0;
-                    maxHealthValue = Math.floor(maxHealthValue * 100.0) / 100.0;
+                    if (maxHealthValue < 0) {
+                        maxHealthValue = Math.ceil(maxHealthValue);
+                    } else {
+                        maxHealthValue = Math.floor(maxHealthValue);
+                    }
                     String melee, projectile, attackSpeed, defense, maxHealth;
                     if (meleeValue > 0) {
                         melee = ChatColor.GREEN + "" + meleeValue;

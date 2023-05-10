@@ -5,10 +5,10 @@ public class SpecialAbilityCoolDown {
     public static final double doubleDamage_5 = 5;
     public static final double doubleDamage_10 = 5;
     public static final double doubleDamage_15 = 5;
-    public static final double lifeDrain_5_5 = 3;
-    public static final double lifeDrain_5_10 = 3;
-    public static final double lifeDrain_10_5 = 3;
-    public static final double lifeDrain_10_10 = 3;
+    public static final double lifeDrain_5_25 = 3;
+    public static final double lifeDrain_5_50 = 3;
+    public static final double lifeDrain_10_25 = 3;
+    public static final double lifeDrain_10_50 = 3;
     public static final double extraDamage_0_2 = 2;
     public static final double extraDamage_0_4 = 2;
     public static final double extraDamage_0_6 = 2;

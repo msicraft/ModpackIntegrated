@@ -30,7 +30,7 @@ Kill-Point-Setting:
   Fix-DeathEvent: false
   Required-Exp: 800
   PerEntity-MaxExpValue: 1600
-  KillPointExpEquations: "((H*0.25)+(D*3)+(A*1.5)+(AT*2))"
+  KillPointExpEquations: "((H*0.3)+(D*3)+(A*1.5)+(AT*2))"
   KillPointExpSpread: 0.25
 
 SpawnLocation: ""
@@ -53,8 +53,8 @@ CraftingEquipment:
     RemoveRange: "0:2"
   AttackSpeed:
     KillPoint: 1
-    AddRange: "0:0.3"
-    RemoveRange: "0:0.15"
+    AddRange: "0:0.2"
+    RemoveRange: "0:0.1"
   MaxHealth:
     KillPoint: 1
     AddRange: "0:2"
