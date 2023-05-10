@@ -137,6 +137,18 @@ public class CraftingEquipUtil {
         return SpecialAbility.values()[rn];
     }
 
+    public static String getLoreInfo(double value) {
+        String info;
+        if (value > 0) {
+            info = ChatColor.GREEN + "" + value;
+        } else if (value == 0) {
+            info = ChatColor.WHITE + "" + value;
+        } else {
+            info = ChatColor.RED + "" + value;
+        }
+        return info;
+    }
+
     public static ItemStack getExpectedItemStack(Player player) {
         CraftingInfo craftingInfo = new CraftingInfo(player);
         ItemStack itemStack = craftingInfo.getBaseItemStack();
@@ -213,86 +225,11 @@ public class CraftingEquipUtil {
                 } else {
                     lore.add(ChatColor.GREEN + "특수 능력 부여되지 않음");
                 }
-                String melee1, melee2;
-                String projectile1, projectile2;
-                String attackSpeed1, attackSpeed2;
-                String defense1, defense2;
-                String health1, health2;
-                if (minMeleeValue > 0) {
-                    melee1 = ChatColor.GREEN + "" + minMeleeValue;
-                } else if (minMeleeValue == 0) {
-                    melee1 = ChatColor.WHITE + "" + minMeleeValue;
-                } else {
-                    melee1 = ChatColor.RED + "" + minMeleeValue;
-                }
-                if (maxMeleeValue > 0) {
-                    melee2 = ChatColor.GREEN + "" + maxMeleeValue;
-                } else if (maxMeleeValue == 0) {
-                    melee2 = ChatColor.WHITE + "" + maxMeleeValue;
-                } else {
-                    melee2 = ChatColor.RED + "" + maxMeleeValue;
-                }
-                if (minProjectileValue > 0) {
-                    projectile1 = ChatColor.GREEN + "" + minProjectileValue;
-                } else if (minProjectileValue == 0) {
-                    projectile1 = ChatColor.WHITE + "" + minProjectileValue;
-                } else {
-                    projectile1 = ChatColor.RED + "" + minProjectileValue;
-                }
-                if (maxProjectileValue > 0) {
-                    projectile2 = ChatColor.GREEN + "" + maxProjectileValue;
-                } else if (maxProjectileValue == 0) {
-                    projectile2 = ChatColor.WHITE + "" + maxProjectileValue;
-                } else {
-                    projectile2 = ChatColor.RED + "" + maxProjectileValue;
-                }
-                if (minAttackSpeedValue > 0) {
-                    attackSpeed1 = ChatColor.GREEN + "" + minAttackSpeedValue;
-                } else if (minAttackSpeedValue == 0) {
-                    attackSpeed1 = ChatColor.WHITE + "" + minAttackSpeedValue;
-                } else {
-                    attackSpeed1 = ChatColor.RED + "" + minAttackSpeedValue;
-                }
-                if (maxAttackSpeedValue > 0) {
-                    attackSpeed2 = ChatColor.GREEN + "" + maxAttackSpeedValue;
-                } else if (maxAttackSpeedValue == 0) {
-                    attackSpeed2 = ChatColor.WHITE + "" + maxAttackSpeedValue;
-                } else {
-                    attackSpeed2 = ChatColor.RED + "" + maxAttackSpeedValue;
-                }
-                if (minDefenseValue > 0) {
-                    defense1 = ChatColor.GREEN + "" + minDefenseValue;
-                } else if (minDefenseValue == 0) {
-                    defense1 = ChatColor.WHITE + "" + minDefenseValue;
-                } else {
-                    defense1 = ChatColor.RED + "" + minDefenseValue;
-                }
-                if (maxDefenseValue > 0) {
-                    defense2 = ChatColor.GREEN + "" + maxDefenseValue;
-                } else if (maxDefenseValue == 0) {
-                    defense2 = ChatColor.WHITE + "" + maxDefenseValue;
-                } else {
-                    defense2 = ChatColor.RED + "" + maxDefenseValue;
-                }
-                if (minMaxHealthValue > 0) {
-                    health1 = ChatColor.GREEN + "" + minMaxHealthValue;
-                } else if (minMaxHealthValue == 0) {
-                    health1 = ChatColor.WHITE + "" + minMaxHealthValue;
-                } else {
-                    health1 = ChatColor.RED + "" + minMaxHealthValue;
-                }
-                if (maxMaxHealthValue > 0) {
-                    health2 = ChatColor.GREEN + "" + maxMaxHealthValue;
-                } else if (maxMaxHealthValue == 0) {
-                    health2 = ChatColor.WHITE + "" + maxMaxHealthValue;
-                } else {
-                    health2 = ChatColor.RED + "" + maxMaxHealthValue;
-                }
-                lore.add(ChatColor.GREEN + "추가 근접 데미지: " + melee1 + ChatColor.GRAY + " ~ " + melee2);
-                lore.add(ChatColor.GREEN + "추가 발사체 데미지: " + projectile1 + ChatColor.GRAY + " ~ " + projectile2);
-                lore.add(ChatColor.GREEN + "추가 공격속도: " + attackSpeed1 + ChatColor.GRAY + " ~ " + attackSpeed2);
-                lore.add(ChatColor.GREEN + "추가 방어력: " + defense1 + ChatColor.GRAY + " ~ " + defense2);
-                lore.add(ChatColor.GREEN + "추가 체력: " + health1 + ChatColor.GRAY + " ~ " + health2);
+                lore.add(ChatColor.GREEN + "추가 근접 데미지: " + getLoreInfo(minMeleeValue) + ChatColor.GRAY + " ~ " + getLoreInfo(maxMeleeValue));
+                lore.add(ChatColor.GREEN + "추가 발사체 데미지: " + getLoreInfo(minProjectileValue) + ChatColor.GRAY + " ~ " + getLoreInfo(maxProjectileValue));
+                lore.add(ChatColor.GREEN + "추가 공격속도: " + getLoreInfo(minAttackSpeedValue) + ChatColor.GRAY + " ~ " + getLoreInfo(maxAttackSpeedValue));
+                lore.add(ChatColor.GREEN + "추가 방어력: " + getLoreInfo(minDefenseValue) + ChatColor.GRAY + " ~ " + getLoreInfo(maxDefenseValue));
+                lore.add(ChatColor.GREEN + "추가 체력: " + getLoreInfo(minMaxHealthValue) + ChatColor.GRAY + " ~ " + getLoreInfo(maxMaxHealthValue));
                 itemMeta.setLore(lore);
                 tempStack.setItemMeta(itemMeta);
                 return tempStack;
@@ -439,56 +376,20 @@ public class CraftingEquipUtil {
                     } else {
                         maxHealthValue = Math.floor(maxHealthValue);
                     }
-                    String melee, projectile, attackSpeed, defense, maxHealth;
-                    if (meleeValue > 0) {
-                        melee = ChatColor.GREEN + "" + meleeValue;
-                    } else if (meleeValue == 0) {
-                        melee = ChatColor.WHITE + "" + meleeValue;
-                    } else {
-                        melee = ChatColor.RED + "" + meleeValue;
-                    }
-                    if (projectileValue > 0) {
-                        projectile = ChatColor.GREEN + "" + projectileValue;
-                    } else if (projectileValue == 0) {
-                        projectile = ChatColor.WHITE + "" + projectileValue;
-                    } else {
-                        projectile = ChatColor.RED + "" + projectileValue;
-                    }
-                    if (attackSpeedValue > 0) {
-                        attackSpeed = ChatColor.GREEN + "" + attackSpeedValue;
-                    } else if (attackSpeedValue == 0) {
-                        attackSpeed = ChatColor.WHITE + "" + attackSpeedValue;
-                    } else {
-                        attackSpeed = ChatColor.RED + "" + attackSpeedValue;
-                    }
-                    if (defenseValue > 0) {
-                        defense = ChatColor.GREEN + "" + defenseValue;
-                    } else if(defenseValue == 0) {
-                        defense = ChatColor.WHITE + "" + defenseValue;
-                    } else {
-                        defense = ChatColor.RED + "" + defenseValue;
-                    }
-                    if (maxHealthValue > 0) {
-                        maxHealth = ChatColor.GREEN + "" + maxHealthValue;
-                    } else if (maxHealthValue == 0) {
-                        maxHealth = ChatColor.WHITE + "" + maxHealthValue;
-                    } else {
-                        maxHealth = ChatColor.RED + "" + maxHealthValue;
-                    }
                     if (meleeValue != 0) {
-                        lore.add(ChatColor.GRAY + "추가 근접 데미지: " + melee);
+                        lore.add(ChatColor.GRAY + "추가 근접 데미지: " + getLoreInfo(meleeValue));
                     }
                     if (projectileValue != 0) {
-                        lore.add(ChatColor.GRAY + "추가 발사체 데미지: " + projectile);
+                        lore.add(ChatColor.GRAY + "추가 발사체 데미지: " + getLoreInfo(projectileValue));
                     }
                     if (attackSpeedValue != 0) {
-                        lore.add(ChatColor.GRAY + "추가 공격 속도: " + attackSpeed);
+                        lore.add(ChatColor.GRAY + "추가 공격 속도: " + getLoreInfo(attackSpeedValue));
                     }
                     if (defenseValue != 0) {
-                        lore.add(ChatColor.GRAY + "추가 방어력: " + defense);
+                        lore.add(ChatColor.GRAY + "추가 방어력: " + getLoreInfo(defenseValue));
                     }
                     if (maxHealthValue != 0) {
-                        lore.add(ChatColor.GRAY + "추가 체력: " + maxHealth);
+                        lore.add(ChatColor.GRAY + "추가 체력: " + getLoreInfo(maxHealthValue));
                     }
                     data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-Melee"), PersistentDataType.STRING, String.valueOf(meleeValue));
                     data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-Projectile"), PersistentDataType.STRING, String.valueOf(projectileValue));

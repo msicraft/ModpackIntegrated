@@ -41,6 +41,10 @@ public class CraftingEquipStatUtil {
         equipStatMap.put(player.getUniqueId(), map);
     }
 
+    public static boolean containStatMap(Player player) {
+        return equipStatMap.containsKey(player.getUniqueId());
+    }
+
     public static Map<String, Double> getStatMap(Player player) { return equipStatMap.get(player.getUniqueId()); }
 
     public void removeStatMap(Player player) {

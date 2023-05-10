@@ -1,6 +1,7 @@
 package me.msicraft.modpackintegrated.MainMenu.Inventory;
 
 import me.msicraft.modpackintegrated.CraftingEquip.Enum.SpecialAbility;
+import me.msicraft.modpackintegrated.CraftingEquip.PlayerStat;
 import me.msicraft.modpackintegrated.KillPoint.KillPointUtil;
 import me.msicraft.modpackintegrated.MainMenu.ExportEnchant.ExportEnchantUtil;
 import me.msicraft.modpackintegrated.MainMenu.KillPointShop.KillPointShopUtil;
@@ -38,7 +39,20 @@ public class MainMenuInv implements InventoryHolder {
         menuSetting();
     }
 
+    private String getValueInfo(double value) {
+        String info;
+        if (value > 0) {
+            info = ChatColor.GREEN + "" + value;
+        } else if (value == 0) {
+            info = ChatColor.WHITE + "" + value;
+        } else {
+            info = ChatColor.RED + "" + value;
+        }
+        return info;
+    }
+
     private void setInfo(Player player) {
+        PlayerStat playerStat = new PlayerStat(player);
         List<String> list = new ArrayList<>();
         ItemStack itemStack = new ItemStack(Material.BOOK, 1);
         ItemMeta itemMeta = itemStack.getItemMeta();
@@ -46,6 +60,15 @@ public class MainMenuInv implements InventoryHolder {
         double killPointExpPercent = mainMenuUtil.getKillPointNextLevelToExpPercent(player);
         list.add("");
         list.add(ChatColor.GREEN + "킬 포인트: " + ChatColor.GRAY + KillPointUtil.getKillPoint(player) + " (" + (int) killPointExpPercent + "%)");
+        list.add("");
+        list.add(ChatColor.GREEN + "----------추가 스탯----------");
+        double meleeV = playerStat.getAddMelee(),projectileV = playerStat.getAddProjectile()
+                ,attackSpeedV = playerStat.getAddAttackSpeed(),defenseV = playerStat.getAddDefense(),healthV = playerStat.getAddHealth();
+        list.add(ChatColor.GRAY + "추가 근접 데미지: " + getValueInfo(meleeV));
+        list.add(ChatColor.GRAY + "추가 발사체 데미지: " + getValueInfo(projectileV));
+        list.add(ChatColor.GRAY + "추가 공격 속도: " + getValueInfo(attackSpeedV));
+        list.add(ChatColor.GRAY + "추가 방어력: " + getValueInfo(defenseV));
+        list.add(ChatColor.GRAY + "추가 체력: " + getValueInfo(healthV));
         itemMeta.setLore(list);
         itemStack.setItemMeta(itemMeta);
         mainMenuInv.setItem(4, itemStack);
