@@ -106,7 +106,7 @@ public class PlayerRelated implements Listener {
 
     private static boolean isEnabledKeepGlowingEffect = false;
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler
     public void onPlayerDeath(PlayerDeathEvent e) {
         if (isEnabledRespawnKeepState) {
             Player player = e.getEntity();
@@ -127,7 +127,7 @@ public class PlayerRelated implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler
     public void onRespawnPlayer(PlayerRespawnEvent e) {
         Player player = e.getPlayer();
         if (isEnabledRespawnKeepState) {

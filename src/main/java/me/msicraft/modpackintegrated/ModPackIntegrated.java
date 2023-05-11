@@ -6,6 +6,7 @@ import me.msicraft.modpackintegrated.CraftingEquip.Event.CraftingEquipEvent;
 import me.msicraft.modpackintegrated.CraftingEquip.Event.CraftingEquipInvClick;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipStatUtil;
 import me.msicraft.modpackintegrated.DataFile.SpecialAbilityInfoFile;
+import me.msicraft.modpackintegrated.EntityScaling.Event.EntityScalingRelated;
 import me.msicraft.modpackintegrated.Event.EntityRelated;
 import me.msicraft.modpackintegrated.Event.PlayerJoinAndQuit;
 import me.msicraft.modpackintegrated.Event.PlayerRelated;
@@ -120,6 +121,7 @@ public final class ModPackIntegrated extends JavaPlugin {
         pluginManager.registerEvents(new EntityRelated(), this);
         pluginManager.registerEvents(new CraftingEquipInvClick(), this);
         pluginManager.registerEvents(new CraftingEquipEvent(), this);
+        pluginManager.registerEvents(new EntityScalingRelated(), this);
     }
 
     private void commandsRegister() {
@@ -143,6 +145,7 @@ public final class ModPackIntegrated extends JavaPlugin {
         KillPointShopSkill.reloadVariables();
         CraftingEquipEvent.reloadVariables();
         specialAbilityInfoFile.reloadConfig();
+        EntityScalingRelated.reloadVariables();
         isDebugEnabled = getPlugin().getConfig().contains("Debug-Enabled") && getPlugin().getConfig().getBoolean("Debug-Enabled");
     }
 

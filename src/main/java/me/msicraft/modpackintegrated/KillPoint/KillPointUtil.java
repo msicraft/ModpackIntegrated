@@ -156,8 +156,16 @@ public class KillPointUtil {
         double exp = 0;
         if (killPointExpEquations != null && expression != null) {
             double v;
-            if (health > 1200) {
+            if (health >= 100 && health < 500) {
                 health = health * 0.5;
+            } else if (health >= 500 && health < 1000) {
+                health = health * 0.4;
+            } else if (health >= 1000 && health < 2000) {
+                health = health * 0.3;
+            } else if (health >= 2000 && health < 5000) {
+                health = health * 0.2;
+            } else if (health >= 5000 && health < 10000) {
+                health = health * 0.1;
             }
             v = expression.setVariable("H", health).setVariable("D", damage).setVariable("A", armor).setVariable("AT", armorToughness).evaluate();
             v = Math.round(v * 1000.0) / 1000.0;

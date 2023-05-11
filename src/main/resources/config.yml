@@ -24,6 +24,11 @@ Setting:
   FixHealthRegen:
     Enabled: false
 
+EntityScaling:
+  Enabled: false
+  MaxHealthSpread: 1
+  MaxDamagePercent: 0.5
+
 Kill-Point-Setting:
   Enabled: true
   DistributionKillPointExp: true

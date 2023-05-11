@@ -5,15 +5,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.ExperienceOrb;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ExpBottleEvent;
+import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 
@@ -69,14 +68,14 @@ public class WorldRelated implements Listener {
         }, 1L);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onEntityExp(EntityDeathEvent e) {
         if (e.getEntityType() != EntityType.PLAYER) {
             LivingEntity livingEntity = e.getEntity();
             World world = livingEntity.getWorld();
             Bukkit.getScheduler().runTask(ModPackIntegrated.getPlugin(), ()-> {
                 Location location = livingEntity.getLocation();
-                for (Entity entity : world.getNearbyEntities(location, 5, 4, 5)) {
+                for (Entity entity : world.getNearbyEntities(location, 4, 3, 4)) {
                     if (entity instanceof ExperienceOrb experienceOrb) {
                         int orbExp = experienceOrb.getExperience();
                         if (orbExp > mergeCap) {
@@ -85,6 +84,14 @@ public class WorldRelated implements Listener {
                     }
                 }
             });
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onDisableBedExplode(PlayerBedEnterEvent e) {
+        Player player = e.getPlayer();
+        if (player.getWorld().getEnvironment() != World.Environment.NORMAL) {
+            e.setCancelled(true);
         }
     }
 

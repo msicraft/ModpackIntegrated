@@ -150,9 +150,10 @@ public class MainCommand implements CommandExecutor {
                             if (args.length == 1 && sender.isOp()) {
                                 List<World> list = Bukkit.getWorlds();
                                 for (World world : list) {
+                                    sender.sendMessage(ChatColor.GREEN + "월드: " + ChatColor.GRAY + world.getName());
                                     WorldUtil.setBasicGamerules(world);
                                 }
-                                sender.sendMessage(ChatColor.GREEN + "총 " + ChatColor.GRAY + list.size() + " 의 월드의 기본 게임룰 설절 적용 됨");
+                                sender.sendMessage(ChatColor.GREEN + "총 " + ChatColor.GRAY + list.size() + ChatColor.GREEN + " 의 월드의 기본 게임룰 설절 적용 됨");
                             }
                         }
                         case "menu" -> { //mpi menu

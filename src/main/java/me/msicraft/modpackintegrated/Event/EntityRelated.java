@@ -23,7 +23,7 @@ public class EntityRelated implements Listener {
         isEnabledHealthRegen = ModPackIntegrated.getPlugin().getConfig().contains("Setting.FixHealthRegen.Enabled") && ModPackIntegrated.getPlugin().getConfig().getBoolean("Setting.FixHealthRegen.Enabled");
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onDisableDamage(EntityDamageEvent e) {
         if (e.getEntityType() != EntityType.PLAYER) {
             if (e.getCause() == EntityDamageEvent.DamageCause.FALL || e.getCause() == EntityDamageEvent.DamageCause.SUFFOCATION) {
@@ -38,7 +38,7 @@ public class EntityRelated implements Listener {
             EntityDamageEvent.DamageCause.ENTITY_EXPLOSION, EntityDamageEvent.DamageCause.PROJECTILE, EntityDamageEvent.DamageCause.THORNS,
             EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK, EntityDamageEvent.DamageCause.DRAGON_BREATH));
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void replaceNoDamageTicks(EntityDamageEvent e) {
         if (isEnabledReplaceNoDamageTicks) {
             EntityDamageEvent.DamageCause damageCause = e.getCause();
@@ -55,7 +55,7 @@ public class EntityRelated implements Listener {
     private static boolean isEnabledHealthRegen = false;
     private static final Map<UUID, Long> regenDelayMap = new HashMap<>();
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler
     public void healthRegen(EntityRegainHealthEvent e) {
         if (isEnabledHealthRegen) {
             Entity entity = e.getEntity();

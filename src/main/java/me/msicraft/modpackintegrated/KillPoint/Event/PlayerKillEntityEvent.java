@@ -210,7 +210,7 @@ public class PlayerKillEntityEvent implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler
     public void pickUpKillPointItem(EntityPickupItemEvent e) {
         LivingEntity livingEntity = e.getEntity();
         if (livingEntity instanceof Player player) {
