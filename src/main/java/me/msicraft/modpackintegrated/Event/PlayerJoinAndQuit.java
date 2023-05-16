@@ -8,6 +8,7 @@ import me.msicraft.modpackintegrated.KillPoint.KillPointUtil;
 import me.msicraft.modpackintegrated.ModPackIntegrated;
 import me.msicraft.modpackintegrated.PlayerData.File.PlayerDataFile;
 import me.msicraft.modpackintegrated.PlayerData.PlayerDataUtil;
+import me.msicraft.modpackintegrated.PlayerTask.PlayerTimerTask;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -18,6 +19,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitTask;
 
 public class PlayerJoinAndQuit implements Listener {
 
@@ -38,6 +40,14 @@ public class PlayerJoinAndQuit implements Listener {
         }
     }
 
+    public static void registerTimerTask(Player player) {
+        BukkitTask timerTask = new PlayerTimerTask(player).runTaskTimer(ModPackIntegrated.getPlugin(), 20L, 100L);
+        PlayerRelated.addActiveTasks(player, timerTask.getTaskId());
+        if (ModPackIntegrated.isDebugEnabled) {
+            Bukkit.getConsoleSender().sendMessage("타이어 스케쥴러 등록: " + player.getName() + " | TaskId: " + timerTask.getTaskId());
+        }
+    }
+
     @EventHandler(priority = EventPriority.HIGH)
     public void onJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
@@ -53,6 +63,7 @@ public class PlayerJoinAndQuit implements Listener {
             killPointUtil.registerKillPointTask(player);
             craftingEquipStatUtil.registerStatMapTask(player);
             craftingEquipStatUtil.registerStatMap(player);
+            registerTimerTask(player);
             Bukkit.getScheduler().runTaskLater(ModPackIntegrated.getPlugin(), ()-> {
                 if (!playerDataFile.hasConfigFile()) {
                     player.kickPlayer(ChatColor.RED + "플레이어 데이터가 생성되지 않았습니다.");

@@ -10,6 +10,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.List;
+
 public class KillPointShopSkill {
 
     private static Location spawnLocation = null;
@@ -50,7 +52,7 @@ public class KillPointShopSkill {
         return isSuccess;
     }
 
-    private final static PotionEffect resistanceEffect = new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 60, 20, false, false);
+    private final static PotionEffect resistanceEffect = new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 60, 255, false, false);
 
     public static boolean teleportLastDeathLocation(Player player) {
         boolean isSuccess = false;
@@ -91,9 +93,25 @@ public class KillPointShopSkill {
         if (craftingItemStack != null && craftingItemStack.getType() != Material.AIR) {
             if (CraftingEquipUtil.isCraftingEquipment(craftingItemStack)) {
                 if (!CraftingEquipStatUtil.hasItemSpecialAbility(craftingItemStack)) {
-                    CraftingEquipStatUtil.applySpecialAbility(craftingItemStack);
-                    player.sendMessage(ChatColor.GREEN + "특수 능력이 부여되었습니다.");
-                    check = true;
+                    if (craftingItemStack.getItemMeta() != null) {
+                        List<String> lore = craftingItemStack.getItemMeta().getLore();
+                        if (lore != null) {
+                            boolean a = false;
+                            for (String s : lore) {
+                                if (s.contains("특수 능력:")) {
+                                    a = true;
+                                    break;
+                                }
+                            }
+                            if (a) {
+                                CraftingEquipStatUtil.applySpecialAbility(craftingItemStack);
+                                player.sendMessage(ChatColor.GREEN + "특수 능력이 부여되었습니다.");
+                                check = true;
+                            } else {
+                                player.sendMessage(ChatColor.RED + "특수 능력을 부여할수 없습니다.");
+                            }
+                        }
+                    }
                 } else {
                     player.sendMessage(ChatColor.RED + "이미 특수 능력이 존재합니다.");
                 }

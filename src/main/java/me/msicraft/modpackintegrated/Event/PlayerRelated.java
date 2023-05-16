@@ -1,6 +1,7 @@
 package me.msicraft.modpackintegrated.Event;
 
 import me.msicraft.modpackintegrated.ModPackIntegrated;
+import me.msicraft.modpackintegrated.Util.ExpUtil;
 import me.msicraft.modpackintegrated.Version.Version_1_16_R3;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -110,10 +111,11 @@ public class PlayerRelated implements Listener {
     public void onPlayerDeath(PlayerDeathEvent e) {
         if (isEnabledRespawnKeepState) {
             Player player = e.getEntity();
-            if (player.getGameMode() != GameMode.CREATIVE) { //double[] : [0] = Food Level, [1] = Saturation
-                double[] temp = new double[2];
+            if (player.getGameMode() != GameMode.CREATIVE) { //double[] : [0] = Food Level, [1] = Saturation [2] = exp
+                double[] temp = new double[3];
                 temp[0] = player.getFoodLevel();
                 temp[1] = player.getSaturation();
+                temp[2] = ExpUtil.getPlayerExp(player);
                 lastDeathInfoMap.put(player.getUniqueId(), temp);
                 if (ModPackIntegrated.isDebugEnabled) {
                     Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "===================================");
@@ -135,10 +137,13 @@ public class PlayerRelated implements Listener {
                 double[] temp = lastDeathInfoMap.get(player.getUniqueId());
                 double lastFoodLevel = temp[0];
                 double lastSaturation = temp[1];
+                double lastExp = temp[2];
+                int expCal = (int) Math.round(lastExp*0.5);
                 Bukkit.getScheduler().runTask(ModPackIntegrated.getPlugin(), ()-> {
                     player.setHealth(minHealth);
                     player.setFoodLevel((int) lastFoodLevel);
                     player.setSaturation((float) lastSaturation);
+                    ExpUtil.changePlayerExp(player, expCal);
                     lastDeathInfoMap.remove(player.getUniqueId());
                     if (ModPackIntegrated.isDebugEnabled) {
                         Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "===================================");

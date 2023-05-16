@@ -15,6 +15,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -116,14 +118,22 @@ public class CraftingEquipEvent implements Listener {
     }
 
     @EventHandler
-    public void onPlayerDamaged(EntityDamageByEntityEvent e) {
+    public void onPlayerTakeDamage(EntityDamageByEntityEvent e) {
+        Bukkit.getConsoleSender().sendMessage("test: " + e.getEntity() + " | " + e.getDamager());
         Entity entity = e.getEntity();
         if (entity instanceof Player player) {
             double originalDamage = e.getDamage();
             if (defenseEquations != null && expression != null) {
+                if (player.hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)) {
+                    PotionEffect potionEffect = player.getPotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+                    if (potionEffect != null) {
+                        int level = potionEffect.getAmplifier() + 1;
+                        originalDamage = originalDamage + (originalDamage * (level * 0.1));
+                    }
+                }
                 double getDefense = CraftingEquipStatUtil.getDefenseValue(player);
-                double v = expression.setVariable("DA", originalDamage).setVariable("DE",getDefense).evaluate();
-                v = Math.round(v*100.0) / 100.0;
+                double v = expression.setVariable("DA", originalDamage).setVariable("DE", getDefense).evaluate();
+                v = Math.round(v * 100.0) / 100.0;
                 if (CraftingEquipStatUtil.hasSpecialAbilityEquipment(player)) {
                     List<SpecialAbility> list = CraftingEquipStatUtil.getContainSpecialAbilities(player);
                     if (!list.isEmpty()) {

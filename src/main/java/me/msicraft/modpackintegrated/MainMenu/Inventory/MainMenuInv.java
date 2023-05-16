@@ -61,6 +61,13 @@ public class MainMenuInv implements InventoryHolder {
         list.add("");
         list.add(ChatColor.GREEN + "킬 포인트: " + ChatColor.GRAY + KillPointUtil.getKillPoint(player) + " (" + (int) killPointExpPercent + "%)");
         list.add("");
+        list.add(ChatColor.GREEN + "---------플레이어 능력치----------");
+        list.add(ChatColor.GRAY + "체력: " + ChatColor.GREEN + mainMenuUtil.getMaxHealth(player));
+        list.add(ChatColor.GRAY + "공격 데미지: " + ChatColor.GREEN + mainMenuUtil.getAttackDamage(player));
+        list.add(ChatColor.GRAY + "공격 속도: " + ChatColor.GREEN + mainMenuUtil.getAttackSpeed(player));
+        list.add(ChatColor.GRAY + "방어: " + ChatColor.GREEN + mainMenuUtil.getArmor(player));
+        list.add(ChatColor.GRAY + "방어강도: " + ChatColor.GREEN + mainMenuUtil.getArmorToughness(player));
+        list.add("");
         list.add(ChatColor.GREEN + "----------추가 스탯----------");
         double meleeV = playerStat.getAddMelee(),projectileV = playerStat.getAddProjectile()
                 ,attackSpeedV = playerStat.getAddAttackSpeed(),defenseV = playerStat.getAddDefense(),healthV = playerStat.getAddHealth();

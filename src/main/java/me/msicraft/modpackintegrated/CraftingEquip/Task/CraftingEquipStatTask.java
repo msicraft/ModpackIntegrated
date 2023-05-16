@@ -48,7 +48,7 @@ public class CraftingEquipStatTask extends BukkitRunnable {
             if (Double.compare(currentMaxHealth, afterMaxHealth) != 0) {
                 AttributeInstance instance = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
                 if (instance != null) {
-                    int last = (int) afterMaxHealth;
+                    int last = (int) CraftingEquipStatUtil.getHealthStat(player);
                     AttributeModifier m = getFlatMaxHealthModifier(player, last);
                     instance.removeModifier(m);
                     instance.addModifier(m);
@@ -59,6 +59,7 @@ public class CraftingEquipStatTask extends BukkitRunnable {
                 removeAbilityModifier(player);
                 int attackSpeedM = 0;
                 int movementSpeedM = 0;
+                int maxHealthM = 0;
                 for (SpecialAbility specialAbility : modifierAbilities) {
                     switch (specialAbility) {
                         case extraAttackSpeed_5 -> attackSpeedM = attackSpeedM + 5;
@@ -66,6 +67,8 @@ public class CraftingEquipStatTask extends BukkitRunnable {
                         case extraAttackSpeed_15 -> attackSpeedM = attackSpeedM + 15;
                         case extraMovementSpeed_5 -> movementSpeedM = movementSpeedM + 5;
                         case extraMovementSpeed_10 -> movementSpeedM = movementSpeedM + 10;
+                        case increaseMaxHealth_5 -> maxHealthM = maxHealthM + 5;
+                        case increaseMaxHealth_10 -> maxHealthM = maxHealthM + 10;
                     }
                 }
                 if (attackSpeedM != 0) {
@@ -81,6 +84,15 @@ public class CraftingEquipStatTask extends BukkitRunnable {
                     AttributeInstance instance = player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
                     if (instance != null) {
                         AttributeModifier modifier = getMultipleMovementSpeedModifier(player, movementSpeedM);
+                        if (modifier != null) {
+                            instance.addModifier(modifier);
+                        }
+                    }
+                }
+                if (maxHealthM != 0) {
+                    AttributeInstance instance = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+                    if (instance != null) {
+                        AttributeModifier modifier = getMultipleMaxHealthModifier(player, maxHealthM);
                         if (modifier != null) {
                             instance.addModifier(modifier);
                         }
@@ -109,13 +121,10 @@ public class CraftingEquipStatTask extends BukkitRunnable {
             AttributeModifier modifier = getMultipleMovementSpeedModifier(player, 0);
             movementSpeedInstance.removeModifier(modifier);
         }
-    }
-
-    private void removeHealthModifier(Player player) {
-        AttributeInstance maxHealthInstance = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
-        if (maxHealthInstance != null) {
-            AttributeModifier modifier = getFlatMaxHealthModifier(player, 0);
-            maxHealthInstance.removeModifier(modifier);
+        AttributeInstance healthSpeedInstance = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        if (healthSpeedInstance != null) {
+            AttributeModifier modifier = getMultipleMaxHealthModifier(player, 0);
+            healthSpeedInstance.removeModifier(modifier);
         }
     }
 
@@ -137,6 +146,16 @@ public class CraftingEquipStatTask extends BukkitRunnable {
             double value = instance.getValue();
             double cal = value * (amount / 100.0);
             modifier = new AttributeModifier(UUID.fromString("6bb865cb-7e1f-48fd-86d4-494395e10dbe"), "MPI-CE-ExtraAttackSpeedModifier", cal, AttributeModifier.Operation.ADD_NUMBER);
+        }
+        return modifier;
+    }
+
+    private AttributeModifier getMultipleMaxHealthModifier(Player player, int amount) {
+        AttributeModifier modifier = null;
+        AttributeInstance instance = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        if (instance != null) {
+            double cal = player.getMaxHealth() * (amount / 100.0);
+            modifier = new AttributeModifier(UUID.fromString("dcbeed8f-6e43-4dfb-9d85-1eec32bfac0f"), "MPI-CE-ExtraMaxHealthModifier2", cal, AttributeModifier.Operation.ADD_NUMBER);
         }
         return modifier;
     }

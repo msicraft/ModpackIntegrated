@@ -44,7 +44,9 @@ public class EntityScalingRelated implements Listener {
                             double cal = currentValue + (currentValue * randomSpreadValue);
                             int roundCal = (int) Math.round(cal);
                             maxHealthInstance.setBaseValue(roundCal);
-                            livingEntity.setHealth(livingEntity.getMaxHealth());
+                            Bukkit.getScheduler().runTaskLater(ModPackIntegrated.getPlugin(), ()-> {
+                                livingEntity.setHealth(livingEntity.getMaxHealth());
+                            }, 5L);
                         }
                     });
                 }

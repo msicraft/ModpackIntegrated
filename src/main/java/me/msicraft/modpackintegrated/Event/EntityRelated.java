@@ -23,11 +23,30 @@ public class EntityRelated implements Listener {
         isEnabledHealthRegen = ModPackIntegrated.getPlugin().getConfig().contains("Setting.FixHealthRegen.Enabled") && ModPackIntegrated.getPlugin().getConfig().getBoolean("Setting.FixHealthRegen.Enabled");
     }
 
+    private void healingEntity(LivingEntity livingEntity, double amount) {
+        double currentHealth = livingEntity.getHealth();
+        double cal = currentHealth + amount;
+        if (cal > livingEntity.getMaxHealth()) {
+            cal = livingEntity.getMaxHealth();
+        }
+        livingEntity.setHealth(cal);
+    }
+
     @EventHandler(priority = EventPriority.LOWEST)
     public void onDisableDamage(EntityDamageEvent e) {
         if (e.getEntityType() != EntityType.PLAYER) {
-            if (e.getCause() == EntityDamageEvent.DamageCause.FALL || e.getCause() == EntityDamageEvent.DamageCause.SUFFOCATION) {
-                e.setDamage(0);
+            EntityDamageEvent.DamageCause damageCause = e.getCause();
+            switch (damageCause) {
+                case FALL,SUFFOCATION -> e.setDamage(0);
+                case LAVA -> {
+                    if (e.getEntityType() != EntityType.DROPPED_ITEM) {
+                        e.setDamage(0);
+                        Entity entity = e.getEntity();
+                        if (entity instanceof LivingEntity livingEntity) {
+                            healingEntity(livingEntity, 1);
+                        }
+                    }
+                }
             }
         }
     }
@@ -44,9 +63,15 @@ public class EntityRelated implements Listener {
             EntityDamageEvent.DamageCause damageCause = e.getCause();
             if (allowDamageCauses.contains(damageCause)) {
                 if (e.getEntity() instanceof LivingEntity livingEntity) {
-                    Bukkit.getScheduler().runTask(ModPackIntegrated.getPlugin(), ()-> {
-                        livingEntity.setNoDamageTicks(noDamageTicks);
-                    });
+                    if (livingEntity.getType() == EntityType.PLAYER) {
+                        Bukkit.getScheduler().runTask(ModPackIntegrated.getPlugin(), () -> {
+                            livingEntity.setNoDamageTicks(1);
+                        });
+                    } else {
+                        Bukkit.getScheduler().runTask(ModPackIntegrated.getPlugin(), () -> {
+                            livingEntity.setNoDamageTicks(noDamageTicks);
+                        });
+                    }
                 }
             }
         }

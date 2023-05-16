@@ -105,3 +105,12 @@ KillPoint-Shop:
       - '&f손에있는 제작장비에 특수 능력을 부여한다.'
       - ''
       - '&f제작 장비의 특수능력이 없을 경우 사용가능.'
+  ResetCraftingInfo:
+    Enabled: true
+    Required-KillPoint: 5
+    Material: crafting_table
+    Name: '&f제작 장비 초기화'
+    Lore:
+      - '&e필요 킬 포인트: &7 <requiredKillPoint>'
+      - ''
+      - '&f손에있는 제작장비를 초기화 한다.'

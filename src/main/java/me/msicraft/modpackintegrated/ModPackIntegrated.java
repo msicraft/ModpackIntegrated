@@ -6,6 +6,7 @@ import me.msicraft.modpackintegrated.CraftingEquip.Event.CraftingEquipEvent;
 import me.msicraft.modpackintegrated.CraftingEquip.Event.CraftingEquipInvClick;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipStatUtil;
 import me.msicraft.modpackintegrated.DataFile.SpecialAbilityInfoFile;
+import me.msicraft.modpackintegrated.EntityBlockBreak.Event.EntityBlockBreakSpawn;
 import me.msicraft.modpackintegrated.EntityScaling.Event.EntityScalingRelated;
 import me.msicraft.modpackintegrated.Event.EntityRelated;
 import me.msicraft.modpackintegrated.Event.PlayerJoinAndQuit;
@@ -15,13 +16,12 @@ import me.msicraft.modpackintegrated.KillPoint.Event.PlayerKillEntityEvent;
 import me.msicraft.modpackintegrated.KillPoint.KillPointUtil;
 import me.msicraft.modpackintegrated.MainMenu.Event.MainMenuEvent;
 import me.msicraft.modpackintegrated.MainMenu.KillPointShop.Skill.KillPointShopSkill;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
@@ -70,6 +70,7 @@ public final class ModPackIntegrated extends JavaPlugin {
                 if (!exportEnchantMap.containsKey(player.getUniqueId())) {
                     exportEnchantMap.put(player.getUniqueId(), airStack);
                 }
+                PlayerJoinAndQuit.registerTimerTask(player);
                 if (isDebugEnabled) {
                     getServer().getConsoleSender().sendMessage("온라인 플레이어에 대한 작업 수행");
                     getServer().getConsoleSender().sendMessage("플레이어: " + player);
@@ -96,6 +97,7 @@ public final class ModPackIntegrated extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage("탭 리스트 월드 위치 표시 작업 스케쥴러 등록: " + tabListTask.getTaskId());
             Bukkit.getConsoleSender().sendMessage("버킷 버전: " + bukkitVersion);
         }
+        Bukkit.getConsoleSender().sendMessage("Max Ram: " + Runtime.getRuntime().maxMemory() / 1024L / 1024L);
         getServer().getConsoleSender().sendMessage(getPrefix() + ChatColor.GREEN + " Plugin Enabled");
     }
 
@@ -122,6 +124,7 @@ public final class ModPackIntegrated extends JavaPlugin {
         pluginManager.registerEvents(new CraftingEquipInvClick(), this);
         pluginManager.registerEvents(new CraftingEquipEvent(), this);
         pluginManager.registerEvents(new EntityScalingRelated(), this);
+        pluginManager.registerEvents(new EntityBlockBreakSpawn(), this);
     }
 
     private void commandsRegister() {

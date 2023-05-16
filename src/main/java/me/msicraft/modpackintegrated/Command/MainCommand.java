@@ -6,6 +6,7 @@ import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipUtil;
 import me.msicraft.modpackintegrated.KillPoint.KillPointUtil;
 import me.msicraft.modpackintegrated.MainMenu.Inventory.MainMenuInv;
 import me.msicraft.modpackintegrated.ModPackIntegrated;
+import me.msicraft.modpackintegrated.Util.ExpUtil;
 import me.msicraft.modpackintegrated.Util.WorldUtil;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -32,7 +33,19 @@ public class MainCommand implements CommandExecutor {
                 String var = args[0];
                 if (var != null) {
                     switch (var) {
-                        case "test" -> {
+                        case "getexp" -> { //mpi getexp <player>
+                            Player target = null;
+                            try {
+                                target = Bukkit.getPlayer(args[1]);
+                            } catch (ArrayIndexOutOfBoundsException e) {
+                                if (sender instanceof Player player) {
+                                    target = player;
+                                }
+                            }
+                            if (target != null) {
+                                sender.sendMessage("Level: " + target.getLevel());
+                                sender.sendMessage("TotalExp: " + ExpUtil.getPlayerExp(target));
+                            }
                         }
                         case "getattribute" -> { //mpi getattribute <player> <attribute>
                             if (sender.isOp()) {
@@ -84,8 +97,12 @@ public class MainCommand implements CommandExecutor {
                                                             specialAbility = SpecialAbility.valueOf(args[3]);
                                                             ItemStack itemStack = player.getInventory().getItemInMainHand();
                                                             if (itemStack != null && itemStack.getType() != Material.AIR) {
-                                                                CraftingEquipStatUtil.setSpecialAbility(specialAbility, itemStack);
-                                                                player.sendMessage(ChatColor.GREEN + "특수 능력이 설정되었습니다: " + ChatColor.GRAY + specialAbility.name());
+                                                                if (CraftingEquipUtil.isCraftingEquipment(itemStack)) {
+                                                                    CraftingEquipStatUtil.setSpecialAbility(specialAbility, itemStack);
+                                                                    player.sendMessage(ChatColor.GREEN + "특수 능력이 설정되었습니다: " + ChatColor.GRAY + specialAbility.name());
+                                                                } else {
+                                                                    player.sendMessage(ChatColor.RED + "제작 장비가 아닙니다.");
+                                                                }
                                                             }
                                                         } catch (Exception e) {
                                                             player.sendMessage(ChatColor.RED + "잘못된 특수능력");
