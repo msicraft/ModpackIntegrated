@@ -27,7 +27,7 @@ public class EntityScalingUtil {
 
     public static void applyEntityScalingTag(LivingEntity livingEntity) {
         PersistentDataContainer data = livingEntity.getPersistentDataContainer();
-        data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), scalingTagKey), PersistentDataType.STRING, "ScalingEntity");
+        data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), scalingTagKey), PersistentDataType.STRING, livingEntity.getUniqueId().toString());
     }
 
     public static void applyRandomPercentDamageTag(LivingEntity livingEntity, double value) {

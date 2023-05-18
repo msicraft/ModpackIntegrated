@@ -17,8 +17,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 public class EntityScalingRelated implements Listener {
 
     private static boolean isEnabled = false;
-    public static double maxHealthSpread = 0;
-    public static double maxDamagePercent = 0;
+    public static double maxHealthSpread = 1;
+    public static double maxDamagePercent = 1;
 
     public static void reloadVariables() {
         isEnabled = ModPackIntegrated.getPlugin().getConfig().contains("EntityScaling.Enabled") && ModPackIntegrated.getPlugin().getConfig().getBoolean("EntityScaling.Enabled");
@@ -46,7 +46,7 @@ public class EntityScalingRelated implements Listener {
                             maxHealthInstance.setBaseValue(roundCal);
                             Bukkit.getScheduler().runTaskLater(ModPackIntegrated.getPlugin(), ()-> {
                                 livingEntity.setHealth(livingEntity.getMaxHealth());
-                            }, 5L);
+                            }, 1L);
                         }
                     });
                 }

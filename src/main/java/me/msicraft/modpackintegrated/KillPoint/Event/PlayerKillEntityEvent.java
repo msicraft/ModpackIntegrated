@@ -1,5 +1,6 @@
 package me.msicraft.modpackintegrated.KillPoint.Event;
 
+import me.msicraft.modpackintegrated.EntityScaling.EntityScalingUtil;
 import me.msicraft.modpackintegrated.KillPoint.KillPointUtil;
 import me.msicraft.modpackintegrated.ModPackIntegrated;
 import org.bukkit.*;
@@ -103,6 +104,10 @@ public class PlayerKillEntityEvent implements Listener {
                 double armor = getArmorValue(livingEntity);
                 double armorToughness = getArmorToughnessValue(livingEntity);
                 if (player != null) {
+                    if (EntityScalingUtil.isScalingEntity(livingEntity)) {
+                        double percent = EntityScalingUtil.getPercentDamage(livingEntity);
+                        damage = damage + (damage * percent);
+                    }
                     exp = KillPointUtil.getToEntityKillPointExp(maxHealth, damage, armor, armorToughness);
                     boolean isSpawner = hasSpawnerTag(livingEntity);
                     if (isSpawner) {
@@ -128,8 +133,8 @@ public class PlayerKillEntityEvent implements Listener {
                                 Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "총 플레이어: " + ChatColor.GREEN + nearPlayers.size() + "| 플레이어: " + ChatColor.GREEN + nearPlayers);
                                 Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "총 경험치: " + ChatColor.GREEN + exp + " | 분배 경험치: " + ChatColor.GREEN + perPlayerExp);
                                 Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "스포너 몹: " + ChatColor.GREEN + isSpawner);
-                                Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "Health: " + ChatColor.GREEN + livingEntity.getMaxHealth() + " | Damage: " + getDamageValue(livingEntity));
-                                Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "Armor: " + ChatColor.GREEN + getArmorValue(livingEntity) + " | ArmorToughness: " + getArmorToughnessValue(livingEntity));
+                                Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "Health: " + ChatColor.GREEN + maxHealth + " | Damage: " + damage);
+                                Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "Armor: " + ChatColor.GREEN + armor + " | ArmorToughness: " + armorToughness);
                                 Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "===================================");
                             }
                         }
@@ -170,11 +175,11 @@ public class PlayerKillEntityEvent implements Listener {
                                     double damage = getDamageValue(livingEntity);
                                     double armor = getArmorValue(livingEntity);
                                     double armorToughness = getArmorToughnessValue(livingEntity);
-                                    if (damage <= 0) {
-                                        exp = 0;
-                                    } else {
-                                        exp = KillPointUtil.getToEntityKillPointExp(maxHealth, damage, armor, armorToughness);
+                                    if (EntityScalingUtil.isScalingEntity(livingEntity)) {
+                                        double percent = EntityScalingUtil.getPercentDamage(livingEntity);
+                                        damage = damage + (damage * percent);
                                     }
+                                    exp = KillPointUtil.getToEntityKillPointExp(maxHealth, damage, armor, armorToughness);
                                     ItemStack itemStack = getKillPointItemStack(exp);
                                     Location location = livingEntity.getLocation();
                                     World world = livingEntity.getWorld();

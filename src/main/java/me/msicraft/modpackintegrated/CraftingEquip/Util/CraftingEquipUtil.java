@@ -451,23 +451,25 @@ public class CraftingEquipUtil {
         ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta instanceof Damageable damageable) {
             int max = itemStack.getType().getMaxDurability();
-            double percent = 0;
+            double percent = 1;
             if (Math.random() < 0.7) {
-                percent = 0.2;
+                percent = 0.7;
                 if (Math.random() < 0.5) {
-                    percent = 0.4;
+                    percent = 0.5;
                     if (Math.random() < 0.3) {
-                        percent = 0.6;
+                        percent = 0.3;
                         if (Math.random() < 0.1) {
-                            percent = 0.8;
+                            percent = 0.1;
                         }
                     }
                 }
             }
             int cal = (int) (max * percent);
-            int randomV = random.nextInt(cal);
-            damageable.setDamage(randomV);
-            itemStack.setItemMeta(itemMeta);
+            if (cal != 0) {
+                int randomV = random.nextInt(cal);
+                damageable.setDamage(randomV);
+                itemStack.setItemMeta(itemMeta);
+            }
         }
     }
 

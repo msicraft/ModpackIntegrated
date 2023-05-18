@@ -33,6 +33,14 @@ public class MainCommand implements CommandExecutor {
                 String var = args[0];
                 if (var != null) {
                     switch (var) {
+                        case "test" -> {
+                            if (sender instanceof Player player) {
+                                for (int a = 0; a<30; a++) {
+                                    ItemStack itemStack = CraftingEquipUtil.createRandomEquipment();
+                                    player.getInventory().addItem(itemStack);
+                                }
+                            }
+                        }
                         case "getexp" -> { //mpi getexp <player>
                             Player target = null;
                             try {
