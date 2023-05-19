@@ -1,7 +1,10 @@
 package me.msicraft.modpackintegrated.MainMenu.Inventory;
 
 import me.msicraft.modpackintegrated.CraftingEquip.Enum.SpecialAbility;
+import me.msicraft.modpackintegrated.CraftingEquip.ExtractionInfo;
 import me.msicraft.modpackintegrated.CraftingEquip.PlayerStat;
+import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipUtil;
+import me.msicraft.modpackintegrated.CraftingEquip.Util.ExtractionCraftingEquipmentUtil;
 import me.msicraft.modpackintegrated.KillPoint.KillPointUtil;
 import me.msicraft.modpackintegrated.MainMenu.ExportEnchant.ExportEnchantUtil;
 import me.msicraft.modpackintegrated.MainMenu.KillPointShop.KillPointShopUtil;
@@ -93,6 +96,53 @@ public class MainMenuInv implements InventoryHolder {
         mainMenuInv.setItem(12, itemStack);
         itemStack = createNormalItem(Material.PAPER, ChatColor.WHITE + "장비 특수능력 목록", list, mainTag, "SpecialAbilityInfoList");
         mainMenuInv.setItem(19, itemStack);
+        itemStack = createNormalItem(Material.SMITHING_TABLE, ChatColor.WHITE + "제작 장비 킬 포인트 추출", list, mainTag, "ExtractionCraftingEquipment");
+        mainMenuInv.setItem(20, itemStack);
+    }
+
+    public void setExtractInv(Player player) {
+        ItemStack startItem = new ItemStack(Material.STONE, 1);
+        ItemMeta meta = startItem.getItemMeta();
+        if (meta != null) {
+            ItemStack itemStack = new ItemStack(Material.BLACK_STAINED_GLASS_PANE, 1);
+            ItemMeta itemMeta = itemStack.getItemMeta();
+            if (itemMeta != null) {
+                itemMeta.setDisplayName(" ");
+                itemStack.setItemMeta(itemMeta);
+                for (int a = 45; a<53; a++) {
+                    mainMenuInv.setItem(a, itemStack);
+                }
+            }
+            List<String> l = new ArrayList<>();
+            l.add(ChatColor.GREEN + "총 추출될 킬 포인트: " + ChatColor.GRAY + ExtractionCraftingEquipmentUtil.getTotalKillPoints(player));
+            meta.setDisplayName(ChatColor.GREEN + "추출 시작");
+            meta.setLore(l);
+            PersistentDataContainer data = meta.getPersistentDataContainer();
+            data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-Extraction-Start"), PersistentDataType.STRING, "Start");
+            startItem.setItemMeta(meta);
+            mainMenuInv.setItem(53, startItem);
+        }
+        ExtractionInfo extractionInfo = new ExtractionInfo(player);
+        int maxSize = extractionInfo.getMaxSize();
+        List<String> lore = new ArrayList<>();
+        for (int a = 0; a<maxSize; a++) {
+            ItemStack itemStack = extractionInfo.getItemStack(a);
+            if (itemStack.getType() != Material.AIR && itemStack != null) {
+                if (!lore.isEmpty()) { lore.clear(); }
+                ItemStack temp = new ItemStack(itemStack);
+                ItemMeta itemMeta = temp.getItemMeta();
+                int getTotalKillPoint = CraftingEquipUtil.getTotalKillPoint(temp);
+                lore.add("");
+                lore.add(ChatColor.GREEN + "사용된 킬 포인트: " + ChatColor.GRAY + getTotalKillPoint);
+                lore.add("");
+                lore.add(ChatColor.GREEN + "추출될 킬 포인트: " + ChatColor.GRAY + (getTotalKillPoint/2));
+                if (itemMeta != null) {
+                    itemMeta.setLore(lore);
+                    temp.setItemMeta(itemMeta);
+                    mainMenuInv.setItem(a, temp);
+                }
+            }
+        }
     }
 
     private static int[] shopSlots = {10,11,12,13,14,15,16, 19,20,21,22,23,24,25, 28,29,30,31,32,33,34, 37,38,39,40,41,42,43};

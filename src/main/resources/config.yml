@@ -24,8 +24,10 @@ Setting:
   FixHealthRegen:
     Enabled: false
 
+
 EntityScaling:
   Enabled: false
+  Fix-PlayerTakeDamageEvent: false
   MaxHealthSpread: 1
   MaxDamagePercent: 0.5
 

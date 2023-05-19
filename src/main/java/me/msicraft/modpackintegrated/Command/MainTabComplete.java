@@ -28,6 +28,7 @@ public class MainTabComplete implements TabCompleter {
                     arguments.add("craftingequipment");
                     arguments.add("getattribute");
                     arguments.add("getexp");
+                    arguments.add("fixentityhealth");
                 }
                 return arguments;
             }

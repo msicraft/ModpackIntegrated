@@ -18,6 +18,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 public class CraftingEquipUtil {
 
@@ -473,6 +474,18 @@ public class CraftingEquipUtil {
         }
     }
 
+    public static boolean isRandomCraftingEquipment(ItemStack itemStack) {
+        boolean check = false;
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (itemMeta != null) {
+            PersistentDataContainer data = itemMeta.getPersistentDataContainer();
+            if (data.has(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-RandomEquipment"), PersistentDataType.STRING)) {
+                check = true;
+            }
+        }
+        return check;
+    }
+
     private static void applyEquipmentToRandomStat(ItemStack itemStack, int availableKillPoint, EquipmentType equipmentType) {
         ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta != null) {
@@ -481,6 +494,7 @@ public class CraftingEquipUtil {
             lore.add("");
             data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-TotalKillPoint"), PersistentDataType.STRING, String.valueOf(availableKillPoint));
             data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-EquipmentType"), PersistentDataType.STRING, equipmentType.name());
+            data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-RandomEquipment"), PersistentDataType.STRING, UUID.randomUUID().toString());
             lore.add(ChatColor.GREEN + "장비 유형: " + ChatColor.GRAY + equipmentType.name());
             int melee = 0, projectile = 0, attackSpeed = 0, defense = 0, health = 0;
             double meleeValue = 0, projectileValue = 0, attackSpeedValue = 0, defenseValue = 0, maxHealthValue = 0;
@@ -671,21 +685,21 @@ public class CraftingEquipUtil {
         int maxKillPoint = maxAvailableKillPoint;
         double percent = 0;
         if (armorType == 0) {
-            if (1 <= randomV && randomV <= 25) {
+            if (1 <= randomV && randomV <= 30) {
                 itemStack = new ItemStack(Material.LEATHER_HELMET);
                 itemMeta = itemStack.getItemMeta();
                 if (itemMeta != null) {
                     itemMeta.setDisplayName(ChatColor.AQUA + "제작된 가죽 모자");
                 }
                 percent = getRandomValueDouble(1, 0.1);
-            } else if (26 <= randomV && randomV <= 50) {
+            } else if (31 <= randomV && randomV <= 80) {
                 itemStack = new ItemStack(Material.IRON_HELMET);
                 itemMeta = itemStack.getItemMeta();
                 if (itemMeta != null) {
                     itemMeta.setDisplayName(ChatColor.AQUA + "제작된 철 모자");
                 }
                 percent = getRandomValueDouble(1, 0.3);
-            } else if (51 <= randomV && randomV <= 75) {
+            } else if (81 <= randomV && randomV <= 95) {
                 itemStack = new ItemStack(Material.DIAMOND_HELMET);
                 itemMeta = itemStack.getItemMeta();
                 if (itemMeta != null) {
@@ -701,21 +715,21 @@ public class CraftingEquipUtil {
                 percent = getRandomValueDouble(1, 0.7);
             }
         } else if (armorType == 1) {
-            if (1 <= randomV && randomV <= 25) {
+            if (1 <= randomV && randomV <= 30) {
                 itemStack = new ItemStack(Material.LEATHER_CHESTPLATE);
                 itemMeta = itemStack.getItemMeta();
                 if (itemMeta != null) {
                     itemMeta.setDisplayName(ChatColor.AQUA + "제작된 가죽 갑옷");
                 }
                 percent = getRandomValueDouble(1, 0.1);
-            } else if (26 <= randomV && randomV <= 50) {
+            } else if (31 <= randomV && randomV <= 80) {
                 itemStack = new ItemStack(Material.IRON_CHESTPLATE);
                 itemMeta = itemStack.getItemMeta();
                 if (itemMeta != null) {
                     itemMeta.setDisplayName(ChatColor.AQUA + "제작된 철 갑옷");
                 }
                 percent = getRandomValueDouble(1, 0.3);
-            } else if (51 <= randomV && randomV <= 75) {
+            } else if (81 <= randomV && randomV <= 95) {
                 itemStack = new ItemStack(Material.DIAMOND_CHESTPLATE);
                 itemMeta = itemStack.getItemMeta();
                 if (itemMeta != null) {
@@ -731,21 +745,21 @@ public class CraftingEquipUtil {
                 percent = getRandomValueDouble(1, 0.7);
             }
         } else if (armorType == 2) {
-            if (1 <= randomV && randomV <= 25) {
+            if (1 <= randomV && randomV <= 30) {
                 itemStack = new ItemStack(Material.LEATHER_LEGGINGS);
                 itemMeta = itemStack.getItemMeta();
                 if (itemMeta != null) {
                     itemMeta.setDisplayName(ChatColor.AQUA + "제작된 가죽 바지");
                 }
                 percent = getRandomValueDouble(1, 0.1);
-            } else if (26 <= randomV && randomV <= 50) {
+            } else if (31 <= randomV && randomV <= 80) {
                 itemStack = new ItemStack(Material.IRON_LEGGINGS);
                 itemMeta = itemStack.getItemMeta();
                 if (itemMeta != null) {
                     itemMeta.setDisplayName(ChatColor.AQUA + "제작된 철 바지");
                 }
                 percent = getRandomValueDouble(1, 0.3);
-            } else if (51 <= randomV && randomV <= 75) {
+            } else if (81 <= randomV && randomV <= 95) {
                 itemStack = new ItemStack(Material.DIAMOND_LEGGINGS);
                 itemMeta = itemStack.getItemMeta();
                 if (itemMeta != null) {
@@ -761,21 +775,21 @@ public class CraftingEquipUtil {
                 percent = getRandomValueDouble(1, 0.7);
             }
         } else {
-            if (1 <= randomV && randomV <= 25) {
+            if (1 <= randomV && randomV <= 30) {
                 itemStack = new ItemStack(Material.LEATHER_BOOTS);
                 itemMeta = itemStack.getItemMeta();
                 if (itemMeta != null) {
                     itemMeta.setDisplayName(ChatColor.AQUA + "제작된 가죽 신발");
                 }
                 percent = getRandomValueDouble(1, 0.1);
-            } else if (26 <= randomV && randomV <= 50) {
+            } else if (31 <= randomV && randomV <= 80) {
                 itemStack = new ItemStack(Material.IRON_BOOTS);
                 itemMeta = itemStack.getItemMeta();
                 if (itemMeta != null) {
                     itemMeta.setDisplayName(ChatColor.AQUA + "제작된 철 신발");
                 }
                 percent = getRandomValueDouble(1, 0.3);
-            } else if (51 <= randomV && randomV <= 75) {
+            } else if (81 <= randomV && randomV <= 95) {
                 itemStack = new ItemStack(Material.DIAMOND_BOOTS);
                 itemMeta = itemStack.getItemMeta();
                 if (itemMeta != null) {

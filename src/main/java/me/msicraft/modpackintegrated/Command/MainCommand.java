@@ -15,6 +15,9 @@ import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
@@ -35,10 +38,26 @@ public class MainCommand implements CommandExecutor {
                     switch (var) {
                         case "test" -> {
                             if (sender instanceof Player player) {
-                                for (int a = 0; a<30; a++) {
-                                    ItemStack itemStack = CraftingEquipUtil.createRandomEquipment();
-                                    player.getInventory().addItem(itemStack);
+                                ItemStack itemStack = CraftingEquipUtil.createRandomEquipment();
+                                player.getInventory().addItem(itemStack);
+                            }
+                        }
+                        case "fixentityhealth" -> {
+                            int entityC = 0;
+                            for (World world : Bukkit.getWorlds()) {
+                                for (Entity entity : world.getEntities()) {
+                                    if (entity instanceof LivingEntity livingEntity) {
+                                        if (livingEntity.getType() != EntityType.PLAYER) {
+                                            double maxHealth = livingEntity.getMaxHealth();
+                                            if (Double.compare(livingEntity.getHealth(), maxHealth) != 0) {
+                                                livingEntity.setHealth(maxHealth);
+                                                entityC++;
+                                            }
+                                        }
+                                    }
                                 }
+                                sender.sendMessage(ChatColor.GREEN + "월드: " + world.getName());
+                                sender.sendMessage(ChatColor.GREEN + "수정된 엔티티: " + entityC);
                             }
                         }
                         case "getexp" -> { //mpi getexp <player>

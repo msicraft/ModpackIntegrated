@@ -1,7 +1,9 @@
 package me.msicraft.modpackintegrated.MainMenu.Event;
 
 import me.msicraft.modpackintegrated.CraftingEquip.Enum.SpecialAbility;
+import me.msicraft.modpackintegrated.CraftingEquip.ExtractionInfo;
 import me.msicraft.modpackintegrated.CraftingEquip.Inventory.CraftingEquipInv;
+import me.msicraft.modpackintegrated.CraftingEquip.Util.ExtractionCraftingEquipmentUtil;
 import me.msicraft.modpackintegrated.KillPoint.KillPointUtil;
 import me.msicraft.modpackintegrated.MainMenu.ExportEnchant.ExportEnchantUtil;
 import me.msicraft.modpackintegrated.MainMenu.Inventory.MainMenuInv;
@@ -78,6 +80,10 @@ public class MainMenuEvent implements Listener {
                             case "SpecialAbilityInfoList" -> {
                                 player.openInventory(mainMenuInv.getInventory());
                                 mainMenuInv.setSpecialAbilityInfo(player);
+                            }
+                            case "ExtractionCraftingEquipment" -> {
+                                player.openInventory(mainMenuInv.getInventory());
+                                mainMenuInv.setExtractInv(player);
                             }
                         }
                     }
@@ -252,6 +258,36 @@ public class MainMenuEvent implements Listener {
                                         mainMenuInv.setExportEnchantment(player);
                                     }
                                 }
+                            }
+                        }
+                    }
+                }
+            }
+            ItemStack extractionButton = e.getInventory().getItem(53);
+            if (extractionButton != null && extractionButton.getType() == Material.STONE) {
+                ItemMeta itemMeta = extractionButton.getItemMeta();
+                if (itemMeta != null) {
+                    PersistentDataContainer data = itemMeta.getPersistentDataContainer();
+                    if (data.has(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-Extraction-Start"), PersistentDataType.STRING)) {
+                        int clickSlot = e.getSlot();
+                        InventoryType inventoryType = e.getClickedInventory().getType();
+                        switch (inventoryType) {
+                            case CHEST -> {
+                                if (clickSlot == 53) {
+                                    String d = data.get(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-Extraction-Start"), PersistentDataType.STRING);
+                                    if (d != null && d.equals("Start")) {
+                                        ExtractionCraftingEquipmentUtil.startExtraction(player);
+                                    }
+                                } else {
+                                    ExtractionCraftingEquipmentUtil.sendStorageToPlayer(player, clickSlot);
+                                    player.openInventory(mainMenuInv.getInventory());
+                                    mainMenuInv.setExtractInv(player);
+                                }
+                            }
+                            case PLAYER -> {
+                                ExtractionCraftingEquipmentUtil.sendPlayerToStorage(player, selectItem, clickSlot);
+                                player.openInventory(mainMenuInv.getInventory());
+                                mainMenuInv.setExtractInv(player);
                             }
                         }
                     }

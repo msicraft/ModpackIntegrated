@@ -13,17 +13,20 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 
 public class EntityScalingRelated implements Listener {
 
     private static boolean isEnabled = false;
     public static double maxHealthSpread = 1;
     public static double maxDamagePercent = 1;
+    private static boolean isEnabledFixPlayerTakeDamageEvent = false;
 
     public static void reloadVariables() {
         isEnabled = ModPackIntegrated.getPlugin().getConfig().contains("EntityScaling.Enabled") && ModPackIntegrated.getPlugin().getConfig().getBoolean("EntityScaling.Enabled");
         maxHealthSpread = ModPackIntegrated.getPlugin().getConfig().contains("EntityScaling.MaxHealthSpread") ? ModPackIntegrated.getPlugin().getConfig().getDouble("EntityScaling.MaxHealthSpread") : 0;
         maxDamagePercent = ModPackIntegrated.getPlugin().getConfig().contains("EntityScaling.MaxDamagePercent") ? ModPackIntegrated.getPlugin().getConfig().getDouble("EntityScaling.MaxDamagePercent") : 0;
+        isEnabledFixPlayerTakeDamageEvent = ModPackIntegrated.getPlugin().getConfig().contains("EntityScaling.Fix-PlayerTakeDamageEvent") && ModPackIntegrated.getPlugin().getConfig().getBoolean("EntityScaling.Fix-PlayerTakeDamageEvent");
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -56,7 +59,7 @@ public class EntityScalingRelated implements Listener {
 
     @EventHandler
     public void scalingEntityAttack(EntityDamageByEntityEvent e) {
-        if (isEnabled) {
+        if (isEnabled && !isEnabledFixPlayerTakeDamageEvent) {
             Entity damager = e.getDamager();
             if (damager instanceof LivingEntity livingEntity) {
                 if (livingEntity.getType() != EntityType.PLAYER) {
@@ -68,6 +71,16 @@ public class EntityScalingRelated implements Listener {
                         e.setDamage(cal);
                     }
                 }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onFixPlayerTakeDamage(EntityDamageEvent e) {
+        if (isEnabled && isEnabledFixPlayerTakeDamageEvent) {
+            Entity entity = e.getEntity();
+            if (entity.getType() == EntityType.PLAYER) {
+                EntityDamageEvent.DamageCause damageCause = e.getCause();
             }
         }
     }

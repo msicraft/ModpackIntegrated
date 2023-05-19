@@ -2,16 +2,21 @@ package me.msicraft.modpackintegrated.Event;
 
 import me.msicraft.modpackintegrated.ModPackIntegrated;
 import org.bukkit.Bukkit;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
+import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.*;
 
@@ -128,6 +133,26 @@ public class EntityRelated implements Listener {
                         regenDelayMap.remove(livingEntity.getUniqueId());
                     }
                 }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onEntityArrowDamage(EntityDamageByEntityEvent e) {
+        Entity damager = e.getDamager();
+        if (damager instanceof Arrow arrow) {
+            ProjectileSource projectileSource = arrow.getShooter();
+            if (projectileSource instanceof LivingEntity livingEntity) {
+                AttributeInstance instance = livingEntity.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE);
+                double originalDamage = e.getDamage();
+                double cal;
+                if (instance != null) {
+                    double attributeDamage = instance.getValue();
+                    cal = originalDamage + attributeDamage;
+                } else {
+                    cal = originalDamage;
+                }
+                e.setDamage(cal);
             }
         }
     }

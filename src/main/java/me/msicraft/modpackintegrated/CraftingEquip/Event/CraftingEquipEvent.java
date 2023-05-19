@@ -3,18 +3,21 @@ package me.msicraft.modpackintegrated.CraftingEquip.Event;
 import me.msicraft.modpackintegrated.CraftingEquip.Enum.SpecialAbility;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipSpecialAbility;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipStatUtil;
+import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipUtil;
 import me.msicraft.modpackintegrated.ModPackIntegrated;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -119,7 +122,7 @@ public class CraftingEquipEvent implements Listener {
 
     @EventHandler
     public void onPlayerTakeDamage(EntityDamageByEntityEvent e) {
-        Bukkit.getConsoleSender().sendMessage("test: " + e.getEntity() + " | " + e.getDamager());
+        //Bukkit.getConsoleSender().sendMessage("test: " + e.getEntity() + " | " + e.getDamager());
         Entity entity = e.getEntity();
         if (entity instanceof Player player) {
             double originalDamage = e.getDamage();
@@ -144,6 +147,29 @@ public class CraftingEquipEvent implements Listener {
                 }
                 e.setDamage(v);
             }
+        }
+    }
+
+    @EventHandler
+    public void onDropCraftingEquipment(EntityDeathEvent e) {
+        if (Math.random() < 0.05) {
+            LivingEntity livingEntity = e.getEntity();
+            ItemStack itemStack = CraftingEquipUtil.createRandomEquipment();
+            Location location = livingEntity.getLocation();
+            World world = livingEntity.getWorld();
+            world.dropItemNaturally(location, itemStack);
+            Bukkit.getScheduler().runTask(ModPackIntegrated.getPlugin(), ()-> {
+                for (Entity entity : world.getNearbyEntities(location, 4,3,4)) {
+                    if (entity instanceof Item item) {
+                        ItemStack itemStack1 = item.getItemStack();
+                        if (CraftingEquipUtil.isRandomCraftingEquipment(itemStack1)) {
+                            item.setCustomName(ChatColor.AQUA + "제작된 장비");
+                            item.setGlowing(true);
+                            item.setCustomNameVisible(true);
+                        }
+                    }
+                }
+            });
         }
     }
 
