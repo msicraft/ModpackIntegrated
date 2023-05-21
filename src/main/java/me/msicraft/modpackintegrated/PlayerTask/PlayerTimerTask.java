@@ -3,8 +3,6 @@ package me.msicraft.modpackintegrated.PlayerTask;
 import me.msicraft.modpackintegrated.ModPackIntegrated;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class PlayerTimerTask extends BukkitRunnable {
@@ -26,9 +24,8 @@ public class PlayerTimerTask extends BukkitRunnable {
                 cal = player.getMaxHealth();
             }
             player.setHealth(cal);
-            if (!player.hasPotionEffect(PotionEffectType.GLOWING)) {
-                PotionEffect glowingEffect = new PotionEffect(PotionEffectType.GLOWING, 999999, 255, false, false);
-                player.addPotionEffect(glowingEffect);
+            if (!player.isGlowing()) {
+                player.setGlowing(true);
             }
         } else {
             if (Bukkit.getServer().getScheduler().isCurrentlyRunning(getTaskId())) {

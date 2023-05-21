@@ -4,20 +4,21 @@ import me.msicraft.modpackintegrated.CraftingEquip.Enum.SpecialAbility;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipSpecialAbility;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipStatUtil;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipUtil;
+import me.msicraft.modpackintegrated.CraftingEquip.Util.DoppelgangerUtil;
 import me.msicraft.modpackintegrated.ModPackIntegrated;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -122,7 +123,6 @@ public class CraftingEquipEvent implements Listener {
 
     @EventHandler
     public void onPlayerTakeDamage(EntityDamageByEntityEvent e) {
-        //Bukkit.getConsoleSender().sendMessage("test: " + e.getEntity() + " | " + e.getDamager());
         Entity entity = e.getEntity();
         if (entity instanceof Player player) {
             double originalDamage = e.getDamage();
@@ -170,6 +170,72 @@ public class CraftingEquipEvent implements Listener {
                     }
                 }
             });
+        }
+    }
+
+    @EventHandler
+    public void spawnDoppelganger(EntityDeathEvent e) {
+        if (Math.random() < 0.01) {
+            Player player = e.getEntity().getKiller();
+            if (player != null) {
+                Location location = e.getEntity().getLocation();
+                World world = location.getWorld();
+                if (world != null) {
+                    ItemStack helmet = player.getInventory().getHelmet();
+                    ItemStack chest = player.getInventory().getChestplate();
+                    ItemStack leggings = player.getInventory().getLeggings();
+                    ItemStack boots = player.getInventory().getBoots();
+                    ItemStack hand = player.getInventory().getItemInMainHand();
+                    ItemStack offHand = player.getInventory().getItemInOffHand();
+                    Bukkit.getScheduler().runTask(ModPackIntegrated.getPlugin(), () -> {
+                        world.spawn(location, Husk.class, husk -> {
+                            husk.setCustomName(player.getName() + " 의 장비를 복제한 좀비");
+                            husk.setCustomNameVisible(true);
+                            husk.setCanPickupItems(false);
+                            EntityEquipment entityEquipment = husk.getEquipment();
+                            if (entityEquipment != null) {
+                                if (helmet != null && helmet.getType() != Material.AIR) {
+                                    entityEquipment.setHelmet(new ItemStack(helmet));
+                                }
+                                if (chest != null && chest.getType() != Material.AIR) {
+                                    entityEquipment.setChestplate(new ItemStack(chest));
+                                }
+                                if (leggings != null && leggings.getType() != Material.AIR) {
+                                    entityEquipment.setLeggings(new ItemStack(leggings));
+                                }
+                                if (boots != null && boots.getType() != Material.AIR) {
+                                    entityEquipment.setBoots(new ItemStack(boots));
+                                }
+                                if (hand != null && hand.getType() != Material.AIR) {
+                                    entityEquipment.setItemInMainHand(new ItemStack(hand));
+                                }
+                                if (offHand != null && offHand.getType() != Material.AIR) {
+                                    entityEquipment.setItemInOffHand(new ItemStack(offHand));
+                                }
+                            }
+                            double baseMaxHealth = DoppelgangerUtil.getPlayerMaxHealth(player);
+                            double baseDamage = DoppelgangerUtil.getPlayerExtraDamage(player);
+                            double randomHealthMultiple = CraftingEquipUtil.getRandomValueDouble(10.1, 0.5);
+                            double randomDamageMultiple = CraftingEquipUtil.getRandomValueDouble(3.6, 0.5);
+                            double calHealth = baseMaxHealth + (baseMaxHealth * randomHealthMultiple);
+                            double calDamage = baseDamage + (baseDamage * randomDamageMultiple);
+                            DoppelgangerUtil.setMaxHealth(husk, calHealth);
+                            DoppelgangerUtil.setBaseDamage(husk, calDamage);
+                            PersistentDataContainer data = husk.getPersistentDataContainer();
+                            data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-Doppelganger"), PersistentDataType.STRING, husk.getUniqueId().toString());
+                        });
+                    });
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void disableDoppelgangerDrop(EntityDeathEvent e) {
+        LivingEntity livingEntity = e.getEntity();
+        PersistentDataContainer data = livingEntity.getPersistentDataContainer();
+        if (data.has(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-Doppelganger"), PersistentDataType.STRING)) {
+            e.getDrops().clear();
         }
     }
 

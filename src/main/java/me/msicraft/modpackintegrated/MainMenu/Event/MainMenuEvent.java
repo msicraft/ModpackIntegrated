@@ -1,7 +1,6 @@
 package me.msicraft.modpackintegrated.MainMenu.Event;
 
 import me.msicraft.modpackintegrated.CraftingEquip.Enum.SpecialAbility;
-import me.msicraft.modpackintegrated.CraftingEquip.ExtractionInfo;
 import me.msicraft.modpackintegrated.CraftingEquip.Inventory.CraftingEquipInv;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.ExtractionCraftingEquipmentUtil;
 import me.msicraft.modpackintegrated.KillPoint.KillPointUtil;

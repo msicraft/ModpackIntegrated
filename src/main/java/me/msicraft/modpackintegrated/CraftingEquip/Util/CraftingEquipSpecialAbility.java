@@ -318,8 +318,14 @@ public class CraftingEquipSpecialAbility {
         double coolDown = 0;
         abilityEnum abilityEnum = CraftingEquipSpecialAbility.abilityEnum.none;
         switch (specialAbility) {
-            case increaseTakeDamageAndExtraDamage_5_10 -> cal = takeDamage + (takeDamage * 0.05);
-            case increaseTakeDamageAndExtraDamage_10_15 -> cal = takeDamage + (takeDamage * 0.1);
+            case increaseTakeDamageAndExtraDamage_5_10 -> {
+                cal = takeDamage + (takeDamage * 0.05);
+                abilityEnum = CraftingEquipSpecialAbility.abilityEnum.increaseTakeDamageAndExtraDamage;
+            }
+            case increaseTakeDamageAndExtraDamage_10_15 -> {
+                cal = takeDamage + (takeDamage * 0.1);
+                abilityEnum = CraftingEquipSpecialAbility.abilityEnum.increaseTakeDamageAndExtraDamage;
+            }
             case takeDamageConvertHealth_5_25 -> {
                 if (Math.random() < 0.05) {
                     abilityEnum = CraftingEquipSpecialAbility.abilityEnum.takeDamageConvertHealth;

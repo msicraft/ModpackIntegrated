@@ -393,9 +393,9 @@ public class CraftingEquipUtil {
                     attackSpeedValue = Math.floor(attackSpeedValue * 100.0) / 100.0;
                     defenseValue = Math.floor(defenseValue * 100.0) / 100.0;
                     if (maxHealthValue < 0) {
-                        maxHealthValue = Math.ceil(maxHealthValue);
+                        maxHealthValue = Math.ceil(maxHealthValue*100.0)/100.0;
                     } else {
-                        maxHealthValue = Math.floor(maxHealthValue);
+                        maxHealthValue = Math.floor(maxHealthValue*100.0)/100.0;
                     }
                     if (meleeValue != 0) {
                         lore.add(ChatColor.GRAY + "추가 근접 데미지: " + getLoreInfo(meleeValue));

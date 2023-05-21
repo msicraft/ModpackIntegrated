@@ -13,7 +13,9 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class EntityScalingRelated implements Listener {
 
@@ -29,9 +31,15 @@ public class EntityScalingRelated implements Listener {
         isEnabledFixPlayerTakeDamageEvent = ModPackIntegrated.getPlugin().getConfig().contains("EntityScaling.Fix-PlayerTakeDamageEvent") && ModPackIntegrated.getPlugin().getConfig().getBoolean("EntityScaling.Fix-PlayerTakeDamageEvent");
     }
 
+    private static final List<CreatureSpawnEvent.SpawnReason> blackListSpawnReason = Arrays.asList(CreatureSpawnEvent.SpawnReason.BEEHIVE);
+
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onCreatureSpawn(CreatureSpawnEvent e) {
         if (isEnabled) {
+            CreatureSpawnEvent.SpawnReason spawnReason = e.getSpawnReason();
+            if (blackListSpawnReason.contains(spawnReason)) {
+                return;
+            }
             LivingEntity livingEntity = e.getEntity();
             if (livingEntity.getType() != EntityType.PLAYER) {
                 AttributeInstance attackInstance = livingEntity.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE);
@@ -75,6 +83,7 @@ public class EntityScalingRelated implements Listener {
         }
     }
 
+    /*
     @EventHandler
     public void onFixPlayerTakeDamage(EntityDamageEvent e) {
         if (isEnabled && isEnabledFixPlayerTakeDamageEvent) {
@@ -84,5 +93,7 @@ public class EntityScalingRelated implements Listener {
             }
         }
     }
+
+     */
 
 }

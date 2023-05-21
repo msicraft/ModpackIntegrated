@@ -103,7 +103,7 @@ public class MainCommand implements CommandExecutor {
                                 }
                             }
                         }
-                        case "craftingequipment" -> { //mpi craftingequipment [ability,updateinventory] [get,set] [optional: abilityName]
+                        case "craftingequipment" -> { //mpi craftingequipment [ability,updateinventory,totalkillpoint] [get,set] [optional: abilityName]
                             if (sender instanceof Player player) {
                                 if (player.isOp()) {
                                     try {
@@ -134,6 +134,17 @@ public class MainCommand implements CommandExecutor {
                                                         } catch (Exception e) {
                                                             player.sendMessage(ChatColor.RED + "잘못된 특수능력");
                                                         }
+                                                    }
+                                                }
+                                            }
+                                            case "totalkillpoint" -> {
+                                                ItemStack handItem = player.getInventory().getItemInMainHand();
+                                                if (handItem != null && handItem.getType() != Material.AIR) {
+                                                    if (CraftingEquipUtil.isCraftingEquipment(handItem)) {
+                                                        int totalKillPoint = CraftingEquipUtil.getTotalKillPoint(handItem);
+                                                        player.sendMessage(ChatColor.GREEN + "사용한 킬 포인트: " + ChatColor.GRAY + totalKillPoint);
+                                                    } else {
+                                                        player.sendMessage(ChatColor.RED + "제작 장비가 아닙니다.");
                                                     }
                                                 }
                                             }

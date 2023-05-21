@@ -1,5 +1,6 @@
 package me.msicraft.modpackintegrated.Event;
 
+import me.msicraft.modpackintegrated.Event.Task.EnderDragonExpTask;
 import me.msicraft.modpackintegrated.ModPackIntegrated;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
@@ -154,6 +155,13 @@ public class EntityRelated implements Listener {
                 }
                 e.setDamage(cal);
             }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void fixDropExp(EntityDeathEvent e) {
+        if (e.getEntityType() == EntityType.ENDER_DRAGON) {
+            new EnderDragonExpTask(e.getEntity()).runTaskTimer(ModPackIntegrated.getPlugin(), 70L, 3L);
         }
     }
 

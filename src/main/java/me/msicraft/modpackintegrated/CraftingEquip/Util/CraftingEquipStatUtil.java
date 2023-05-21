@@ -295,32 +295,25 @@ public class CraftingEquipStatUtil {
         ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta != null) {
             PersistentDataContainer data = itemMeta.getPersistentDataContainer();
-            SpecialAbility originalAbility = getSpecialAbility(itemStack);
-            if (originalAbility != null) {
-                SpecialAbility specialAbility = CraftingEquipUtil.getRandomAbility();
-                String replaceInfo = ModPackIntegrated.specialAbilityInfoFile.getConfig().getString("Ability." + specialAbility.name());
-                if (replaceInfo != null) {
-                    replaceInfo = ChatColor.translateAlternateColorCodes('&', replaceInfo);
-                }
-                List<String> lore = itemMeta.getLore();
-                List<String> replaceLore = new ArrayList<>();
-                if (lore != null) {
-                    String info = ModPackIntegrated.specialAbilityInfoFile.getConfig().getString("Ability." + originalAbility.name());
-                    if (info != null) {
-                        info = ChatColor.translateAlternateColorCodes('&', info);
-                    }
-                    for (String s : lore) {
-                        if (s.equals(ChatColor.GRAY + "특수 능력: " + info)) {
-                            replaceLore.add(ChatColor.GRAY + "특수 능력: " + replaceInfo);
-                        } else {
-                            replaceLore.add(s);
-                        }
-                    }
-                }
-                data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-SpecialAbility"), PersistentDataType.STRING, specialAbility.name());
-                itemMeta.setLore(replaceLore);
-                itemStack.setItemMeta(itemMeta);
+            SpecialAbility specialAbility = CraftingEquipUtil.getRandomAbility();
+            String replaceInfo = ModPackIntegrated.specialAbilityInfoFile.getConfig().getString("Ability." + specialAbility.name());
+            if (replaceInfo != null) {
+                replaceInfo = ChatColor.translateAlternateColorCodes('&', replaceInfo);
             }
+            List<String> lore = itemMeta.getLore();
+            List<String> replaceLore = new ArrayList<>();
+            if (lore != null) {
+                for (String s : lore) {
+                    if (s.contains("특수 능력:")) {
+                        replaceLore.add(ChatColor.GRAY + "특수 능력: " + replaceInfo);
+                    } else {
+                        replaceLore.add(s);
+                    }
+                }
+            }
+            data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-SpecialAbility"), PersistentDataType.STRING, specialAbility.name());
+            itemMeta.setLore(replaceLore);
+            itemStack.setItemMeta(itemMeta);
         }
     }
 

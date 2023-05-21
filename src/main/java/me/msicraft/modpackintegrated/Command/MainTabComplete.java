@@ -48,6 +48,7 @@ public class MainTabComplete implements TabCompleter {
                     List<String> arguments = new ArrayList<>();
                     arguments.add("ability");
                     arguments.add("updateinventory");
+                    arguments.add("totalkillpoint");
                     return arguments;
                 }
             }
