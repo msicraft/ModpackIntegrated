@@ -11,11 +11,6 @@ public class EntityScalingUtil {
     private static final String scalingTagKey = "MPI-EntityScaling";
     private static final String scalingDamageTagKey = "MPI-EntityScaling-AddDamage";
 
-    public static double getRandomValueDouble(double max, double min) {
-        double randomValue = (Math.random() * (max - min)) + min;
-        return (Math.floor(randomValue * 100) / 100.0);
-    }
-
     public static boolean isScalingEntity(LivingEntity livingEntity) {
         boolean check = false;
         PersistentDataContainer data = livingEntity.getPersistentDataContainer();

@@ -2,6 +2,7 @@ package me.msicraft.modpackintegrated.EntityScaling.Event;
 
 import me.msicraft.modpackintegrated.EntityScaling.EntityScalingUtil;
 import me.msicraft.modpackintegrated.ModPackIntegrated;
+import me.msicraft.modpackintegrated.Util.MathUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -46,12 +47,12 @@ public class EntityScalingRelated implements Listener {
                 if (attackInstance != null) {
                     Bukkit.getScheduler().runTask(ModPackIntegrated.getPlugin(), () -> {
                         EntityScalingUtil.applyEntityScalingTag(livingEntity);
-                        double randomPercentDamage = EntityScalingUtil.getRandomValueDouble(maxDamagePercent, 0);
+                        double randomPercentDamage = MathUtil.getRandomValueDouble(maxDamagePercent, 0);
                         EntityScalingUtil.applyRandomPercentDamageTag(livingEntity, randomPercentDamage);
                         AttributeInstance maxHealthInstance = livingEntity.getAttribute(Attribute.GENERIC_MAX_HEALTH);
                         if (maxHealthInstance != null) {
                             double currentValue = maxHealthInstance.getValue();
-                            double randomSpreadValue = EntityScalingUtil.getRandomValueDouble(maxHealthSpread, 0);
+                            double randomSpreadValue = MathUtil.getRandomValueDouble(maxHealthSpread, 0);
                             double cal = currentValue + (currentValue * randomSpreadValue);
                             int roundCal = (int) Math.round(cal);
                             maxHealthInstance.setBaseValue(roundCal);
@@ -82,18 +83,5 @@ public class EntityScalingRelated implements Listener {
             }
         }
     }
-
-    /*
-    @EventHandler
-    public void onFixPlayerTakeDamage(EntityDamageEvent e) {
-        if (isEnabled && isEnabledFixPlayerTakeDamageEvent) {
-            Entity entity = e.getEntity();
-            if (entity.getType() == EntityType.PLAYER) {
-                EntityDamageEvent.DamageCause damageCause = e.getCause();
-            }
-        }
-    }
-
-     */
 
 }

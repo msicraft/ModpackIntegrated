@@ -1,6 +1,6 @@
 package me.msicraft.modpackintegrated.CraftingEquip.Util;
 
-import me.msicraft.modpackintegrated.CraftingEquip.ExtractionInfo;
+import me.msicraft.modpackintegrated.CraftingEquip.Data.ExtractionInfo;
 import me.msicraft.modpackintegrated.KillPoint.KillPointUtil;
 import me.msicraft.modpackintegrated.Util.PlayerUtil;
 import org.bukkit.ChatColor;

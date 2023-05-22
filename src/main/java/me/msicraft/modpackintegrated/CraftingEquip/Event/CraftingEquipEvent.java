@@ -6,6 +6,7 @@ import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipStatUtil;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipUtil;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.DoppelgangerUtil;
 import me.msicraft.modpackintegrated.ModPackIntegrated;
+import me.msicraft.modpackintegrated.Util.MathUtil;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 import org.bukkit.*;
@@ -190,7 +191,7 @@ public class CraftingEquipEvent implements Listener {
                     Bukkit.getScheduler().runTask(ModPackIntegrated.getPlugin(), () -> {
                         world.spawn(location, Husk.class, husk -> {
                             husk.setCustomName(player.getName() + " 의 장비를 복제한 좀비");
-                            husk.setCustomNameVisible(true);
+                            husk.setCustomNameVisible(false);
                             husk.setCanPickupItems(false);
                             EntityEquipment entityEquipment = husk.getEquipment();
                             if (entityEquipment != null) {
@@ -215,8 +216,8 @@ public class CraftingEquipEvent implements Listener {
                             }
                             double baseMaxHealth = DoppelgangerUtil.getPlayerMaxHealth(player);
                             double baseDamage = DoppelgangerUtil.getPlayerExtraDamage(player);
-                            double randomHealthMultiple = CraftingEquipUtil.getRandomValueDouble(10.1, 0.5);
-                            double randomDamageMultiple = CraftingEquipUtil.getRandomValueDouble(3.6, 0.5);
+                            double randomHealthMultiple = MathUtil.getRandomValueDouble(10.1, 1.1);
+                            double randomDamageMultiple = MathUtil.getRandomValueDouble(5.1, 1.1);
                             double calHealth = baseMaxHealth + (baseMaxHealth * randomHealthMultiple);
                             double calDamage = baseDamage + (baseDamage * randomDamageMultiple);
                             DoppelgangerUtil.setMaxHealth(husk, calHealth);

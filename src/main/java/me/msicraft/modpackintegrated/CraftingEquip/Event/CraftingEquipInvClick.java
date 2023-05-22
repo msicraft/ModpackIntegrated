@@ -1,6 +1,6 @@
 package me.msicraft.modpackintegrated.CraftingEquip.Event;
 
-import me.msicraft.modpackintegrated.CraftingEquip.CraftingInfo;
+import me.msicraft.modpackintegrated.CraftingEquip.Data.CraftingInfo;
 import me.msicraft.modpackintegrated.CraftingEquip.Enum.EquipmentType;
 import me.msicraft.modpackintegrated.CraftingEquip.Inventory.CraftingEquipInv;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipUtil;

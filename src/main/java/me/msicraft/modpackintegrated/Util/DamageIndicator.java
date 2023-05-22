@@ -1,4 +1,4 @@
-package me.msicraft.modpackintegrated.CraftingEquip;
+package me.msicraft.modpackintegrated.Util;
 
 import me.msicraft.modpackintegrated.ModPackIntegrated;
 import org.bukkit.Bukkit;

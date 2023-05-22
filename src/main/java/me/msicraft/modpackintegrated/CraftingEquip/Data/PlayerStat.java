@@ -1,4 +1,4 @@
-package me.msicraft.modpackintegrated.CraftingEquip;
+package me.msicraft.modpackintegrated.CraftingEquip.Data;
 
 import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipStatUtil;
 import org.bukkit.entity.Player;

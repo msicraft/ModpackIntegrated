@@ -16,34 +16,33 @@ import java.util.List;
 public class EntityBlockBreakTask extends BukkitRunnable {
 
     private LivingEntity livingEntity;
-    private final double chance = 0.1;
+    private double chance;
 
-    public EntityBlockBreakTask(LivingEntity livingEntity) {
+    public EntityBlockBreakTask(LivingEntity livingEntity, double chance) {
         this.livingEntity = livingEntity;
+        this.chance = chance;
     }
 
-    private final List<Material> banBlockTypes = new ArrayList<>(Arrays.asList(Material.AIR, Material.BEDROCK, Material.OBSIDIAN));
+    private final List<Material> banBlockTypes = Arrays.asList(Material.AIR, Material.BEDROCK, Material.OBSIDIAN);
 
     @Override
     public void run() {
-        if (!livingEntity.isDead()) {
-            if (livingEntity.getHealth() > 0) {
-                if (Math.random() < chance) {
-                    if (EntityBlockBreakUtil.hasBlockBreakTag(livingEntity)) {
-                        boolean hasNearPlayer = false;
-                        for (Entity entity : livingEntity.getNearbyEntities(5,5,5)) {
-                            if (entity instanceof Player player) {
-                                hasNearPlayer = true;
-                                break;
-                            }
+        if (!livingEntity.isDead() && livingEntity.getHealth() > 0) {
+            if (Math.random() < chance) {
+                if (EntityBlockBreakUtil.hasBlockBreakTag(livingEntity)) {
+                    boolean hasNearPlayer = false;
+                    for (Entity entity : livingEntity.getNearbyEntities(6,5,6)) {
+                        if (entity instanceof Player) {
+                            hasNearPlayer = true;
+                            break;
                         }
-                        if (hasNearPlayer) {
-                            RayTraceResult rayTraceResult = livingEntity.rayTraceBlocks(4);
-                            if (rayTraceResult != null) {
-                                Block block = rayTraceResult.getHitBlock();
-                                if (block != null && !banBlockTypes.contains(block.getType())) {
-                                    block.breakNaturally();
-                                }
+                    }
+                    if (hasNearPlayer) {
+                        RayTraceResult rayTraceResult = livingEntity.rayTraceBlocks(4);
+                        if (rayTraceResult != null) {
+                            Block block = rayTraceResult.getHitBlock();
+                            if (block != null && !banBlockTypes.contains(block.getType())) {
+                                block.breakNaturally();
                             }
                         }
                     }

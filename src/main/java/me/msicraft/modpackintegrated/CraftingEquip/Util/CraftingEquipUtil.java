@@ -1,9 +1,10 @@
 package me.msicraft.modpackintegrated.CraftingEquip.Util;
 
-import me.msicraft.modpackintegrated.CraftingEquip.CraftingInfo;
+import me.msicraft.modpackintegrated.CraftingEquip.Data.CraftingInfo;
 import me.msicraft.modpackintegrated.CraftingEquip.Enum.EquipmentType;
 import me.msicraft.modpackintegrated.CraftingEquip.Enum.SpecialAbility;
 import me.msicraft.modpackintegrated.ModPackIntegrated;
+import me.msicraft.modpackintegrated.Util.MathUtil;
 import me.msicraft.modpackintegrated.Util.PlayerUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -124,15 +125,6 @@ public class CraftingEquipUtil {
 
     private static final Random random = new Random();
 
-    public static double getRandomValueDouble(double max, double min) {
-        double randomValue = (Math.random() * (max - min)) + min;
-        return (Math.floor(randomValue * 100) / 100.0);
-    }
-
-    public static int getRandomValueInt(int max, int min) {
-        return (int) ((Math.random() * (max - min) + 1) + min);
-    }
-
     public static SpecialAbility getRandomAbility() {
         int max = SpecialAbility.values().length;
         int rn = random.nextInt(max);
@@ -193,7 +185,7 @@ public class CraftingEquipUtil {
                 for (int a = 0; a<getDefense; a++) {
                     maxDefenseValue += getDefenseMaxAddRange();
                     minDefenseValue += getDefenseMinAddRange();
-                    int randomV = getRandomValueInt(100, 1);
+                    int randomV = MathUtil.getRandomValueInt(100, 1);
                     if (1<= randomV && randomV <= 50) {
                         minMaxHealthValue -= getMaxHealthMaxRemoveRange();
                         maxMaxHealthValue -= getMaxHealthMinRemoveRange();
@@ -208,7 +200,7 @@ public class CraftingEquipUtil {
                 for (int a = 0; a<getMaxHealth; a++) {
                     maxMaxHealthValue += getMaxHealthMaxAddRange();
                     minMaxHealthValue += getMaxHealthMinAddRange();
-                    int randomV = getRandomValueInt(100, 1);
+                    int randomV = MathUtil.getRandomValueInt(100, 1);
                     if (1<= randomV && randomV <= 50) {
                         minDefenseValue -= getDefenseMaxRemoveRange();
                         maxDefenseValue -= getDefenseMinRemoveRange();
@@ -341,50 +333,50 @@ public class CraftingEquipUtil {
                         }
                     }
                     for (int a = 0; a<getMelee; a++) {
-                        double randomMeleeV = getRandomValueDouble(getMeleeMaxAddRange(), getMeleeMinAddRange());
+                        double randomMeleeV = MathUtil.getRandomValueDouble(getMeleeMaxAddRange(), getMeleeMinAddRange());
                         meleeValue += randomMeleeV;
-                        double randomAttackSpeedV = getRandomValueDouble(getAttackSpeedMaxRemoveRange(), getAttackSpeedMinRemoveRange());
+                        double randomAttackSpeedV = MathUtil.getRandomValueDouble(getAttackSpeedMaxRemoveRange(), getAttackSpeedMinRemoveRange());
                         attackSpeedValue -= randomAttackSpeedV;
                     }
                     for (int a = 0; a<getProjectile; a++) {
-                        double randomProjectileV = getRandomValueDouble(getProjectileMaxAddRange(), getProjectileMinAddRange());
+                        double randomProjectileV = MathUtil.getRandomValueDouble(getProjectileMaxAddRange(), getProjectileMinAddRange());
                         projectileValue += randomProjectileV;
-                        double randomDefenseV = getRandomValueDouble(getDefenseMaxRemoveRange(), getDefenseMinRemoveRange());
+                        double randomDefenseV = MathUtil.getRandomValueDouble(getDefenseMaxRemoveRange(), getDefenseMinRemoveRange());
                         defenseValue -= randomDefenseV;
                     }
                     for (int a = 0; a<getAttackSpeed; a++) {
-                        double randomAttackSpeedV = getRandomValueDouble(getAttackSpeedMaxAddRange(), getAttackSpeedMinAddRange());
+                        double randomAttackSpeedV = MathUtil.getRandomValueDouble(getAttackSpeedMaxAddRange(), getAttackSpeedMinAddRange());
                         attackSpeedValue += randomAttackSpeedV;
-                        double randomMeleeV = getRandomValueDouble(getMeleeMaxRemoveRange(), getMeleeMinRemoveRange());
+                        double randomMeleeV = MathUtil.getRandomValueDouble(getMeleeMaxRemoveRange(), getMeleeMinRemoveRange());
                         meleeValue -= randomMeleeV;
                     }
                     for (int a = 0; a<getDefense; a++) {
-                        double randomDefenseV = getRandomValueDouble(getDefenseMaxAddRange(), getDefenseMinAddRange());
+                        double randomDefenseV = MathUtil.getRandomValueDouble(getDefenseMaxAddRange(), getDefenseMinAddRange());
                         defenseValue += randomDefenseV;
-                        int randomV = getRandomValueInt(100, 1);
+                        int randomV = MathUtil.getRandomValueInt(100, 1);
                         if (1<= randomV && randomV <= 50) {
-                            double randomMaxHealth = getRandomValueDouble(getMaxHealthMaxRemoveRange(), getMaxHealthMinRemoveRange());
+                            double randomMaxHealth = MathUtil.getRandomValueDouble(getMaxHealthMaxRemoveRange(), getMaxHealthMinRemoveRange());
                             maxHealthValue -= randomMaxHealth;
                         } else if (51<= randomV && randomV <= 75) {
-                            double randomMeleeV = getRandomValueDouble(getMeleeMaxRemoveRange(), getMeleeMinRemoveRange());
+                            double randomMeleeV = MathUtil.getRandomValueDouble(getMeleeMaxRemoveRange(), getMeleeMinRemoveRange());
                             meleeValue -= randomMeleeV;
                         } else {
-                            double randomProjectileV = getRandomValueDouble(getProjectileMaxRemoveRange(), getProjectileMinRemoveRange());
+                            double randomProjectileV = MathUtil.getRandomValueDouble(getProjectileMaxRemoveRange(), getProjectileMinRemoveRange());
                             projectileValue -= randomProjectileV;
                         }
                     }
                     for (int a = 0; a<getMaxHealth; a++) {
-                        double randomMaxHealthV = getRandomValueDouble(getMaxHealthMaxAddRange(), getMaxHealthMinAddRange());
+                        double randomMaxHealthV = MathUtil.getRandomValueDouble(getMaxHealthMaxAddRange(), getMaxHealthMinAddRange());
                         maxHealthValue += randomMaxHealthV;
-                        int randomV = getRandomValueInt(100, 1);
+                        int randomV = MathUtil.getRandomValueInt(100, 1);
                         if (1<= randomV && randomV <= 50) {
-                            double randomDefenseV = getRandomValueDouble(getDefenseMaxRemoveRange(), getDefenseMinRemoveRange());
+                            double randomDefenseV = MathUtil.getRandomValueDouble(getDefenseMaxRemoveRange(), getDefenseMinRemoveRange());
                             defenseValue -= randomDefenseV;
                         } else if (51<= randomV && randomV <= 75) {
-                            double randomMeleeV = getRandomValueDouble(getMeleeMaxRemoveRange(), getMeleeMinRemoveRange());
+                            double randomMeleeV = MathUtil.getRandomValueDouble(getMeleeMaxRemoveRange(), getMeleeMinRemoveRange());
                             meleeValue -= randomMeleeV;
                         } else {
-                            double randomProjectileV = getRandomValueDouble(getProjectileMaxRemoveRange(), getProjectileMinRemoveRange());
+                            double randomProjectileV = MathUtil.getRandomValueDouble(getProjectileMaxRemoveRange(), getProjectileMinRemoveRange());
                             projectileValue -= randomProjectileV;
                         }
                     }
@@ -516,7 +508,7 @@ public class CraftingEquipUtil {
                 lore.add(ChatColor.GRAY + "특수 능력: " + ChatColor.RED + "X");
             }
             for (int a = 0; a<remainingKillPoint; a++) {
-                int randomV = getRandomValueInt(100, 1);
+                int randomV = MathUtil.getRandomValueInt(100, 1);
                 if (1 <= randomV && randomV <= 20) {
                     melee = melee + 1;
                 } else if (21 <= randomV && randomV <= 40) {
@@ -530,50 +522,50 @@ public class CraftingEquipUtil {
                 }
             }
             for (int a = 0; a<melee; a++) {
-                double randomMeleeV = getRandomValueDouble(getMeleeMaxAddRange(), getMeleeMinAddRange());
+                double randomMeleeV = MathUtil.getRandomValueDouble(getMeleeMaxAddRange(), getMeleeMinAddRange());
                 meleeValue += randomMeleeV;
-                double randomAttackSpeedV = getRandomValueDouble(getAttackSpeedMaxRemoveRange(), getAttackSpeedMinRemoveRange());
+                double randomAttackSpeedV = MathUtil.getRandomValueDouble(getAttackSpeedMaxRemoveRange(), getAttackSpeedMinRemoveRange());
                 attackSpeedValue -= randomAttackSpeedV;
             }
             for (int a = 0; a<projectile; a++) {
-                double randomProjectileV = getRandomValueDouble(getProjectileMaxAddRange(), getProjectileMinAddRange());
+                double randomProjectileV = MathUtil.getRandomValueDouble(getProjectileMaxAddRange(), getProjectileMinAddRange());
                 projectileValue += randomProjectileV;
-                double randomDefenseV = getRandomValueDouble(getDefenseMaxRemoveRange(), getDefenseMinRemoveRange());
+                double randomDefenseV = MathUtil.getRandomValueDouble(getDefenseMaxRemoveRange(), getDefenseMinRemoveRange());
                 defenseValue -= randomDefenseV;
             }
             for (int a = 0; a<attackSpeed; a++) {
-                double randomAttackSpeedV = getRandomValueDouble(getAttackSpeedMaxAddRange(), getAttackSpeedMinAddRange());
+                double randomAttackSpeedV = MathUtil.getRandomValueDouble(getAttackSpeedMaxAddRange(), getAttackSpeedMinAddRange());
                 attackSpeedValue += randomAttackSpeedV;
-                double randomMeleeV = getRandomValueDouble(getMeleeMaxRemoveRange(), getMeleeMinRemoveRange());
+                double randomMeleeV = MathUtil.getRandomValueDouble(getMeleeMaxRemoveRange(), getMeleeMinRemoveRange());
                 meleeValue -= randomMeleeV;
             }
             for (int a = 0; a<defense; a++) {
-                double randomDefenseV = getRandomValueDouble(getDefenseMaxAddRange(), getDefenseMinAddRange());
+                double randomDefenseV = MathUtil.getRandomValueDouble(getDefenseMaxAddRange(), getDefenseMinAddRange());
                 defenseValue += randomDefenseV;
-                int randomV = getRandomValueInt(100, 1);
+                int randomV = MathUtil.getRandomValueInt(100, 1);
                 if (1<= randomV && randomV <= 50) {
-                    double randomMaxHealth = getRandomValueDouble(getMaxHealthMaxRemoveRange(), getMaxHealthMinRemoveRange());
+                    double randomMaxHealth = MathUtil.getRandomValueDouble(getMaxHealthMaxRemoveRange(), getMaxHealthMinRemoveRange());
                     maxHealthValue -= randomMaxHealth;
                 } else if (51<= randomV && randomV <= 75) {
-                    double randomMeleeV = getRandomValueDouble(getMeleeMaxRemoveRange(), getMeleeMinRemoveRange());
+                    double randomMeleeV = MathUtil.getRandomValueDouble(getMeleeMaxRemoveRange(), getMeleeMinRemoveRange());
                     meleeValue -= randomMeleeV;
                 } else {
-                    double randomProjectileV = getRandomValueDouble(getProjectileMaxRemoveRange(), getProjectileMinRemoveRange());
+                    double randomProjectileV = MathUtil.getRandomValueDouble(getProjectileMaxRemoveRange(), getProjectileMinRemoveRange());
                     projectileValue -= randomProjectileV;
                 }
             }
             for (int a = 0; a<health; a++) {
-                double randomMaxHealthV = getRandomValueDouble(getMaxHealthMaxAddRange(), getMaxHealthMinAddRange());
+                double randomMaxHealthV = MathUtil.getRandomValueDouble(getMaxHealthMaxAddRange(), getMaxHealthMinAddRange());
                 maxHealthValue += randomMaxHealthV;
-                int randomV = getRandomValueInt(100, 1);
+                int randomV = MathUtil.getRandomValueInt(100, 1);
                 if (1<= randomV && randomV <= 50) {
-                    double randomDefenseV = getRandomValueDouble(getDefenseMaxRemoveRange(), getDefenseMinRemoveRange());
+                    double randomDefenseV = MathUtil.getRandomValueDouble(getDefenseMaxRemoveRange(), getDefenseMinRemoveRange());
                     defenseValue -= randomDefenseV;
                 } else if (51<= randomV && randomV <= 75) {
-                    double randomMeleeV = getRandomValueDouble(getMeleeMaxRemoveRange(), getMeleeMinRemoveRange());
+                    double randomMeleeV = MathUtil.getRandomValueDouble(getMeleeMaxRemoveRange(), getMeleeMinRemoveRange());
                     meleeValue -= randomMeleeV;
                 } else {
-                    double randomProjectileV = getRandomValueDouble(getProjectileMaxRemoveRange(), getProjectileMinRemoveRange());
+                    double randomProjectileV = MathUtil.getRandomValueDouble(getProjectileMaxRemoveRange(), getProjectileMinRemoveRange());
                     projectileValue -= randomProjectileV;
                 }
             }
@@ -630,7 +622,7 @@ public class CraftingEquipUtil {
 
     private static ItemStack getRandomWeapon() {
         ItemStack itemStack;
-        int randomV = getRandomValueInt(100, 1);
+        int randomV = MathUtil.getRandomValueInt(100, 1);
         if (1 <= randomV && randomV <= 5) {
             itemStack = new ItemStack(Material.NETHERITE_SWORD);
         } else if (6 <= randomV && randomV <= 20) {
@@ -651,23 +643,23 @@ public class CraftingEquipUtil {
             switch (material) {
                 case NETHERITE_SWORD -> {
                     itemMeta.setDisplayName(ChatColor.AQUA + "제작된 네더라이트 검");
-                    percent = getRandomValueDouble(1, 0.8);
+                    percent = MathUtil.getRandomValueDouble(1, 0.8);
                 }
                 case DIAMOND_SWORD -> {
                     itemMeta.setDisplayName(ChatColor.AQUA + "제작된 다이아몬드 검");
-                    percent = getRandomValueDouble(1, 0.6);
+                    percent = MathUtil.getRandomValueDouble(1, 0.6);
                 }
                 case IRON_SWORD -> {
                     itemMeta.setDisplayName(ChatColor.AQUA + "제작된 철 검");
-                    percent = getRandomValueDouble(1, 0.4);
+                    percent = MathUtil.getRandomValueDouble(1, 0.4);
                 }
                 case STONE_SWORD -> {
                     itemMeta.setDisplayName(ChatColor.AQUA + "제작된 돌 검");
-                    percent = getRandomValueDouble(1, 0.2);
+                    percent = MathUtil.getRandomValueDouble(1, 0.2);
                 }
                 case WOODEN_SWORD -> {
                     itemMeta.setDisplayName(ChatColor.AQUA + "제작된 나무 검");
-                    percent = getRandomValueDouble(1, 0.1);
+                    percent = MathUtil.getRandomValueDouble(1, 0.1);
                 }
             }
             int availableKP = (int) (maxKillPoint * percent);
@@ -681,7 +673,7 @@ public class CraftingEquipUtil {
         ItemStack itemStack;
         ItemMeta itemMeta;
         int armorType = random.nextInt(4); // 0 = helmet, 1 = chestplate, 2 = leggings, 3 = boots; //leather, iron, diamond, netherite
-        int randomV = getRandomValueInt(100, 1);
+        int randomV = MathUtil.getRandomValueInt(100, 1);
         int maxKillPoint = maxAvailableKillPoint;
         double percent = 0;
         if (armorType == 0) {
@@ -691,28 +683,28 @@ public class CraftingEquipUtil {
                 if (itemMeta != null) {
                     itemMeta.setDisplayName(ChatColor.AQUA + "제작된 가죽 모자");
                 }
-                percent = getRandomValueDouble(1, 0.1);
+                percent = MathUtil.getRandomValueDouble(1, 0.1);
             } else if (31 <= randomV && randomV <= 80) {
                 itemStack = new ItemStack(Material.IRON_HELMET);
                 itemMeta = itemStack.getItemMeta();
                 if (itemMeta != null) {
                     itemMeta.setDisplayName(ChatColor.AQUA + "제작된 철 모자");
                 }
-                percent = getRandomValueDouble(1, 0.3);
+                percent = MathUtil.getRandomValueDouble(1, 0.3);
             } else if (81 <= randomV && randomV <= 95) {
                 itemStack = new ItemStack(Material.DIAMOND_HELMET);
                 itemMeta = itemStack.getItemMeta();
                 if (itemMeta != null) {
                     itemMeta.setDisplayName(ChatColor.AQUA + "제작된 다이아몬드 모자");
                 }
-                percent = getRandomValueDouble(1, 0.5);
+                percent = MathUtil.getRandomValueDouble(1, 0.5);
             } else {
                 itemStack = new ItemStack(Material.NETHERITE_HELMET);
                 itemMeta = itemStack.getItemMeta();
                 if (itemMeta != null) {
                     itemMeta.setDisplayName(ChatColor.AQUA + "제작된 네더라이트 모자");
                 }
-                percent = getRandomValueDouble(1, 0.7);
+                percent = MathUtil.getRandomValueDouble(1, 0.7);
             }
         } else if (armorType == 1) {
             if (1 <= randomV && randomV <= 30) {
@@ -721,28 +713,28 @@ public class CraftingEquipUtil {
                 if (itemMeta != null) {
                     itemMeta.setDisplayName(ChatColor.AQUA + "제작된 가죽 갑옷");
                 }
-                percent = getRandomValueDouble(1, 0.1);
+                percent = MathUtil.getRandomValueDouble(1, 0.1);
             } else if (31 <= randomV && randomV <= 80) {
                 itemStack = new ItemStack(Material.IRON_CHESTPLATE);
                 itemMeta = itemStack.getItemMeta();
                 if (itemMeta != null) {
                     itemMeta.setDisplayName(ChatColor.AQUA + "제작된 철 갑옷");
                 }
-                percent = getRandomValueDouble(1, 0.3);
+                percent = MathUtil.getRandomValueDouble(1, 0.3);
             } else if (81 <= randomV && randomV <= 95) {
                 itemStack = new ItemStack(Material.DIAMOND_CHESTPLATE);
                 itemMeta = itemStack.getItemMeta();
                 if (itemMeta != null) {
                     itemMeta.setDisplayName(ChatColor.AQUA + "제작된 다이아몬드 갑옷");
                 }
-                percent = getRandomValueDouble(1, 0.5);
+                percent = MathUtil.getRandomValueDouble(1, 0.5);
             } else {
                 itemStack = new ItemStack(Material.NETHERITE_CHESTPLATE);
                 itemMeta = itemStack.getItemMeta();
                 if (itemMeta != null) {
                     itemMeta.setDisplayName(ChatColor.AQUA + "제작된 네더라이트 갑옷");
                 }
-                percent = getRandomValueDouble(1, 0.7);
+                percent = MathUtil.getRandomValueDouble(1, 0.7);
             }
         } else if (armorType == 2) {
             if (1 <= randomV && randomV <= 30) {
@@ -751,28 +743,28 @@ public class CraftingEquipUtil {
                 if (itemMeta != null) {
                     itemMeta.setDisplayName(ChatColor.AQUA + "제작된 가죽 바지");
                 }
-                percent = getRandomValueDouble(1, 0.1);
+                percent = MathUtil.getRandomValueDouble(1, 0.1);
             } else if (31 <= randomV && randomV <= 80) {
                 itemStack = new ItemStack(Material.IRON_LEGGINGS);
                 itemMeta = itemStack.getItemMeta();
                 if (itemMeta != null) {
                     itemMeta.setDisplayName(ChatColor.AQUA + "제작된 철 바지");
                 }
-                percent = getRandomValueDouble(1, 0.3);
+                percent = MathUtil.getRandomValueDouble(1, 0.3);
             } else if (81 <= randomV && randomV <= 95) {
                 itemStack = new ItemStack(Material.DIAMOND_LEGGINGS);
                 itemMeta = itemStack.getItemMeta();
                 if (itemMeta != null) {
                     itemMeta.setDisplayName(ChatColor.AQUA + "제작된 다이아몬드 바지");
                 }
-                percent = getRandomValueDouble(1, 0.5);
+                percent = MathUtil.getRandomValueDouble(1, 0.5);
             } else {
                 itemStack = new ItemStack(Material.NETHERITE_LEGGINGS);
                 itemMeta = itemStack.getItemMeta();
                 if (itemMeta != null) {
                     itemMeta.setDisplayName(ChatColor.AQUA + "제작된 네더라이트 바지");
                 }
-                percent = getRandomValueDouble(1, 0.7);
+                percent = MathUtil.getRandomValueDouble(1, 0.7);
             }
         } else {
             if (1 <= randomV && randomV <= 30) {
@@ -781,28 +773,28 @@ public class CraftingEquipUtil {
                 if (itemMeta != null) {
                     itemMeta.setDisplayName(ChatColor.AQUA + "제작된 가죽 신발");
                 }
-                percent = getRandomValueDouble(1, 0.1);
+                percent = MathUtil.getRandomValueDouble(1, 0.1);
             } else if (31 <= randomV && randomV <= 80) {
                 itemStack = new ItemStack(Material.IRON_BOOTS);
                 itemMeta = itemStack.getItemMeta();
                 if (itemMeta != null) {
                     itemMeta.setDisplayName(ChatColor.AQUA + "제작된 철 신발");
                 }
-                percent = getRandomValueDouble(1, 0.3);
+                percent = MathUtil.getRandomValueDouble(1, 0.3);
             } else if (81 <= randomV && randomV <= 95) {
                 itemStack = new ItemStack(Material.DIAMOND_BOOTS);
                 itemMeta = itemStack.getItemMeta();
                 if (itemMeta != null) {
                     itemMeta.setDisplayName(ChatColor.AQUA + "제작된 다이아몬드 신발");
                 }
-                percent = getRandomValueDouble(1, 0.5);
+                percent = MathUtil.getRandomValueDouble(1, 0.5);
             } else {
                 itemStack = new ItemStack(Material.NETHERITE_BOOTS);
                 itemMeta = itemStack.getItemMeta();
                 if (itemMeta != null) {
                     itemMeta.setDisplayName(ChatColor.AQUA + "제작된 네더라이트신발");
                 }
-                percent = getRandomValueDouble(1, 0.7);
+                percent = MathUtil.getRandomValueDouble(1, 0.7);
             }
         }
         if (itemMeta != null) {

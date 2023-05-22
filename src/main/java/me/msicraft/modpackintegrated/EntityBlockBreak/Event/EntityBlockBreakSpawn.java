@@ -3,6 +3,7 @@ package me.msicraft.modpackintegrated.EntityBlockBreak.Event;
 import me.msicraft.modpackintegrated.EntityBlockBreak.EntityBlockBreakUtil;
 import me.msicraft.modpackintegrated.EntityBlockBreak.Task.EntityBlockBreakTask;
 import me.msicraft.modpackintegrated.ModPackIntegrated;
+import me.msicraft.modpackintegrated.Util.MathUtil;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -21,7 +22,8 @@ public class EntityBlockBreakSpawn implements Listener {
             LivingEntity livingEntity = e.getEntity();
             EntityBlockBreakUtil.applyBlockBreakTag(livingEntity);
             int r = random.nextInt(51);
-            new EntityBlockBreakTask(livingEntity).runTaskTimer(ModPackIntegrated.getPlugin(), 20L, (100 + r));
+            double randomC = MathUtil.getRandomValueDouble(0.6, 0);
+            new EntityBlockBreakTask(livingEntity, randomC).runTaskTimer(ModPackIntegrated.getPlugin(), 20L, (60 + r));
         }
     }
 

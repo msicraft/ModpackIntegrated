@@ -1,6 +1,6 @@
 package me.msicraft.modpackintegrated.CraftingEquip.Inventory;
 
-import me.msicraft.modpackintegrated.CraftingEquip.CraftingInfo;
+import me.msicraft.modpackintegrated.CraftingEquip.Data.CraftingInfo;
 import me.msicraft.modpackintegrated.CraftingEquip.Event.CraftingEquipEvent;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipUtil;
 import me.msicraft.modpackintegrated.KillPoint.KillPointUtil;

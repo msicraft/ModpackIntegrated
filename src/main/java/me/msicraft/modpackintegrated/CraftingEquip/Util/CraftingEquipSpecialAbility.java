@@ -1,8 +1,8 @@
 package me.msicraft.modpackintegrated.CraftingEquip.Util;
 
-import me.msicraft.modpackintegrated.CraftingEquip.DamageIndicator;
 import me.msicraft.modpackintegrated.CraftingEquip.Enum.SpecialAbility;
 import me.msicraft.modpackintegrated.ModPackIntegrated;
+import me.msicraft.modpackintegrated.Util.DamageIndicator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
