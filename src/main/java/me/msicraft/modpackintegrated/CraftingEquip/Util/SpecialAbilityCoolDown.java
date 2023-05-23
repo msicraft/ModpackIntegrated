@@ -36,8 +36,8 @@ public class SpecialAbilityCoolDown {
     public static final double addDamageRange_30 = 1;
     public static final double gamblingDamage_50_30 = 1;
     public static final double gamblingDamage_50_50 = 1;
-    public static final double lottoIncreaseDamageOrHalfHealth_10_15 = 1;
-    public static final double lottoIncreaseDamageOrHalfHealth_15_30 = 1;
+    public static final double lottoIncreaseDamageOrHalfHealth_5_15 = 1;
+    public static final double lottoIncreaseDamageOrHalfHealth_10_35 = 1;
     public static final double extraDamageTargetMaxHealth_2 = 2;
     public static final double extraDamageTargetMaxHealth_4 = 2;
     public static final double extraDamageTargetCurrentHealth_5 = 2;

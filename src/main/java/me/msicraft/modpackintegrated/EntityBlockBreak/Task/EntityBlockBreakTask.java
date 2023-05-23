@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

@@ -16,9 +16,11 @@ import me.msicraft.modpackintegrated.KillPoint.Event.PlayerKillEntityEvent;
 import me.msicraft.modpackintegrated.KillPoint.KillPointUtil;
 import me.msicraft.modpackintegrated.MainMenu.Event.MainMenuEvent;
 import me.msicraft.modpackintegrated.MainMenu.KillPointShop.Skill.KillPointShopSkill;
+import me.msicraft.modpackintegrated.Util.WorldUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -83,13 +85,16 @@ public final class ModPackIntegrated extends JavaPlugin {
             public void run() {
                 for (Player player : getServer().getOnlinePlayers()) {
                     if (player.isOnline()) {
-                        String worldName = player.getWorld().getName();
+                        World world = player.getWorld();
+                        String worldName = world.getName();
                         if (worldName.equals("DIM-1")) {
                             worldName = "Nether";
                         } else if (worldName.equals("DIM1")) {
                             worldName = "End";
                         }
-                        player.setPlayerListName(ChatColor.WHITE + player.getName() + " (" + ChatColor.AQUA + worldName + ChatColor.WHITE + ")");
+                        player.setPlayerListName(ChatColor.WHITE + player.getName() +
+                                " (" + ChatColor.AQUA + worldName + "|" + WorldUtil.getWorldTimeTo24Format(world.getTime()) +
+                                ChatColor.WHITE + ")");
                     }
                 }
             }

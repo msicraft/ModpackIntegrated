@@ -23,7 +23,7 @@ public class EntityBlockBreakSpawn implements Listener {
             EntityBlockBreakUtil.applyBlockBreakTag(livingEntity);
             int r = random.nextInt(51);
             double randomC = MathUtil.getRandomValueDouble(0.6, 0);
-            new EntityBlockBreakTask(livingEntity, randomC).runTaskTimer(ModPackIntegrated.getPlugin(), 20L, (60 + r));
+            new EntityBlockBreakTask(livingEntity, randomC).runTaskTimer(ModPackIntegrated.getPlugin(), 20L, (50 + r));
         }
     }
 

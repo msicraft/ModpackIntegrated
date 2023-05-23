@@ -13,4 +13,10 @@ public class WorldUtil {
         world.setGameRule(GameRule.COMMAND_BLOCK_OUTPUT, false);
     }
 
+    public static String getWorldTimeTo24Format(long gameTime) {
+        long hours = gameTime / 1000 + 6;
+        long minutes = (gameTime % 1000) * 60 / 1000;
+        return hours + ":" + minutes;
+    }
+
 }

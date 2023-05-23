@@ -44,7 +44,7 @@ public class PlayerJoinAndQuit implements Listener {
         BukkitTask timerTask = new PlayerTimerTask(player).runTaskTimer(ModPackIntegrated.getPlugin(), 20L, 100L);
         PlayerRelated.addActiveTasks(player, timerTask.getTaskId());
         if (ModPackIntegrated.isDebugEnabled) {
-            Bukkit.getConsoleSender().sendMessage("타이어 스케쥴러 등록: " + player.getName() + " | TaskId: " + timerTask.getTaskId());
+            Bukkit.getConsoleSender().sendMessage("타이머 스케쥴러 등록: " + player.getName() + " | TaskId: " + timerTask.getTaskId());
         }
     }
 

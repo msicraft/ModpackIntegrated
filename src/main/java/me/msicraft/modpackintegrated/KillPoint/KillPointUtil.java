@@ -4,6 +4,7 @@ import me.msicraft.modpackintegrated.Event.PlayerRelated;
 import me.msicraft.modpackintegrated.KillPoint.Task.KillPointTask;
 import me.msicraft.modpackintegrated.ModPackIntegrated;
 import me.msicraft.modpackintegrated.PlayerData.File.PlayerDataFile;
+import me.msicraft.modpackintegrated.Util.MathUtil;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 import org.bukkit.Bukkit;
@@ -147,11 +148,6 @@ public class KillPointUtil {
         killPointExpMap.put(player.getUniqueId(), value);
     }
 
-    public static double getRandomValue(double max, double min) {
-        double randomValue = (Math.random() * (max - min)) + min;
-        return (Math.floor(randomValue * 1000) / 1000.0);
-    }
-
     public static double getToEntityKillPointExp(double health, double damage, double armor, double armorToughness) {
         double exp = 0;
         if (killPointExpEquations != null && expression != null) {
@@ -175,7 +171,7 @@ public class KillPointUtil {
             if (min < 0) {
                 min = 0;
             }
-            double randomExp = getRandomValue(max, min);
+            double randomExp = MathUtil.getRandomValueDouble(max, min);
             if (randomExp >= perEntity_MaxExpValue) {
                 randomExp = perEntity_MaxExpValue;
             }

@@ -53,8 +53,8 @@ public class CraftingEquipEvent implements Listener {
         }
     }
 
-    private static final List<SpecialAbility> lowPriorityAbilities = new ArrayList<>(Arrays.asList(SpecialAbility.doubleDamage_5, SpecialAbility.doubleDamage_10,
-            SpecialAbility.doubleDamage_15, SpecialAbility.lifeDrain_5_25, SpecialAbility.lifeDrain_5_50, SpecialAbility.lifeDrain_10_25, SpecialAbility.lifeDrain_10_50));
+    private static final List<SpecialAbility> lowPriorityAbilities = Arrays.asList(SpecialAbility.doubleDamage_5, SpecialAbility.doubleDamage_10,
+            SpecialAbility.doubleDamage_15, SpecialAbility.lifeDrain_5_25, SpecialAbility.lifeDrain_5_50, SpecialAbility.lifeDrain_10_25, SpecialAbility.lifeDrain_10_50);
 
     @EventHandler
     public void onPlayerMeleeAttack(EntityDamageByEntityEvent e) {
@@ -188,44 +188,42 @@ public class CraftingEquipEvent implements Listener {
                     ItemStack boots = player.getInventory().getBoots();
                     ItemStack hand = player.getInventory().getItemInMainHand();
                     ItemStack offHand = player.getInventory().getItemInOffHand();
-                    Bukkit.getScheduler().runTask(ModPackIntegrated.getPlugin(), () -> {
-                        world.spawn(location, Husk.class, husk -> {
-                            husk.setCustomName(player.getName() + " 의 장비를 복제한 좀비");
-                            husk.setCustomNameVisible(false);
-                            husk.setCanPickupItems(false);
-                            EntityEquipment entityEquipment = husk.getEquipment();
-                            if (entityEquipment != null) {
-                                if (helmet != null && helmet.getType() != Material.AIR) {
-                                    entityEquipment.setHelmet(new ItemStack(helmet));
-                                }
-                                if (chest != null && chest.getType() != Material.AIR) {
-                                    entityEquipment.setChestplate(new ItemStack(chest));
-                                }
-                                if (leggings != null && leggings.getType() != Material.AIR) {
-                                    entityEquipment.setLeggings(new ItemStack(leggings));
-                                }
-                                if (boots != null && boots.getType() != Material.AIR) {
-                                    entityEquipment.setBoots(new ItemStack(boots));
-                                }
-                                if (hand != null && hand.getType() != Material.AIR) {
-                                    entityEquipment.setItemInMainHand(new ItemStack(hand));
-                                }
-                                if (offHand != null && offHand.getType() != Material.AIR) {
-                                    entityEquipment.setItemInOffHand(new ItemStack(offHand));
-                                }
+                    Bukkit.getScheduler().runTask(ModPackIntegrated.getPlugin(), () -> world.spawn(location, Husk.class, husk -> {
+                        husk.setCustomName(player.getName() + " 의 장비를 복제한 좀비");
+                        husk.setCustomNameVisible(false);
+                        husk.setCanPickupItems(false);
+                        EntityEquipment entityEquipment = husk.getEquipment();
+                        if (entityEquipment != null) {
+                            if (helmet != null && helmet.getType() != Material.AIR) {
+                                entityEquipment.setHelmet(new ItemStack(helmet));
                             }
-                            double baseMaxHealth = DoppelgangerUtil.getPlayerMaxHealth(player);
-                            double baseDamage = DoppelgangerUtil.getPlayerExtraDamage(player);
-                            double randomHealthMultiple = MathUtil.getRandomValueDouble(10.1, 1.1);
-                            double randomDamageMultiple = MathUtil.getRandomValueDouble(5.1, 1.1);
-                            double calHealth = baseMaxHealth + (baseMaxHealth * randomHealthMultiple);
-                            double calDamage = baseDamage + (baseDamage * randomDamageMultiple);
-                            DoppelgangerUtil.setMaxHealth(husk, calHealth);
-                            DoppelgangerUtil.setBaseDamage(husk, calDamage);
-                            PersistentDataContainer data = husk.getPersistentDataContainer();
-                            data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-Doppelganger"), PersistentDataType.STRING, husk.getUniqueId().toString());
-                        });
-                    });
+                            if (chest != null && chest.getType() != Material.AIR) {
+                                entityEquipment.setChestplate(new ItemStack(chest));
+                            }
+                            if (leggings != null && leggings.getType() != Material.AIR) {
+                                entityEquipment.setLeggings(new ItemStack(leggings));
+                            }
+                            if (boots != null && boots.getType() != Material.AIR) {
+                                entityEquipment.setBoots(new ItemStack(boots));
+                            }
+                            if (hand != null && hand.getType() != Material.AIR) {
+                                entityEquipment.setItemInMainHand(new ItemStack(hand));
+                            }
+                            if (offHand != null && offHand.getType() != Material.AIR) {
+                                entityEquipment.setItemInOffHand(new ItemStack(offHand));
+                            }
+                        }
+                        double baseMaxHealth = DoppelgangerUtil.getPlayerMaxHealth(player);
+                        double baseDamage = DoppelgangerUtil.getPlayerExtraDamage(player);
+                        double randomHealthMultiple = MathUtil.getRandomValueDouble(10.1, 1.1);
+                        double randomDamageMultiple = MathUtil.getRandomValueDouble(5.1, 1.1);
+                        double calHealth = baseMaxHealth + (baseMaxHealth * randomHealthMultiple);
+                        double calDamage = baseDamage + (baseDamage * randomDamageMultiple);
+                        DoppelgangerUtil.setMaxHealth(husk, calHealth);
+                        DoppelgangerUtil.setBaseDamage(husk, calDamage);
+                        PersistentDataContainer data = husk.getPersistentDataContainer();
+                        data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-Doppelganger"), PersistentDataType.STRING, husk.getUniqueId().toString());
+                    }));
                 }
             }
         }

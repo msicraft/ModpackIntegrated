@@ -17,7 +17,7 @@ public enum SpecialAbility {
     ,addDamageRange_15,addDamageRange_30
     ,increaseMaxHealth_5,increaseMaxHealth_10
     ,gamblingDamage_50_30,gamblingDamage_50_50
-    ,lottoIncreaseDamageOrHalfHealth_10_15,lottoIncreaseDamageOrHalfHealth_15_30
+    ,lottoIncreaseDamageOrHalfHealth_5_15,lottoIncreaseDamageOrHalfHealth_10_35
     ,extraDamageTargetMaxHealth_2,extraDamageTargetMaxHealth_4
     ,extraDamageTargetCurrentHealth_5,extraDamageTargetCurrentHealth_10
 }
