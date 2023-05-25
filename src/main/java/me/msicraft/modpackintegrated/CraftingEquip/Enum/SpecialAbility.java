@@ -20,4 +20,5 @@ public enum SpecialAbility {
     ,lottoIncreaseDamageOrHalfHealth_5_15,lottoIncreaseDamageOrHalfHealth_10_35
     ,extraDamageTargetMaxHealth_2,extraDamageTargetMaxHealth_4
     ,extraDamageTargetCurrentHealth_5,extraDamageTargetCurrentHealth_10
+    ,increaseMaxHealthAndDecreaseDamage_20_25,increaseMaxHealthAndDecreaseDamage_25_30
 }

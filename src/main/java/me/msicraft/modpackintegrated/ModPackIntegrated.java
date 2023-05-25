@@ -93,7 +93,7 @@ public final class ModPackIntegrated extends JavaPlugin {
                             worldName = "End";
                         }
                         player.setPlayerListName(ChatColor.WHITE + player.getName() +
-                                " (" + ChatColor.AQUA + worldName + "|" + WorldUtil.getWorldTimeTo24Format(world.getTime()) +
+                                " (" + ChatColor.AQUA + worldName + " | " + WorldUtil.getWorldTimeTo24Format(world.getTime()) +
                                 ChatColor.WHITE + ")");
                     }
                 }

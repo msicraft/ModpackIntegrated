@@ -18,6 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -83,6 +84,10 @@ public class MainMenuEvent implements Listener {
                             case "ExtractionCraftingEquipment" -> {
                                 player.openInventory(mainMenuInv.getInventory());
                                 mainMenuInv.setExtractInv(player);
+                            }
+                            case "PersonalOption" -> {
+                                player.openInventory(mainMenuInv.getInventory());
+                                mainMenuInv.setPersonalOption(player);
                             }
                         }
                     }
@@ -231,6 +236,26 @@ public class MainMenuEvent implements Listener {
                             }
                         }
                     }
+                } else if (data.has(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI_PersonalOption"), PersistentDataType.STRING)) {
+                    String var = data.get(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI_PersonalOption"), PersistentDataType.STRING);
+                    if (var != null) {
+                        PlayerDataFile dataFile = new PlayerDataFile(player);
+                        switch (var) {
+                            case "MenuQuickOpen" -> {
+                                boolean quickOpen = dataFile.getConfig().contains("Option.MenuQuickOpen") && dataFile.getConfig().getBoolean("Option.MenuQuickOpen");
+                                if (e.isLeftClick()) {
+                                    if (quickOpen) {
+                                        dataFile.getConfig().set("Option.MenuQuickOpen", false);
+                                    } else {
+                                        dataFile.getConfig().set("Option.MenuQuickOpen", true);
+                                    }
+                                    dataFile.saveConfig();
+                                }
+                                player.openInventory(mainMenuInv.getInventory());
+                                mainMenuInv.setPersonalOption(player);
+                            }
+                        }
+                    }
                 }
             }
             ItemStack exportButton = e.getInventory().getItem(31);
@@ -291,6 +316,21 @@ public class MainMenuEvent implements Listener {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    @EventHandler
+    public void quickMenuOpen(PlayerSwapHandItemsEvent e) {
+        Player player = e.getPlayer();
+        PlayerDataFile dataFile = new PlayerDataFile(player);
+        boolean quickOpen = dataFile.getConfig().contains("Option.MenuQuickOpen") && dataFile.getConfig().getBoolean("Option.MenuQuickOpen");
+        if (quickOpen) {
+            if (player.isSneaking()) {
+                e.setCancelled(true);
+                MainMenuInv mainMenuInv = new MainMenuInv(player);
+                player.openInventory(mainMenuInv.getInventory());
+                mainMenuInv.setMainMenuInv(player);
             }
         }
     }

@@ -22,7 +22,7 @@ public class CraftingEquipSpecialAbility {
     private enum abilityEnum {
         none,doubleDamage, lifeDrain,extraDamage,extraDamagePlayerBaseHealth,extraDamageToDay,extraDamageToNight,extraDamageFullHealth
         ,increaseTakeDamageAndExtraDamage,takePlayerBaseHealthDamageAndExtraDamage,takeDamageConvertHealth,heal,addDamageRange,gamblingDamage
-        ,lottoIncreaseDamageOrHalfHealth,extraDamageTargetMaxHealth,extraDamageTargetCurrentHealth
+        ,lottoIncreaseDamageOrHalfHealth,extraDamageTargetMaxHealth,extraDamageTargetCurrentHealth,increaseMaxHealthAndDecreaseDamage
     }
 
     private static final Map<UUID, Map<SpecialAbility, Long>> abilityCoolDown = new HashMap<>();
@@ -255,6 +255,16 @@ public class CraftingEquipSpecialAbility {
                 cal = cal + SpecialAbilityUtil.getBaseCurrentHealth(entity, 0.1);
                 abilityEnum = CraftingEquipSpecialAbility.abilityEnum.extraDamageTargetCurrentHealth;
                 coolDown = SpecialAbilityCoolDown.extraDamageTargetCurrentHealth_10;
+            }
+            case increaseMaxHealthAndDecreaseDamage_20_25 -> {
+                cal = cal - (cal * 0.25);
+                abilityEnum = CraftingEquipSpecialAbility.abilityEnum.increaseMaxHealthAndDecreaseDamage;
+                coolDown = SpecialAbilityCoolDown.increaseMaxHealthAndDecreaseDamage_20_20;
+            }
+            case increaseMaxHealthAndDecreaseDamage_25_30 -> {
+                cal = cal - (cal * 0.3);
+                abilityEnum = CraftingEquipSpecialAbility.abilityEnum.increaseMaxHealthAndDecreaseDamage;
+                coolDown = SpecialAbilityCoolDown.increaseMaxHealthAndDecreaseDamage_25_25;
             }
         }
         if (abilityEnum == CraftingEquipSpecialAbility.abilityEnum.none) {

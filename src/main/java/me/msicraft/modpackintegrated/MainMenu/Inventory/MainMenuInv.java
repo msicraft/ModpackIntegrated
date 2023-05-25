@@ -98,6 +98,24 @@ public class MainMenuInv implements InventoryHolder {
         mainMenuInv.setItem(19, itemStack);
         itemStack = createNormalItem(Material.SMITHING_TABLE, ChatColor.WHITE + "제작 장비 킬 포인트 추출", list, mainTag, "ExtractionCraftingEquipment");
         mainMenuInv.setItem(20, itemStack);
+        itemStack = createNormalItem(Material.JUKEBOX, ChatColor.WHITE + "개인 설정", list, mainTag, "PersonalOption");
+        mainMenuInv.setItem(13, itemStack);
+    }
+
+    public void setPersonalOption(Player player) {
+        setInfo(player);
+        String tag = "MPI_PersonalOption";
+        ItemStack itemStack;
+        List<String> lore = new ArrayList<>();
+        PlayerDataFile dataFile = new PlayerDataFile(player);
+        boolean quickOpen = dataFile.getConfig().contains("Option.MenuQuickOpen") && dataFile.getConfig().getBoolean("Option.MenuQuickOpen");
+        lore.add(ChatColor.YELLOW + "좌 클릭: 변경");
+        lore.add("");
+        lore.add(ChatColor.GRAY + "현재: " + quickOpen);
+        lore.add("");
+        lore.add(ChatColor.WHITE + "Shift + f 로 빠른 메뉴 열기");
+        itemStack = createNormalItem(Material.BOOK, ChatColor.WHITE + "GUI 단축키", lore, tag, "MenuQuickOpen");
+        mainMenuInv.setItem(10, itemStack);
     }
 
     public void setExtractInv(Player player) {

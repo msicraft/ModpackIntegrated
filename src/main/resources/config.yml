@@ -24,7 +24,6 @@ Setting:
   FixHealthRegen:
     Enabled: false
 
-
 EntityScaling:
   Enabled: false
   Fix-PlayerTakeDamageEvent: false

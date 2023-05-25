@@ -9,9 +9,11 @@ public class PlayerTimerTask extends BukkitRunnable {
 
     private Player player;
     private final double percent = 0.05;
+    private boolean isEnabledKeepGlowingEffect;
 
     public PlayerTimerTask(Player player) {
         this.player = player;
+        isEnabledKeepGlowingEffect = ModPackIntegrated.getPlugin().getConfig().contains("Setting.KeepGlowingEffect.Enabled") && ModPackIntegrated.getPlugin().getConfig().getBoolean("Setting.KeepGlowingEffect.Enabled");
     }
 
     @Override
@@ -24,8 +26,10 @@ public class PlayerTimerTask extends BukkitRunnable {
                 cal = player.getMaxHealth();
             }
             player.setHealth(cal);
-            if (!player.isGlowing()) {
-                player.setGlowing(true);
+            if (isEnabledKeepGlowingEffect) {
+                if (!player.isGlowing()) {
+                    player.setGlowing(true);
+                }
             }
         } else {
             if (Bukkit.getServer().getScheduler().isCurrentlyRunning(getTaskId())) {

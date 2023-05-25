@@ -361,7 +361,8 @@ public class CraftingEquipStatUtil {
     }
 
     private static final List<SpecialAbility> modifierAbilities = Arrays.asList(SpecialAbility.extraAttackSpeed_5,SpecialAbility.extraAttackSpeed_10
-    ,SpecialAbility.extraAttackSpeed_15,SpecialAbility.extraMovementSpeed_5,SpecialAbility.extraMovementSpeed_10,SpecialAbility.increaseMaxHealth_5,SpecialAbility.increaseMaxHealth_10);
+    ,SpecialAbility.extraAttackSpeed_15,SpecialAbility.extraMovementSpeed_5,SpecialAbility.extraMovementSpeed_10,SpecialAbility.increaseMaxHealth_5,SpecialAbility.increaseMaxHealth_10,
+            SpecialAbility.increaseMaxHealthAndDecreaseDamage_20_25, SpecialAbility.increaseMaxHealthAndDecreaseDamage_25_30);
 
     public static List<SpecialAbility> getModifierAbility(Player player) {
         List<SpecialAbility> list = new ArrayList<>();

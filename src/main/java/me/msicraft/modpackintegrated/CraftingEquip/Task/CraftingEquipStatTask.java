@@ -69,6 +69,8 @@ public class CraftingEquipStatTask extends BukkitRunnable {
                         case extraMovementSpeed_10 -> movementSpeedM = movementSpeedM + 10;
                         case increaseMaxHealth_5 -> maxHealthM = maxHealthM + 5;
                         case increaseMaxHealth_10 -> maxHealthM = maxHealthM + 10;
+                        case increaseMaxHealthAndDecreaseDamage_20_25 -> maxHealthM = maxHealthM + 20;
+                        case increaseMaxHealthAndDecreaseDamage_25_30 -> maxHealthM = maxHealthM + 25;
                     }
                 }
                 if (attackSpeedM != 0) {

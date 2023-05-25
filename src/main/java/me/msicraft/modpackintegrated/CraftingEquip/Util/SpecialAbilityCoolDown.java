@@ -42,5 +42,7 @@ public class SpecialAbilityCoolDown {
     public static final double extraDamageTargetMaxHealth_4 = 2;
     public static final double extraDamageTargetCurrentHealth_5 = 2;
     public static final double extraDamageTargetCurrentHealth_10 = 2;
+    public static final double increaseMaxHealthAndDecreaseDamage_20_20 = 1;
+    public static final double increaseMaxHealthAndDecreaseDamage_25_25 = 1;
 
 }

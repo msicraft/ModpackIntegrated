@@ -235,6 +235,30 @@ public class CraftingEquipEvent implements Listener {
         PersistentDataContainer data = livingEntity.getPersistentDataContainer();
         if (data.has(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-Doppelganger"), PersistentDataType.STRING)) {
             e.getDrops().clear();
+            World world = livingEntity.getWorld();
+            Location location = livingEntity.getLocation();
+            int count = 1;
+            for (int a = 0; a<5; a++) {
+                if (Math.random() < 0.4) {
+                    count++;
+                }
+            }
+            for (int a = 0; a<count; a++) {
+                ItemStack randomItem = CraftingEquipUtil.createRandomEquipment();
+                world.dropItemNaturally(location, randomItem);
+            }
+            Bukkit.getScheduler().runTask(ModPackIntegrated.getPlugin(), ()-> {
+                for (Entity entity : world.getNearbyEntities(location, 4,3,4)) {
+                    if (entity instanceof Item item) {
+                        ItemStack itemStack1 = item.getItemStack();
+                        if (CraftingEquipUtil.isRandomCraftingEquipment(itemStack1)) {
+                            item.setCustomName(ChatColor.AQUA + "제작된 장비");
+                            item.setGlowing(true);
+                            item.setCustomNameVisible(true);
+                        }
+                    }
+                }
+            });
         }
     }
 

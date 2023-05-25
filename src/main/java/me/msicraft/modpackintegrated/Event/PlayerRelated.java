@@ -7,6 +7,8 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
@@ -20,14 +22,10 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
 
@@ -53,7 +51,6 @@ public class PlayerRelated implements Listener {
         reduceArrowDamagePercent = ModPackIntegrated.getPlugin().getConfig().contains("Setting.Reduce-ArrowDamage.Percent") ? ModPackIntegrated.getPlugin().getConfig().getDouble("Setting.Reduce-ArrowDamage.Percent") : 1;
         isEnabledRespawnKeepState = ModPackIntegrated.getPlugin().getConfig().contains("Setting.Respawn-KeepState.Enabled") && ModPackIntegrated.getPlugin().getConfig().getBoolean("Setting.Respawn-KeepState.Enabled");
         minHealth = ModPackIntegrated.getPlugin().getConfig().contains("Setting.Respawn-KeepState.Min-Health") ? ModPackIntegrated.getPlugin().getConfig().getDouble("Setting.Respawn-KeepState.Min-Health") : 6;
-        isEnabledKeepGlowingEffect = ModPackIntegrated.getPlugin().getConfig().contains("Setting.KeepGlowingEffect.Enabled") && ModPackIntegrated.getPlugin().getConfig().getBoolean("Setting.KeepGlowingEffect.Enabled");
         isEnabledDisplayItem = ModPackIntegrated.getPlugin().getConfig().contains("Setting.DisplayItem.Enabled") && ModPackIntegrated.getPlugin().getConfig().getBoolean("Setting.DisplayItem.Enabled");
         displayCoolDown = ModPackIntegrated.getPlugin().getConfig().contains("Setting.DisplayItem.Cooldown") ? ModPackIntegrated.getPlugin().getConfig().getDouble("Setting.DisplayItem.Cooldown") : 5;
         isEnabledShowDeathLocation = ModPackIntegrated.getPlugin().getConfig().contains("Setting.ShowDeathLocation.Enabled") && ModPackIntegrated.getPlugin().getConfig().getBoolean("Setting.ShowDeathLocation.Enabled");
@@ -105,8 +102,6 @@ public class PlayerRelated implements Listener {
     private static boolean isEnabledRespawnKeepState = false;
     private static double minHealth = 6;
 
-    private static boolean isEnabledKeepGlowingEffect = false;
-
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent e) {
         if (isEnabledRespawnKeepState) {
@@ -155,33 +150,6 @@ public class PlayerRelated implements Listener {
                         Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "===================================");
                     }
                 });
-            }
-        }
-        if (isEnabledKeepGlowingEffect) {
-            if (!player.hasPotionEffect(PotionEffectType.GLOWING)) {
-                player.addPotionEffect(glowingEffect);
-            }
-        }
-    }
-
-    private final PotionEffect glowingEffect = new PotionEffect(PotionEffectType.GLOWING, 999999, 255, false, false);
-
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onApplyGlowingEffect(PlayerJoinEvent e) {
-        if (isEnabledKeepGlowingEffect) {
-            Player player = e.getPlayer();
-            if (!player.hasPotionEffect(PotionEffectType.GLOWING)) {
-                player.addPotionEffect(glowingEffect);
-            }
-        }
-    }
-
-    @EventHandler
-    public void onWorldChangeGlowingEffect(PlayerChangedWorldEvent e) {
-        if (isEnabledKeepGlowingEffect) {
-            Player player = e.getPlayer();
-            if (!player.hasPotionEffect(PotionEffectType.GLOWING)) {
-                player.addPotionEffect(glowingEffect);
             }
         }
     }
@@ -325,6 +293,28 @@ public class PlayerRelated implements Listener {
                 Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "확률: " + ChatColor.WHITE + mendingEnchantChance);
                 Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "성공 여부: " + ChatColor.WHITE + isSuccess);
                 Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "========================================");
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void attackCoolDown(EntityDamageByEntityEvent e) {
+        Entity damager = e.getDamager();
+        if (damager instanceof Player player) {
+            ItemStack handItem = player.getInventory().getItemInMainHand();
+            if (handItem != null && handItem.getType() != Material.AIR) {
+                AttributeInstance instance = player.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
+                if (instance != null) {
+                    Material material = handItem.getType();
+                    if (player.hasCooldown(material)) {
+                        e.setCancelled(true);
+                        return;
+                    }
+                    double attackSpeed = instance.getValue();
+                    double calCD = 1/attackSpeed;
+                    int calTick = (int) Math.round(20 * calCD);
+                    player.setCooldown(material, calTick);
+                }
             }
         }
     }
