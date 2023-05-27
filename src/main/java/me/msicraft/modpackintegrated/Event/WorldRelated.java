@@ -1,10 +1,8 @@
 package me.msicraft.modpackintegrated.Event;
 
+import me.msicraft.modpackintegrated.CraftingEquip.Doppelganger.DoppelgangerUtil;
 import me.msicraft.modpackintegrated.ModPackIntegrated;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -14,7 +12,10 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ExpBottleEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.raid.RaidSpawnWaveEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
+
+import java.util.Random;
 
 public class WorldRelated implements Listener {
 
@@ -95,5 +96,50 @@ public class WorldRelated implements Listener {
         }
     }
 
+    private final Random random = new Random();
+
+    @EventHandler
+    public void onRaidDoppelgangerSpawn(RaidSpawnWaveEvent e) {
+        Raid raid = e.getRaid();
+        Player player = null;
+        int maxPlayers = Bukkit.getOnlinePlayers().size();
+        int spawnCount = 1;
+        for (int a = 0; a<maxPlayers; a++) {
+            if (Math.random() < 0.1) {
+                spawnCount++;
+            }
+        }
+        for (int b = 0; b<spawnCount; b++) {
+            int randomP = random.nextInt(maxPlayers);
+            int count = 0;
+            for (Player onlineP : Bukkit.getOnlinePlayers()) {
+                if (count == randomP) {
+                    player = onlineP;
+                    break;
+                } else {
+                    count++;
+                }
+            }
+            if (player != null) {
+                for (Raider raider : raid.getRaiders()) {
+                    if (raider.getType() == EntityType.VINDICATOR) {
+                        if (!DoppelgangerUtil.isDoppelganger(raider)) {
+                            DoppelgangerUtil.replaceEquipment(raider, player);
+                            if (ModPackIntegrated.isDebugEnabled) {
+                                Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "========================================");
+                                Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "레이드에 도플갱어 참여");
+                                Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "대상 플레이어: " + ChatColor.GRAY + player);
+                                Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "========================================");
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        if (Math.random() < 0.5) {
+
+        }
+    }
 
 }

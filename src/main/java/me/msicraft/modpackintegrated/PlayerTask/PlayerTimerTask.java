@@ -19,16 +19,18 @@ public class PlayerTimerTask extends BukkitRunnable {
     @Override
     public void run() {
         if (player.isOnline()) {
-            double maxHealth = player.getMaxHealth();
-            double percentCal = maxHealth * percent;
-            double cal = player.getHealth() + percentCal;
-            if (cal > player.getMaxHealth()) {
-                cal = player.getMaxHealth();
-            }
-            player.setHealth(cal);
-            if (isEnabledKeepGlowingEffect) {
-                if (!player.isGlowing()) {
-                    player.setGlowing(true);
+            if (!player.isDead() && player.getHealth() > 0) {
+                double maxHealth = player.getMaxHealth();
+                double percentCal = maxHealth * percent;
+                double cal = player.getHealth() + percentCal;
+                if (cal > player.getMaxHealth()) {
+                    cal = player.getMaxHealth();
+                }
+                player.setHealth(cal);
+                if (isEnabledKeepGlowingEffect) {
+                    if (!player.isGlowing()) {
+                        player.setGlowing(true);
+                    }
                 }
             }
         } else {

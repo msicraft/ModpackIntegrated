@@ -75,4 +75,19 @@ public class SpecialAbilityUtil {
         return v;
     }
 
+    public static double getTrueDamage(double originalDamage, double percent) {
+        return Math.round(originalDamage * percent * 100.0)/100.0;
+    }
+
+    public static void applyTrueDamage(Entity entity, double damage) {
+        if (entity instanceof LivingEntity livingEntity) {
+            double health = livingEntity.getHealth();
+            double cal = health - damage;
+            if (cal < 0) {
+                cal = 0;
+            }
+            livingEntity.setHealth(cal);
+        }
+    }
+
 }

@@ -1,25 +1,24 @@
 package me.msicraft.modpackintegrated.CraftingEquip.Event;
 
+import me.msicraft.modpackintegrated.CraftingEquip.Doppelganger.DoppelgangerUtil;
 import me.msicraft.modpackintegrated.CraftingEquip.Enum.SpecialAbility;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipSpecialAbility;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipStatUtil;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipUtil;
-import me.msicraft.modpackintegrated.CraftingEquip.Util.DoppelgangerUtil;
 import me.msicraft.modpackintegrated.ModPackIntegrated;
-import me.msicraft.modpackintegrated.Util.MathUtil;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -54,7 +53,8 @@ public class CraftingEquipEvent implements Listener {
     }
 
     private static final List<SpecialAbility> lowPriorityAbilities = Arrays.asList(SpecialAbility.doubleDamage_5, SpecialAbility.doubleDamage_10,
-            SpecialAbility.doubleDamage_15, SpecialAbility.lifeDrain_5_25, SpecialAbility.lifeDrain_5_50, SpecialAbility.lifeDrain_10_25, SpecialAbility.lifeDrain_10_50);
+            SpecialAbility.doubleDamage_15, SpecialAbility.lifeDrain_5_25, SpecialAbility.lifeDrain_5_50, SpecialAbility.lifeDrain_10_25, SpecialAbility.lifeDrain_10_50
+    ,SpecialAbility.damageConvertTrueDamage_1,SpecialAbility.damageConvertTrueDamage_5,SpecialAbility.damageConvertTrueDamage_10);
 
     @EventHandler
     public void onPlayerMeleeAttack(EntityDamageByEntityEvent e) {
@@ -132,10 +132,13 @@ public class CraftingEquipEvent implements Listener {
                     PotionEffect potionEffect = player.getPotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
                     if (potionEffect != null) {
                         int level = potionEffect.getAmplifier() + 1;
-                        originalDamage = originalDamage + (originalDamage * (level * 0.1));
+                        originalDamage = originalDamage + (originalDamage * (level * 0.15));
                     }
                 }
                 double getDefense = CraftingEquipStatUtil.getDefenseValue(player);
+                if (Double.compare(getDefense, 0) == 0) {
+                    getDefense = 0.001;
+                }
                 double v = expression.setVariable("DA", originalDamage).setVariable("DE", getDefense).evaluate();
                 v = Math.round(v * 100.0) / 100.0;
                 if (CraftingEquipStatUtil.hasSpecialAbilityEquipment(player)) {
@@ -180,51 +183,7 @@ public class CraftingEquipEvent implements Listener {
             Player player = e.getEntity().getKiller();
             if (player != null) {
                 Location location = e.getEntity().getLocation();
-                World world = location.getWorld();
-                if (world != null) {
-                    ItemStack helmet = player.getInventory().getHelmet();
-                    ItemStack chest = player.getInventory().getChestplate();
-                    ItemStack leggings = player.getInventory().getLeggings();
-                    ItemStack boots = player.getInventory().getBoots();
-                    ItemStack hand = player.getInventory().getItemInMainHand();
-                    ItemStack offHand = player.getInventory().getItemInOffHand();
-                    Bukkit.getScheduler().runTask(ModPackIntegrated.getPlugin(), () -> world.spawn(location, Husk.class, husk -> {
-                        husk.setCustomName(player.getName() + " 의 장비를 복제한 좀비");
-                        husk.setCustomNameVisible(false);
-                        husk.setCanPickupItems(false);
-                        EntityEquipment entityEquipment = husk.getEquipment();
-                        if (entityEquipment != null) {
-                            if (helmet != null && helmet.getType() != Material.AIR) {
-                                entityEquipment.setHelmet(new ItemStack(helmet));
-                            }
-                            if (chest != null && chest.getType() != Material.AIR) {
-                                entityEquipment.setChestplate(new ItemStack(chest));
-                            }
-                            if (leggings != null && leggings.getType() != Material.AIR) {
-                                entityEquipment.setLeggings(new ItemStack(leggings));
-                            }
-                            if (boots != null && boots.getType() != Material.AIR) {
-                                entityEquipment.setBoots(new ItemStack(boots));
-                            }
-                            if (hand != null && hand.getType() != Material.AIR) {
-                                entityEquipment.setItemInMainHand(new ItemStack(hand));
-                            }
-                            if (offHand != null && offHand.getType() != Material.AIR) {
-                                entityEquipment.setItemInOffHand(new ItemStack(offHand));
-                            }
-                        }
-                        double baseMaxHealth = DoppelgangerUtil.getPlayerMaxHealth(player);
-                        double baseDamage = DoppelgangerUtil.getPlayerExtraDamage(player);
-                        double randomHealthMultiple = MathUtil.getRandomValueDouble(10.1, 1.1);
-                        double randomDamageMultiple = MathUtil.getRandomValueDouble(5.1, 1.1);
-                        double calHealth = baseMaxHealth + (baseMaxHealth * randomHealthMultiple);
-                        double calDamage = baseDamage + (baseDamage * randomDamageMultiple);
-                        DoppelgangerUtil.setMaxHealth(husk, calHealth);
-                        DoppelgangerUtil.setBaseDamage(husk, calDamage);
-                        PersistentDataContainer data = husk.getPersistentDataContainer();
-                        data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-Doppelganger"), PersistentDataType.STRING, husk.getUniqueId().toString());
-                    }));
-                }
+                DoppelgangerUtil.spawnDoppelganger(location, player);
             }
         }
     }
@@ -232,8 +191,7 @@ public class CraftingEquipEvent implements Listener {
     @EventHandler
     public void disableDoppelgangerDrop(EntityDeathEvent e) {
         LivingEntity livingEntity = e.getEntity();
-        PersistentDataContainer data = livingEntity.getPersistentDataContainer();
-        if (data.has(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-Doppelganger"), PersistentDataType.STRING)) {
+        if (DoppelgangerUtil.isDoppelganger(livingEntity)) {
             e.getDrops().clear();
             World world = livingEntity.getWorld();
             Location location = livingEntity.getLocation();

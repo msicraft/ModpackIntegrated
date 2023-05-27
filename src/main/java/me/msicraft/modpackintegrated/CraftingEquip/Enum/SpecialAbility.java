@@ -10,7 +10,7 @@ public enum SpecialAbility {
     ,extraDamageToDay_10,extraDamageToDay_20
     ,extraDamageToNight_10,extraDamageToNight_20
     ,extraDamageFullHealth_30,extraDamageFullHealth_50
-    ,increaseTakeDamageAndExtraDamage_5_10,increaseTakeDamageAndExtraDamage_10_15
+    ,increaseTakeDamageAndExtraDamage_5_10,increaseTakeDamageAndExtraDamage_10_15,increaseTakeDamageAndExtraDamage_15_20
     ,takePlayerBaseHealthDamageAndExtraDamage_5_20,takePlayerBaseHealthDamageAndExtraDamage_5_30
     ,takeDamageConvertHealth_5_25,takeDamageConvertHealth_5_50,takeDamageConvertHealth_10_25,takeDamageConvertHealth_10_50
     ,heal_1,heal_2,heal_3
@@ -21,4 +21,6 @@ public enum SpecialAbility {
     ,extraDamageTargetMaxHealth_2,extraDamageTargetMaxHealth_4
     ,extraDamageTargetCurrentHealth_5,extraDamageTargetCurrentHealth_10
     ,increaseMaxHealthAndDecreaseDamage_20_25,increaseMaxHealthAndDecreaseDamage_25_30
+    ,damageConvertTrueDamage_1,damageConvertTrueDamage_5,damageConvertTrueDamage_10
+    ,decreaseTakeAndAttackDamage_5_10,decreaseTakeAndAttackDamage_10_15,decreaseTakeAndAttackDamage_15_20
 }

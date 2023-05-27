@@ -23,6 +23,7 @@ public class SpecialAbilityCoolDown {
     public static final double extraDamageFullHealth_50 = 1;
     public static final double increaseTakeDamageAndExtraDamage_5_10 = 1;
     public static final double increaseTakeDamageAndExtraDamage_10_15 = 1;
+    public static final double increaseTakeDamageAndExtraDamage_15_20 = 1;
     public static final double takePlayerBaseHealthDamageAndExtraDamage_5_20 = 1;
     public static final double takePlayerBaseHealthDamageAndExtraDamage_5_30 = 1;
     public static final double takeDamageConvertHealth_5_25 = 3;
@@ -44,5 +45,11 @@ public class SpecialAbilityCoolDown {
     public static final double extraDamageTargetCurrentHealth_10 = 2;
     public static final double increaseMaxHealthAndDecreaseDamage_20_20 = 1;
     public static final double increaseMaxHealthAndDecreaseDamage_25_25 = 1;
+    public static final double damageConvertTrueDamage_1 = 1;
+    public static final double damageConvertTrueDamage_5 = 1;
+    public static final double damageConvertTrueDamage_10 = 1;
+    public static final double decreaseTakeAndAttackDamage_5_10 = 1;
+    public static final double decreaseTakeAndAttackDamage_10_15 = 1;
+    public static final double decreaseTakeAndAttackDamage_15_20 = 1;
 
 }

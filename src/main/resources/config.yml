@@ -23,6 +23,8 @@ Setting:
     Chance: 0.01
   FixHealthRegen:
     Enabled: false
+  InventoryTotem:
+    Enabled: false
 
 EntityScaling:
   Enabled: false

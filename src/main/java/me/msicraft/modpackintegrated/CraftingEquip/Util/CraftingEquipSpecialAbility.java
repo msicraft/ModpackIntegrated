@@ -23,6 +23,7 @@ public class CraftingEquipSpecialAbility {
         none,doubleDamage, lifeDrain,extraDamage,extraDamagePlayerBaseHealth,extraDamageToDay,extraDamageToNight,extraDamageFullHealth
         ,increaseTakeDamageAndExtraDamage,takePlayerBaseHealthDamageAndExtraDamage,takeDamageConvertHealth,heal,addDamageRange,gamblingDamage
         ,lottoIncreaseDamageOrHalfHealth,extraDamageTargetMaxHealth,extraDamageTargetCurrentHealth,increaseMaxHealthAndDecreaseDamage
+        ,damageConvertTrueDamage,decreaseTakeAndAttackDamage
     }
 
     private static final Map<UUID, Map<SpecialAbility, Long>> abilityCoolDown = new HashMap<>();
@@ -168,6 +169,11 @@ public class CraftingEquipSpecialAbility {
                 abilityEnum = CraftingEquipSpecialAbility.abilityEnum.increaseTakeDamageAndExtraDamage;
                 coolDown = SpecialAbilityCoolDown.increaseTakeDamageAndExtraDamage_10_15;
             }
+            case increaseTakeDamageAndExtraDamage_15_20 -> {
+                cal = cal + (cal * 0.2);
+                abilityEnum = CraftingEquipSpecialAbility.abilityEnum.increaseTakeDamageAndExtraDamage;
+                coolDown = SpecialAbilityCoolDown.increaseTakeDamageAndExtraDamage_15_20;
+            }
             case takePlayerBaseHealthDamageAndExtraDamage_5_20 -> {
                 cal = cal + (cal * 0.2);
                 abilityEnum = CraftingEquipSpecialAbility.abilityEnum.takePlayerBaseHealthDamageAndExtraDamage;
@@ -221,18 +227,10 @@ public class CraftingEquipSpecialAbility {
                 coolDown = SpecialAbilityCoolDown.gamblingDamage_50_50;
             }
             case lottoIncreaseDamageOrHalfHealth_5_15 -> {
-                cal = cal + (cal * 0.15);
-                if (Math.random() < 0.05) {
-                    SpecialAbilityUtil.applyHalfHealth(player);
-                }
                 abilityEnum = CraftingEquipSpecialAbility.abilityEnum.lottoIncreaseDamageOrHalfHealth;
                 coolDown = SpecialAbilityCoolDown.lottoIncreaseDamageOrHalfHealth_5_15;
             }
             case lottoIncreaseDamageOrHalfHealth_10_35 -> {
-                cal = cal + (cal * 0.35);
-                if (Math.random() < 0.1) {
-                    SpecialAbilityUtil.applyHalfHealth(player);
-                }
                 abilityEnum = CraftingEquipSpecialAbility.abilityEnum.lottoIncreaseDamageOrHalfHealth;
                 coolDown = SpecialAbilityCoolDown.lottoIncreaseDamageOrHalfHealth_10_35;
             }
@@ -265,6 +263,33 @@ public class CraftingEquipSpecialAbility {
                 cal = cal - (cal * 0.3);
                 abilityEnum = CraftingEquipSpecialAbility.abilityEnum.increaseMaxHealthAndDecreaseDamage;
                 coolDown = SpecialAbilityCoolDown.increaseMaxHealthAndDecreaseDamage_25_25;
+            }
+            case damageConvertTrueDamage_1 -> {
+                abilityEnum = CraftingEquipSpecialAbility.abilityEnum.damageConvertTrueDamage;
+                coolDown = SpecialAbilityCoolDown.damageConvertTrueDamage_1;
+            }
+            case damageConvertTrueDamage_5 -> {
+                abilityEnum = CraftingEquipSpecialAbility.abilityEnum.damageConvertTrueDamage;
+                coolDown = SpecialAbilityCoolDown.damageConvertTrueDamage_5;
+            }
+            case damageConvertTrueDamage_10 -> {
+                abilityEnum = CraftingEquipSpecialAbility.abilityEnum.damageConvertTrueDamage;
+                coolDown = SpecialAbilityCoolDown.damageConvertTrueDamage_10;
+            }
+            case decreaseTakeAndAttackDamage_5_10 -> {
+                cal = cal - (cal * 0.1);
+                abilityEnum = CraftingEquipSpecialAbility.abilityEnum.decreaseTakeAndAttackDamage;
+                coolDown = SpecialAbilityCoolDown.decreaseTakeAndAttackDamage_5_10;
+            }
+            case decreaseTakeAndAttackDamage_10_15 -> {
+                cal = cal - (cal * 0.15);
+                abilityEnum = CraftingEquipSpecialAbility.abilityEnum.decreaseTakeAndAttackDamage;
+                coolDown = SpecialAbilityCoolDown.decreaseTakeAndAttackDamage_10_15;
+            }
+            case decreaseTakeAndAttackDamage_15_20 -> {
+                cal = cal - (cal * 0.2);
+                abilityEnum = CraftingEquipSpecialAbility.abilityEnum.decreaseTakeAndAttackDamage;
+                coolDown = SpecialAbilityCoolDown.decreaseTakeAndAttackDamage_15_20;
             }
         }
         if (abilityEnum == CraftingEquipSpecialAbility.abilityEnum.none) {
@@ -319,6 +344,35 @@ public class CraftingEquipSpecialAbility {
                 }
                 SpecialAbilityUtil.healPlayer(player, amount);
             }
+            case lottoIncreaseDamageOrHalfHealth -> {
+                switch (specialAbility) {
+                    case lottoIncreaseDamageOrHalfHealth_5_15 -> {
+                        cal = cal + (cal * 0.15);
+                        if (Math.random() < 0.05) {
+                            SpecialAbilityUtil.applyHalfHealth(player);
+                        }
+                    }
+                    case lottoIncreaseDamageOrHalfHealth_10_35 -> {
+                        cal = cal + (cal * 0.35);
+                        if (Math.random() < 0.1) {
+                            SpecialAbilityUtil.applyHalfHealth(player);
+                        }
+                    }
+                }
+            }
+            case damageConvertTrueDamage -> {
+                double trueDamage = 0;
+                switch (specialAbility) {
+                    case damageConvertTrueDamage_1 -> trueDamage = SpecialAbilityUtil.getTrueDamage(cal, 0.01);
+                    case damageConvertTrueDamage_5 -> trueDamage = SpecialAbilityUtil.getTrueDamage(cal, 0.05);
+                    case damageConvertTrueDamage_10 -> trueDamage = SpecialAbilityUtil.getTrueDamage(cal, 0.1);
+                }
+                cal = cal - trueDamage;
+                SpecialAbilityUtil.applyTrueDamage(entity, trueDamage);
+            }
+        }
+        if (cal < 0) {
+            cal = 0;
         }
         return cal;
     }
@@ -329,11 +383,15 @@ public class CraftingEquipSpecialAbility {
         abilityEnum abilityEnum = CraftingEquipSpecialAbility.abilityEnum.none;
         switch (specialAbility) {
             case increaseTakeDamageAndExtraDamage_5_10 -> {
-                cal = takeDamage + (takeDamage * 0.05);
+                cal = cal + (cal * 0.05);
                 abilityEnum = CraftingEquipSpecialAbility.abilityEnum.increaseTakeDamageAndExtraDamage;
             }
             case increaseTakeDamageAndExtraDamage_10_15 -> {
-                cal = takeDamage + (takeDamage * 0.1);
+                cal = cal + (cal * 0.1);
+                abilityEnum = CraftingEquipSpecialAbility.abilityEnum.increaseTakeDamageAndExtraDamage;
+            }
+            case increaseTakeDamageAndExtraDamage_15_20 -> {
+                cal = cal + (cal * 0.15);
                 abilityEnum = CraftingEquipSpecialAbility.abilityEnum.increaseTakeDamageAndExtraDamage;
             }
             case takeDamageConvertHealth_5_25 -> {
@@ -359,6 +417,21 @@ public class CraftingEquipSpecialAbility {
                     abilityEnum = CraftingEquipSpecialAbility.abilityEnum.takeDamageConvertHealth;
                     coolDown = SpecialAbilityCoolDown.takeDamageConvertHealth_10_50;
                 }
+            }
+            case decreaseTakeAndAttackDamage_5_10 -> {
+                cal = cal - (cal * 0.05);
+                abilityEnum = CraftingEquipSpecialAbility.abilityEnum.decreaseTakeAndAttackDamage;
+                coolDown = SpecialAbilityCoolDown.decreaseTakeAndAttackDamage_5_10;
+            }
+            case decreaseTakeAndAttackDamage_10_15 -> {
+                cal = cal - (cal * 0.1);
+                abilityEnum = CraftingEquipSpecialAbility.abilityEnum.decreaseTakeAndAttackDamage;
+                coolDown = SpecialAbilityCoolDown.decreaseTakeAndAttackDamage_10_15;
+            }
+            case decreaseTakeAndAttackDamage_15_20 -> {
+                cal = cal - (cal * 0.15);
+                abilityEnum = CraftingEquipSpecialAbility.abilityEnum.decreaseTakeAndAttackDamage;
+                coolDown = SpecialAbilityCoolDown.decreaseTakeAndAttackDamage_15_20;
             }
         }
         if (abilityEnum == CraftingEquipSpecialAbility.abilityEnum.none) {
@@ -388,6 +461,9 @@ public class CraftingEquipSpecialAbility {
                 }
                 SpecialAbilityUtil.damageConvertHealth(player, takeDamage, percent);
             }
+        }
+        if (cal < 0) {
+            cal = 0;
         }
         return cal;
     }

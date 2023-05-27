@@ -2,6 +2,7 @@ package me.msicraft.modpackintegrated.Event;
 
 import me.msicraft.modpackintegrated.ModPackIntegrated;
 import me.msicraft.modpackintegrated.Util.ExpUtil;
+import me.msicraft.modpackintegrated.Util.PlayerUtil;
 import me.msicraft.modpackintegrated.Version.Version_1_16_R3;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -18,6 +19,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -46,6 +48,8 @@ public class PlayerRelated implements Listener {
         playerTasks.put(player.getUniqueId(), tasks);
     }
 
+    private static boolean isEnabledInventoryTotem = false;
+
     public static void reloadVariables() {
         isEnabledReducePlayerArrowDamage = ModPackIntegrated.getPlugin().getConfig().contains("Setting.Reduce-ArrowDamage.Enabled") && ModPackIntegrated.getPlugin().getConfig().getBoolean("Setting.Reduce-ArrowDamage.Enabled");
         reduceArrowDamagePercent = ModPackIntegrated.getPlugin().getConfig().contains("Setting.Reduce-ArrowDamage.Percent") ? ModPackIntegrated.getPlugin().getConfig().getDouble("Setting.Reduce-ArrowDamage.Percent") : 1;
@@ -56,6 +60,7 @@ public class PlayerRelated implements Listener {
         isEnabledShowDeathLocation = ModPackIntegrated.getPlugin().getConfig().contains("Setting.ShowDeathLocation.Enabled") && ModPackIntegrated.getPlugin().getConfig().getBoolean("Setting.ShowDeathLocation.Enabled");
         isEnabledMendingEnchant = ModPackIntegrated.getPlugin().getConfig().contains("Setting.MendingEnchant.Enabled") && ModPackIntegrated.getPlugin().getConfig().getBoolean("Setting.MendingEnchant.Enabled");
         mendingEnchantChance = ModPackIntegrated.getPlugin().getConfig().contains("Setting.MendingEnchant.Chance") ? ModPackIntegrated.getPlugin().getConfig().getDouble("Setting.MendingEnchant.Chance") : 0;
+        isEnabledInventoryTotem = ModPackIntegrated.getPlugin().getConfig().contains("Setting.InventoryTotem.Enabled") && ModPackIntegrated.getPlugin().getConfig().getBoolean("Setting.InventoryTotem.Enabled");
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -314,6 +319,26 @@ public class PlayerRelated implements Listener {
                     double calCD = 1/attackSpeed;
                     int calTick = (int) Math.round(20 * calCD);
                     player.setCooldown(material, calTick);
+                }
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void inventoryTotem(EntityDamageEvent e) {
+        if (isEnabledInventoryTotem) {
+            Entity entity = e.getEntity();
+            if (entity instanceof Player player) {
+                double finalDamage = e.getFinalDamage();
+                if (player.getHealth() - finalDamage < 0) {
+                    if (player.getInventory().getItemInMainHand().getType() == Material.TOTEM_OF_UNDYING || player.getInventory().getItemInOffHand().getType() == Material.TOTEM_OF_UNDYING) {
+                        return;
+                    }
+                    int totemSlot = PlayerUtil.hasTotemOfUndying(player);
+                    if (totemSlot != -1) {
+                        e.setCancelled(true);
+                        PlayerUtil.applyTotemOfUndying(player, totemSlot);
+                    }
                 }
             }
         }
