@@ -1,5 +1,6 @@
 package me.msicraft.modpackintegrated.Event;
 
+import me.msicraft.modpackintegrated.CraftingEquip.Util.SpecialAbilityUtil;
 import me.msicraft.modpackintegrated.ModPackIntegrated;
 import me.msicraft.modpackintegrated.Util.ExpUtil;
 import me.msicraft.modpackintegrated.Util.PlayerUtil;
@@ -61,6 +62,8 @@ public class PlayerRelated implements Listener {
         isEnabledMendingEnchant = ModPackIntegrated.getPlugin().getConfig().contains("Setting.MendingEnchant.Enabled") && ModPackIntegrated.getPlugin().getConfig().getBoolean("Setting.MendingEnchant.Enabled");
         mendingEnchantChance = ModPackIntegrated.getPlugin().getConfig().contains("Setting.MendingEnchant.Chance") ? ModPackIntegrated.getPlugin().getConfig().getDouble("Setting.MendingEnchant.Chance") : 0;
         isEnabledInventoryTotem = ModPackIntegrated.getPlugin().getConfig().contains("Setting.InventoryTotem.Enabled") && ModPackIntegrated.getPlugin().getConfig().getBoolean("Setting.InventoryTotem.Enabled");
+        isEnabledFixFinalDamage = ModPackIntegrated.getPlugin().getConfig().contains("Setting.FixFinalDamage.Enabled") && ModPackIntegrated.getPlugin().getConfig().getBoolean("Setting.FixFinalDamage.Enabled");
+        minFinalDamage = ModPackIntegrated.getPlugin().getConfig().contains("Setting.FixFinalDamage.MinDamage") ? ModPackIntegrated.getPlugin().getConfig().getDouble("Setting.FixFinalDamage.MinDamage") : 0;
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -302,6 +305,8 @@ public class PlayerRelated implements Listener {
         }
     }
 
+    private final Map<UUID, Boolean> attackCoolDownMap = new HashMap<>();
+
     @EventHandler(priority = EventPriority.LOWEST)
     public void attackCoolDown(EntityDamageByEntityEvent e) {
         Entity damager = e.getDamager();
@@ -312,6 +317,7 @@ public class PlayerRelated implements Listener {
                 if (instance != null) {
                     Material material = handItem.getType();
                     if (player.hasCooldown(material)) {
+                        e.setDamage(-100);
                         e.setCancelled(true);
                         return;
                     }
@@ -324,7 +330,7 @@ public class PlayerRelated implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void inventoryTotem(EntityDamageEvent e) {
         if (isEnabledInventoryTotem) {
             Entity entity = e.getEntity();
@@ -344,4 +350,19 @@ public class PlayerRelated implements Listener {
         }
     }
 
+    private static boolean isEnabledFixFinalDamage = false;
+    private static double minFinalDamage = 0;
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void takeDamageFinalFix(EntityDamageByEntityEvent e) {
+        if (isEnabledFixFinalDamage) {
+            Entity entity = e.getEntity();
+            if (entity instanceof Player player) {
+                if (e.getFinalDamage() < minFinalDamage) {
+                    e.setDamage(0);
+                    SpecialAbilityUtil.applyTrueDamage(player, minFinalDamage);
+                }
+            }
+        }
+    }
 }

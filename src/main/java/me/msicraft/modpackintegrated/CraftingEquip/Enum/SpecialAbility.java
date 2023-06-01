@@ -16,11 +16,11 @@ public enum SpecialAbility {
     ,heal_1,heal_2,heal_3
     ,addDamageRange_15,addDamageRange_30
     ,increaseMaxHealth_5,increaseMaxHealth_10
-    ,gamblingDamage_50_30,gamblingDamage_50_50
-    ,lottoIncreaseDamageOrHalfHealth_5_15,lottoIncreaseDamageOrHalfHealth_10_35
     ,extraDamageTargetMaxHealth_2,extraDamageTargetMaxHealth_4
     ,extraDamageTargetCurrentHealth_5,extraDamageTargetCurrentHealth_10
     ,increaseMaxHealthAndDecreaseDamage_20_25,increaseMaxHealthAndDecreaseDamage_25_30
     ,damageConvertTrueDamage_1,damageConvertTrueDamage_5,damageConvertTrueDamage_10
     ,decreaseTakeAndAttackDamage_5_10,decreaseTakeAndAttackDamage_10_15,decreaseTakeAndAttackDamage_15_20
+    ,healBaseMaxHealth_3,healBaseMaxHealth_6,healBaseMaxHealth_10
+    ,takeDamageConvertDotDamage_10_5,takeDamageConvertDotDamage_20_5,takeDamageConvertDotDamage_30_5
 }

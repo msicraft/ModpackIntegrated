@@ -10,12 +10,17 @@ import me.msicraft.modpackintegrated.MainMenu.KillPointShop.KillPointShopUtil;
 import me.msicraft.modpackintegrated.MainMenu.KillPointShop.Skill.KillPointShopSkill;
 import me.msicraft.modpackintegrated.ModPackIntegrated;
 import me.msicraft.modpackintegrated.PlayerData.File.PlayerDataFile;
+import me.msicraft.modpackintegrated.Version.Version_1_16_R3;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
@@ -51,6 +56,11 @@ public class MainMenuEvent implements Listener {
         if (e.getClickedInventory() == null) { return; }
         Player player = (Player) e.getWhoClicked();
         if (e.getView().getTitle().equalsIgnoreCase(player.getName() + "'s main menu")) {
+            ClickType type = e.getClick();
+            if (type == ClickType.NUMBER_KEY) {
+                e.setCancelled(true);
+                return;
+            }
             if (e.getCurrentItem() == null) {
                 return;
             }
@@ -255,6 +265,21 @@ public class MainMenuEvent implements Listener {
                                 mainMenuInv.setPersonalOption(player);
                             }
                         }
+                    }
+                }
+            }
+            ItemStack infoBook = e.getInventory().getItem(4);
+            if (infoBook != null && infoBook.getType() == Material.BOOK) {
+                if (e.isShiftClick()) {
+                    if (ModPackIntegrated.bukkitVersion.equals("1.16.5")) {
+                        ItemStack temp = new ItemStack(infoBook);
+                        TextComponent main = new TextComponent(ChatColor.WHITE + player.getName() + ": ");
+                        main.setColor(net.md_5.bungee.api.ChatColor.WHITE);
+                        TextComponent sub = new TextComponent("[" + ChatColor.AQUA + "플레이어 정보" + ChatColor.WHITE + "]");
+                        HoverEvent hoverEvent = Version_1_16_R3.getHoverEventByShowItem(temp);
+                        sub.setHoverEvent(hoverEvent);
+                        main.addExtra(sub);
+                        Bukkit.spigot().broadcast(main);
                     }
                 }
             }

@@ -37,10 +37,6 @@ public class MainCommand implements CommandExecutor {
                 if (var != null) {
                     switch (var) {
                         case "test" -> {
-                            if (sender instanceof Player player) {
-                                ItemStack itemStack = CraftingEquipUtil.createRandomEquipment();
-                                player.getInventory().addItem(itemStack);
-                            }
                         }
                         case "fixentityhealth" -> {
                             int entityC = 0;

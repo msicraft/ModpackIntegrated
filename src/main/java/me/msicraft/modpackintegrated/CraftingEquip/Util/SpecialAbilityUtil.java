@@ -1,11 +1,23 @@
 package me.msicraft.modpackintegrated.CraftingEquip.Util;
 
 import org.bukkit.ChatColor;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 public class SpecialAbilityUtil {
+
+    public static double calAbilityCoolDown(Player player, double baseCoolDown) {
+        double cd = 1;
+        AttributeInstance instance = player.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
+        if (instance != null) {
+            double attackSpeed = instance.getValue();
+            cd = baseCoolDown/attackSpeed;
+        }
+        return Math.round(cd * 100.0)/100.0;
+    }
 
     public static void applyLifeDrain(Player player, double amount) {
         double calHealth = player.getHealth() + amount;
@@ -88,6 +100,11 @@ public class SpecialAbilityUtil {
             }
             livingEntity.setHealth(cal);
         }
+    }
+
+    public static double getPlayerMaxHealthPercent(Player player, double percent) {
+        double maxHealth = player.getMaxHealth();
+        return Math.round(maxHealth * percent * 100.0)/100.0;
     }
 
 }

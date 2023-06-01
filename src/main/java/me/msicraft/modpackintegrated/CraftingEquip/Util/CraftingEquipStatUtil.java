@@ -23,6 +23,12 @@ public class CraftingEquipStatUtil {
 
     private static final Map<UUID, Map<String, Double>> equipStatMap = new HashMap<>();
 
+    private static boolean isEnabledCheckEquipmentType = false;
+
+    public static void reloadVariables() {
+        isEnabledCheckEquipmentType = ModPackIntegrated.getPlugin().getConfig().contains("CraftingEquipment.EquipmentTypeCheck") && ModPackIntegrated.getPlugin().getConfig().getBoolean("CraftingEquipment.EquipmentTypeCheck");
+    }
+
     public void registerStatMapTask(Player player) {
         BukkitTask statTask = new CraftingEquipStatTask(player).runTaskTimer(ModPackIntegrated.getPlugin(), 20L, 2L);
         PlayerRelated.addActiveTasks(player, statTask.getTaskId());
@@ -75,11 +81,44 @@ public class CraftingEquipStatUtil {
         return type;
     }
 
+    private static final List<EquipmentSlot> armorTypeSlots = Arrays.asList(EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET);
+    private static final EquipmentSlot weaponSlot = EquipmentSlot.HAND;
+    private static final EquipmentSlot catalystSlot = EquipmentSlot.OFF_HAND;
+
     public static void setMeleeStat(Player player, double amount) { getStatMap(player).put("MeleeDamage", amount); }
     public static void setProjectileStat(Player player, double amount) { getStatMap(player).put("ProjectileDamage", amount); }
     public static void setAttackSpeedStat(Player player, double amount) { getStatMap(player).put("AttackSpeed", amount); }
     public static void setDefenseStat(Player player, double amount) { getStatMap(player).put("Defense", amount); }
     public static void setHealthStat(Player player, double amount) { getStatMap(player).put("Health", amount); }
+
+    public static boolean checkEqualEquipmentTypeToSlot(ItemStack itemStack, EquipmentSlot slot) {
+        boolean check = false;
+        if (isEnabledCheckEquipmentType) {
+            EquipmentType equipmentType = getEquipmentType(itemStack);
+            if (equipmentType != null) {
+                switch (equipmentType) {
+                    case weapon -> {
+                        if (slot == weaponSlot) {
+                            check = true;
+                        }
+                    }
+                    case armor -> {
+                        if (armorTypeSlots.contains(slot)) {
+                            check = true;
+                        }
+                    }
+                    case catalyst -> {
+                        if (slot == catalystSlot) {
+                            check = true;
+                        }
+                    }
+                }
+            }
+        } else {
+            check = true;
+        }
+        return check;
+    }
 
     public static void applyEquipmentStatToMap(Player player) {
         double melee = 0;
@@ -90,11 +129,13 @@ public class CraftingEquipStatUtil {
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             ItemStack itemStack = player.getInventory().getItem(slot);
             if (itemStack != null && itemStack.getType() != Material.AIR) {
-                melee = melee + getMeleeDamage(itemStack);
-                projectile = projectile + getProjectileDamage(itemStack);
-                attackSpeed = attackSpeed + getAttackSpeed(itemStack);
-                defense = defense + getDefense(itemStack);
-                health = health + getHealth(itemStack);
+                if (checkEqualEquipmentTypeToSlot(itemStack, slot)) {
+                    melee = melee + getMeleeDamage(itemStack);
+                    projectile = projectile + getProjectileDamage(itemStack);
+                    attackSpeed = attackSpeed + getAttackSpeed(itemStack);
+                    defense = defense + getDefense(itemStack);
+                    health = health + getHealth(itemStack);
+                }
             }
         }
         setMeleeStat(player, melee);
@@ -349,10 +390,12 @@ public class CraftingEquipStatUtil {
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             ItemStack itemStack = player.getInventory().getItem(slot);
             if (itemStack != null && itemStack.getType() != Material.AIR) {
-                SpecialAbility specialAbility = getSpecialAbility(itemStack);
-                if (specialAbility != null) {
-                    if (!list.contains(specialAbility)) {
-                        list.add(specialAbility);
+                if (checkEqualEquipmentTypeToSlot(itemStack, slot)) {
+                    SpecialAbility specialAbility = getSpecialAbility(itemStack);
+                    if (specialAbility != null) {
+                        if (!list.contains(specialAbility)) {
+                            list.add(specialAbility);
+                        }
                     }
                 }
             }
@@ -369,10 +412,12 @@ public class CraftingEquipStatUtil {
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             ItemStack itemStack = player.getInventory().getItem(slot);
             if (itemStack != null && itemStack.getType() != Material.AIR) {
-                SpecialAbility specialAbility = getSpecialAbility(itemStack);
-                if (specialAbility != null) {
-                    if (!list.contains(specialAbility) && modifierAbilities.contains(specialAbility)) {
-                        list.add(specialAbility);
+                if (checkEqualEquipmentTypeToSlot(itemStack, slot)) {
+                    SpecialAbility specialAbility = getSpecialAbility(itemStack);
+                    if (specialAbility != null) {
+                        if (!list.contains(specialAbility) && modifierAbilities.contains(specialAbility)) {
+                            list.add(specialAbility);
+                        }
                     }
                 }
             }

@@ -139,6 +139,15 @@ public class CraftingEquipInv implements InventoryHolder {
         return itemStack;
     }
 
+    private void applyMainMenuItemTag(ItemStack itemStack) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (itemMeta != null) {
+            PersistentDataContainer data = itemMeta.getPersistentDataContainer();
+            data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-MainMenuFix"), PersistentDataType.STRING, "Fix-Item");
+            itemStack.setItemMeta(itemMeta);
+        }
+    }
+
     @Override
     public Inventory getInventory() {
         return craftingInv;

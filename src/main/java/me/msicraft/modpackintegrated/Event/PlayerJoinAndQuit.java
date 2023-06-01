@@ -73,6 +73,9 @@ public class PlayerJoinAndQuit implements Listener {
                 ModPackIntegrated.exportEnchantMap.put(player.getUniqueId(), airStack);
             }
             updateInventory(player);
+            if (player.isInvulnerable()) {
+                player.setInvulnerable(false);
+            }
         }
     }
 
@@ -86,6 +89,9 @@ public class PlayerJoinAndQuit implements Listener {
         ModPackIntegrated.exportEnchantMap.remove(player.getUniqueId());
         CraftingEquipSpecialAbility.removeAbilityMap(player);
         CraftingEquipStatTask.removeMap(player);
+        if (player.isInvulnerable()) {
+            player.setInvulnerable(false);
+        }
     }
 
 }

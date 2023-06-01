@@ -62,6 +62,9 @@ public class CraftingEquipEvent implements Listener {
         Entity entity = e.getEntity();
         if (damager instanceof Player player) {
             if (e.getCause() != EntityDamageEvent.DamageCause.PROJECTILE) {
+                if (e.getFinalDamage() < 0 || Double.compare(e.getFinalDamage(), 0) == 0) {
+                    return;
+                }
                 double originalDamage = e.getDamage();
                 double cal = originalDamage + CraftingEquipStatUtil.getMeleeValue(player);
                 if (CraftingEquipStatUtil.hasSpecialAbilityEquipment(player)) {
@@ -95,6 +98,9 @@ public class CraftingEquipEvent implements Listener {
             Entity entity = e.getEntity();
             if (damager instanceof Arrow arrow) {
                 if (arrow.getShooter() instanceof Player player) {
+                    if (e.getFinalDamage() < 0 || Double.compare(e.getFinalDamage(), 0) == 0) {
+                        return;
+                    }
                     double originalDamage = e.getDamage();
                     double cal = originalDamage + CraftingEquipStatUtil.getProjectileValue(player);
                     if (CraftingEquipStatUtil.hasSpecialAbilityEquipment(player)) {
@@ -179,7 +185,7 @@ public class CraftingEquipEvent implements Listener {
 
     @EventHandler
     public void spawnDoppelganger(EntityDeathEvent e) {
-        if (Math.random() < 0.01) {
+        if (Math.random() < 0.025) {
             Player player = e.getEntity().getKiller();
             if (player != null) {
                 Location location = e.getEntity().getLocation();

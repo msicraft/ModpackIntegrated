@@ -52,4 +52,23 @@ public class PlayerStat {
         return addHealth;
     }
 
+    public void setAddMelee(double addMelee) {
+        this.addMelee = addMelee;
+    }
+
+    public void setAddProjectile(double addProjectile) {
+        this.addProjectile = addProjectile;
+    }
+
+    public void setAddAttackSpeed(double addAttackSpeed) {
+        this.addAttackSpeed = addAttackSpeed;
+    }
+
+    public void setAddDefense(double addDefense) {
+        this.addDefense = addDefense;
+    }
+
+    public void setAddHealth(double addHealth) {
+        this.addHealth = addHealth;
+    }
 }

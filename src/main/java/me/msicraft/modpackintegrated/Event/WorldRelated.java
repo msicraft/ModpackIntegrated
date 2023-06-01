@@ -100,45 +100,47 @@ public class WorldRelated implements Listener {
 
     @EventHandler
     public void onRaidDoppelgangerSpawn(RaidSpawnWaveEvent e) {
-        Raid raid = e.getRaid();
-        Player player = null;
-        int maxPlayers = Bukkit.getOnlinePlayers().size();
-        int spawnCount = 1;
-        for (int a = 0; a<maxPlayers; a++) {
-            if (Math.random() < 0.1) {
-                spawnCount++;
-            }
-        }
-        for (int b = 0; b<spawnCount; b++) {
-            int randomP = random.nextInt(maxPlayers);
-            int count = 0;
-            for (Player onlineP : Bukkit.getOnlinePlayers()) {
-                if (count == randomP) {
-                    player = onlineP;
-                    break;
-                } else {
-                    count++;
+        if (Math.random() < 0.5) {
+            Raid raid = e.getRaid();
+            Player player = null;
+            int maxPlayers = Bukkit.getOnlinePlayers().size();
+            int spawnCount = 1;
+            for (int a = 0; a<maxPlayers; a++) {
+                if (Math.random() < 0.1) {
+                    spawnCount++;
                 }
             }
-            if (player != null) {
-                for (Raider raider : raid.getRaiders()) {
-                    if (raider.getType() == EntityType.VINDICATOR) {
-                        if (!DoppelgangerUtil.isDoppelganger(raider)) {
-                            DoppelgangerUtil.replaceEquipment(raider, player);
-                            if (ModPackIntegrated.isDebugEnabled) {
-                                Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "========================================");
-                                Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "레이드에 도플갱어 참여");
-                                Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "대상 플레이어: " + ChatColor.GRAY + player);
-                                Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "========================================");
+            for (int b = 0; b<spawnCount; b++) {
+                int randomP = random.nextInt(maxPlayers);
+                int count = 0;
+                for (Player onlineP : Bukkit.getOnlinePlayers()) {
+                    if (count == randomP) {
+                        player = onlineP;
+                        break;
+                    } else {
+                        count++;
+                    }
+                }
+                if (player != null) {
+                    for (Raider raider : raid.getRaiders()) {
+                        if (raider.getType() == EntityType.VINDICATOR) {
+                            if (!DoppelgangerUtil.isDoppelganger(raider)) {
+                                Player finalPlayer = player;
+                                Bukkit.getScheduler().runTaskLater(ModPackIntegrated.getPlugin(), ()->{
+                                    DoppelgangerUtil.replaceEquipment(raider, finalPlayer);
+                                    if (ModPackIntegrated.isDebugEnabled) {
+                                        Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "========================================");
+                                        Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "레이드에 도플갱어 참여");
+                                        Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "대상 플레이어: " + ChatColor.GRAY + finalPlayer);
+                                        Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "========================================");
+                                    }
+                                }, 10L);
+                                break;
                             }
-                            break;
                         }
                     }
                 }
             }
-        }
-        if (Math.random() < 0.5) {
-
         }
     }
 

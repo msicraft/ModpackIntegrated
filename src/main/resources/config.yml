@@ -25,6 +25,9 @@ Setting:
     Enabled: false
   InventoryTotem:
     Enabled: false
+  FixFinalDamage:
+    Enabled: false
+    MinDamage: 0.5
 
 EntityScaling:
   Enabled: false
@@ -43,6 +46,7 @@ Kill-Point-Setting:
 
 SpawnLocation: ""
 CraftingEquipment:
+  EquipmentTypeCheck: false
   DefenseEquations: "DA * (1 - (DE / (5 * DA + DE)))"
   MaxKillPoint: 10
   SpecialAbility:

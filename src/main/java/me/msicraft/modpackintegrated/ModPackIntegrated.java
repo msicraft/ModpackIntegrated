@@ -155,6 +155,7 @@ public final class ModPackIntegrated extends JavaPlugin {
         CraftingEquipEvent.reloadVariables();
         specialAbilityInfoFile.reloadConfig();
         EntityScalingRelated.reloadVariables();
+        CraftingEquipStatUtil.reloadVariables();
         isDebugEnabled = getPlugin().getConfig().contains("Debug-Enabled") && getPlugin().getConfig().getBoolean("Debug-Enabled");
     }
 

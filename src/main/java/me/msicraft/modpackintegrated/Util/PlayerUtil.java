@@ -46,7 +46,7 @@ public class PlayerUtil {
             player.playEffect(EntityEffect.TOTEM_RESURRECT);
             player.playSound(player.getLocation(), Sound.ITEM_TOTEM_USE, 1, 1);
             double maxHealth = player.getMaxHealth();
-            double cal = maxHealth * 0.1;
+            double cal = maxHealth * 0.5;
             player.setHealth(cal);
             for (PotionEffect potionEffect : player.getActivePotionEffects()) {
                 player.removePotionEffect(potionEffect.getType());

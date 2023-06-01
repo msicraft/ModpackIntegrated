@@ -7,8 +7,6 @@ import me.msicraft.modpackintegrated.ModPackIntegrated;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import java.util.List;
 
@@ -52,15 +50,18 @@ public class KillPointShopSkill {
         return isSuccess;
     }
 
-    private final static PotionEffect resistanceEffect = new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 60, 255, false, false);
-
     public static boolean teleportLastDeathLocation(Player player) {
         boolean isSuccess = false;
         if (PlayerRelated.hasLastDeathLocation(player)) {
             Location location = PlayerRelated.getDeathLocation(player);
             player.teleport(location);
             player.sendMessage(ChatColor.GREEN + "죽은 위치로 이동 되었습니다.");
-            player.addPotionEffect(resistanceEffect);
+            player.setInvulnerable(true);
+            Bukkit.getScheduler().runTaskLater(ModPackIntegrated.getPlugin(), ()-> {
+                if (player.isInvulnerable()) {
+                    player.setInvulnerable(false);
+                }
+            }, 60L);
             isSuccess = true;
         }
         return isSuccess;

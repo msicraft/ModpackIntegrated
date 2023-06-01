@@ -1,6 +1,7 @@
 package me.msicraft.modpackintegrated.EntityBlockBreak.Task;
 
 import me.msicraft.modpackintegrated.EntityBlockBreak.EntityBlockBreakUtil;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -42,6 +43,11 @@ public class EntityBlockBreakTask extends BukkitRunnable {
                             Block block = rayTraceResult.getHitBlock();
                             if (block != null && !banBlockTypes.contains(block.getType())) {
                                 block.breakNaturally();
+                                Location downLoc = new Location(block.getWorld(), block.getX(), block.getY() - 1, block.getZ());
+                                Block downBlock = downLoc.getBlock();
+                                if (downBlock != null && !banBlockTypes.contains(downBlock.getType())) {
+                                    downBlock.breakNaturally();
+                                }
                             }
                         }
                     }

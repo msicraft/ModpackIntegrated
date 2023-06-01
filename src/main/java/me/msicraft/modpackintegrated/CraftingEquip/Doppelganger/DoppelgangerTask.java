@@ -9,6 +9,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
 
@@ -18,7 +19,7 @@ import java.util.List;
 public class DoppelgangerTask extends BukkitRunnable {
 
     private LivingEntity livingEntity;
-    private final double distance = 4.1;
+    private final double distance = 4;
 
     public DoppelgangerTask(LivingEntity livingEntity) {
         this.livingEntity = livingEntity;
@@ -29,20 +30,37 @@ public class DoppelgangerTask extends BukkitRunnable {
     @Override
     public void run() {
         if (!livingEntity.isDead() && livingEntity.getHealth() > 0) {
-            RayTraceResult rayTraceResult = livingEntity.rayTraceBlocks(distance);
-            if (rayTraceResult != null) {
-                Block block = rayTraceResult.getHitBlock();
-                if (block != null && !banBlockTypes.contains(block.getType())) {
-                    block.breakNaturally();
+            if (Math.random() < 0.5) {
+                RayTraceResult rayTraceResult = livingEntity.rayTraceBlocks(distance);
+                if (rayTraceResult != null) {
+                    Block block = rayTraceResult.getHitBlock();
+                    if (block != null && !banBlockTypes.contains(block.getType())) {
+                        block.breakNaturally();
+                        Location downLoc = new Location(block.getWorld(), block.getX(), block.getY() - 1, block.getZ());
+                        Block downBlock = downLoc.getBlock();
+                        if (downBlock != null && !banBlockTypes.contains(downBlock.getType())) {
+                            downBlock.breakNaturally();
+                        }
+                    }
                 }
             }
             Location eyeLocation = livingEntity.getEyeLocation();
             eyeLocation.setY(eyeLocation.getY() - 0.2);
-            RayTraceResult rayTraceResult1 = livingEntity.getWorld().rayTraceEntities(livingEntity.getLocation(), eyeLocation.getDirection(), distance, 1.25, p -> p.getType() == EntityType.PLAYER && !p.isDead());
+            RayTraceResult rayTraceResult1 = livingEntity.getWorld().rayTraceEntities(livingEntity.getLocation(), eyeLocation.getDirection(), distance, 1.2, p -> p.getType() == EntityType.PLAYER && !p.isDead());
             if (rayTraceResult1 != null) {
                 Entity entity = rayTraceResult1.getHitEntity();
                 if (entity != null) {
                     if (entity instanceof Player player) {
+                        if (Math.random() < 0.1) {
+                            ItemStack mainHand = player.getInventory().getItemInMainHand();
+                            ItemStack offHand = player.getInventory().getItemInOffHand();
+                            if (mainHand != null && mainHand.getType() != Material.AIR) {
+                                player.setCooldown(mainHand.getType(), 80);
+                            }
+                            if (offHand != null && offHand.getType() != Material.AIR) {
+                                player.setCooldown(offHand.getType(), 80);
+                            }
+                        }
                         if (Math.random() < 0.6) {
                             double attackDamage = getAttackDamage(livingEntity);
                             livingEntity.swingMainHand();

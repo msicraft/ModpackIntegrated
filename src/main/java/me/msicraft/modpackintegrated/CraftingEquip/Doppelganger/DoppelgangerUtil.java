@@ -84,6 +84,7 @@ public class DoppelgangerUtil {
                 husk.setCustomName(player.getName() + " 의 장비를 복제한 좀비");
                 husk.setCustomNameVisible(false);
                 husk.setCanPickupItems(false);
+                husk.setBaby(false);
                 EntityEquipment entityEquipment = husk.getEquipment();
                 if (entityEquipment != null) {
                     if (helmet != null && helmet.getType() != Material.AIR) {
@@ -109,6 +110,9 @@ public class DoppelgangerUtil {
                 double baseDamage = getPlayerExtraDamage(player);
                 double randomHealthMultiple = MathUtil.getRandomValueDouble(10.1, 3.1);
                 double randomDamageMultiple = MathUtil.getRandomValueDouble(7.1, 2.1);
+                if (baseDamage < 0) {
+                    baseDamage = 1;
+                }
                 double calHealth = baseMaxHealth + (baseMaxHealth * randomHealthMultiple);
                 double calDamage = baseDamage + (baseDamage * randomDamageMultiple);
                 setMaxHealth(husk, calHealth);

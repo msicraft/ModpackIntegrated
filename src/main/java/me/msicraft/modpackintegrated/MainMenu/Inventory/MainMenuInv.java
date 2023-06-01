@@ -61,6 +61,7 @@ public class MainMenuInv implements InventoryHolder {
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setDisplayName(ChatColor.GREEN + "플레이어 정보");
         double killPointExpPercent = mainMenuUtil.getKillPointNextLevelToExpPercent(player);
+        list.add(ChatColor.GREEN + "플레이어: " + ChatColor.GRAY + player.getName());
         list.add("");
         list.add(ChatColor.GREEN + "킬 포인트: " + ChatColor.GRAY + KillPointUtil.getKillPoint(player) + " (" + (int) killPointExpPercent + "%)");
         list.add("");
@@ -299,6 +300,15 @@ public class MainMenuInv implements InventoryHolder {
         dataContainer.set(new NamespacedKey(ModPackIntegrated.getPlugin(), dataTag), PersistentDataType.STRING, data);
         itemStack.setItemMeta(itemMeta);
         return itemStack;
+    }
+
+    private void applyMainMenuItemTag(ItemStack itemStack) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (itemMeta != null) {
+            PersistentDataContainer data = itemMeta.getPersistentDataContainer();
+            data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-MainMenuFix"), PersistentDataType.STRING, "Fix-Item");
+            itemStack.setItemMeta(itemMeta);
+        }
     }
 
     @Override

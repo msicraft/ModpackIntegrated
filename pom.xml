@@ -34,7 +34,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.2.2</version>
                 <configuration>
-                    <outputDirectory>B:\Bukkit\ModServer\1.16.5BetterMC-BMC1\plugins</outputDirectory>
+                    <outputDirectory>B:\Bukkit\1.16.5 spigot test\plugins</outputDirectory>
                 </configuration>
             </plugin>
             <plugin>
