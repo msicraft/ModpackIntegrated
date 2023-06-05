@@ -27,6 +27,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainMenuInv implements InventoryHolder {
@@ -57,6 +58,9 @@ public class MainMenuInv implements InventoryHolder {
         return info;
     }
 
+    private final List<SpecialAbility> ignoredSpecialAbilities = Arrays.asList(SpecialAbility.extraAttackSpeed, SpecialAbility.extraMovementSpeed,
+            SpecialAbility.increaseMaxHealth);
+
     private void setInfo(Player player) {
         PlayerStat playerStat = new PlayerStat(player);
         List<String> list = new ArrayList<>();
@@ -83,6 +87,7 @@ public class MainMenuInv implements InventoryHolder {
         list.add(ChatColor.GRAY + "추가 공격 속도: " + getValueInfo(attackSpeedV));
         list.add(ChatColor.GRAY + "추가 방어력: " + getValueInfo(defenseV));
         list.add(ChatColor.GRAY + "추가 체력: " + getValueInfo(healthV));
+        list.add(ChatColor.GRAY + "크리티컬 확률: " + ChatColor.WHITE + CraftingEquipStatUtil.getCriticalStat(player));
         list.add("");
         list.add(ChatColor.GREEN + "----------적용된 특수 능력----------");
         PlayerSpecialAbility playerSpecialAbility = new PlayerSpecialAbility(player);
@@ -92,13 +97,16 @@ public class MainMenuInv implements InventoryHolder {
         list.add("");
         List<SpecialAbility> specialAbilities = CraftingEquipStatUtil.getContainSpecialAbilities(player);
         for (SpecialAbility specialAbility : specialAbilities) {
-            if (!SpecialAbilityInfo.modifierSpecialAbilities.contains(specialAbility)) {
+            if (!ignoredSpecialAbilities.contains(specialAbility)) {
                 String a = null;
                 if (ModPackIntegrated.specialAbilityInfoFile.getConfig().contains("Ability." + specialAbility.name())) {
                     a = ModPackIntegrated.specialAbilityInfoFile.getConfig().getString("Ability." + specialAbility.name());
                     if (a != null) {
                         if (SpecialAbilityInfo.hasPercent(specialAbility)) {
                             double percent = playerSpecialAbility.getPercent(specialAbility)*100.0;
+                            if (specialAbility == SpecialAbility.doubleDamage) {
+                                percent = CraftingEquipStatUtil.getCriticalStat(player);
+                            }
                             a = a.replace("<percent>", String.valueOf(percent));
                         }
                         if (SpecialAbilityInfo.hasMultiValue(specialAbility)) {

@@ -50,23 +50,6 @@ public class SpecialAbilityUtil {
         player.setHealth(cal);
     }
 
-    public static void damageConvertHealth(Player player, double takeDamage, double percent) {
-        double currentHealth = player.getHealth();
-        double healingCal = takeDamage * percent;
-        double cal = currentHealth + healingCal;
-        if (cal > player.getMaxHealth()) {
-            cal = player.getMaxHealth();
-        }
-        player.setHealth(cal);
-    }
-
-    public static void applyHalfHealth(Player player) {
-        double currentHealth = player.getHealth();
-        double cal = currentHealth * 0.5;
-        double calR = Math.ceil(cal);
-        player.setHealth(calR);
-    }
-
     public static double getBaseMaxHealth(Entity entity, double percent) {
         double v = 0;
         if (entity instanceof LivingEntity livingEntity) {

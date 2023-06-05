@@ -54,13 +54,16 @@ public class PlayerJoinAndQuit implements Listener {
                             if (SpecialAbilityInfo.getMaxValue_2(specialAbility) < SpecialAbilityInfo.getValue_2(itemStack)) {
                                 SpecialAbilityInfo.applyItemStackToSpecialAbility(itemStack, specialAbility);
                                 CraftingEquipStatUtil.updateAbilityLore(itemStack);
+                                continue;
                             }
                         } else {
                             if (SpecialAbilityInfo.getMaxValue(specialAbility) < SpecialAbilityInfo.getValue(itemStack)) {
                                 SpecialAbilityInfo.applyItemStackToSpecialAbility(itemStack, specialAbility);
                                 CraftingEquipStatUtil.updateAbilityLore(itemStack);
+                                continue;
                             }
                         }
+                        CraftingEquipStatUtil.updateAbilityLore(itemStack);
                     }
                 }
             }

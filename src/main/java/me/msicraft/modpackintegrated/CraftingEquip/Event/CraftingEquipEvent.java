@@ -49,6 +49,25 @@ public class CraftingEquipEvent implements Listener {
         }
     }
 
+    /*
+    double coolDown = SpecialAbilityUtil.calAbilityCoolDown(player, 1);
+                                if (CraftingEquipEvent.abilityCoolDown.containsKey(player.getUniqueId())) {
+                                    Map<SpecialAbility, Long> map = CraftingEquipEvent.abilityCoolDown.get(player.getUniqueId());
+                                    if (map.containsKey(specialAbility)) {
+                                        if (map.get(specialAbility) > System.currentTimeMillis()) {
+                                            continue;
+                                        }
+                                    }
+                                    long dd = (long) (System.currentTimeMillis() + (coolDown * 1000));
+                                    map.put(specialAbility, dd);
+                                } else {
+                                    Map<SpecialAbility, Long> map = new HashMap<>();
+                                    long dd = (long) (System.currentTimeMillis() + (coolDown * 1000));
+                                    map.put(specialAbility, dd);
+                                    CraftingEquipEvent.abilityCoolDown.put(player.getUniqueId(), map);
+                                }
+     */
+
     public static void removeAbilityMap(Player player) {
         abilityCoolDown.remove(player.getUniqueId());
     }
@@ -69,22 +88,6 @@ public class CraftingEquipEvent implements Listener {
                     if (!list.isEmpty()) {
                         List<SpecialAbility> highPriorities = new ArrayList<>();
                         for (SpecialAbility specialAbility : list) {
-                            double coolDown = SpecialAbilityUtil.calAbilityCoolDown(player, 1);
-                            if (CraftingEquipEvent.abilityCoolDown.containsKey(player.getUniqueId())) {
-                                Map<SpecialAbility, Long> map = CraftingEquipEvent.abilityCoolDown.get(player.getUniqueId());
-                                if (map.containsKey(specialAbility)) {
-                                    if (map.get(specialAbility) > System.currentTimeMillis()) {
-                                        continue;
-                                    }
-                                }
-                                long dd = (long) (System.currentTimeMillis() + (coolDown * 1000));
-                                map.put(specialAbility, dd);
-                            } else {
-                                Map<SpecialAbility, Long> map = new HashMap<>();
-                                long dd = (long) (System.currentTimeMillis() + (coolDown * 1000));
-                                map.put(specialAbility, dd);
-                                CraftingEquipEvent.abilityCoolDown.put(player.getUniqueId(), map);
-                            }
                             if (SpecialAbilityInfo.highPriorityAbilities.contains(specialAbility)) {
                                 highPriorities.add(specialAbility);
                             } else {
@@ -98,9 +101,9 @@ public class CraftingEquipEvent implements Listener {
                         }
                         cal = Math.floor(cal*100)/100.0;
                         double criticalPercent = CraftingEquipStatUtil.getCriticalStat(player)/100.0;
-                        Bukkit.getConsoleSender().sendMessage("크리티컬 확률: " + criticalPercent);
                         if (Math.random() < criticalPercent) {
                             cal = cal * 2;
+                            player.sendMessage(ChatColor.BOLD + "" + ChatColor.RED + "크리티컬");
                         }
                     }
                 }
@@ -120,28 +123,12 @@ public class CraftingEquipEvent implements Listener {
                         return;
                     }
                     double originalDamage = e.getDamage();
-                    double cal = originalDamage + CraftingEquipStatUtil.getMeleeValue(player);
+                    double cal = originalDamage + CraftingEquipStatUtil.getProjectileValue(player);
                     if (CraftingEquipStatUtil.hasSpecialAbilityEquipment(player)) {
                         List<SpecialAbility> list = CraftingEquipStatUtil.getContainSpecialAbilities(player);
                         if (!list.isEmpty()) {
                             List<SpecialAbility> highPriorities = new ArrayList<>();
                             for (SpecialAbility specialAbility : list) {
-                                double coolDown = SpecialAbilityUtil.calAbilityCoolDown(player, 1);
-                                if (CraftingEquipEvent.abilityCoolDown.containsKey(player.getUniqueId())) {
-                                    Map<SpecialAbility, Long> map = CraftingEquipEvent.abilityCoolDown.get(player.getUniqueId());
-                                    if (map.containsKey(specialAbility)) {
-                                        if (map.get(specialAbility) > System.currentTimeMillis()) {
-                                            continue;
-                                        }
-                                    }
-                                    long dd = (long) (System.currentTimeMillis() + (coolDown * 1000));
-                                    map.put(specialAbility, dd);
-                                } else {
-                                    Map<SpecialAbility, Long> map = new HashMap<>();
-                                    long dd = (long) (System.currentTimeMillis() + (coolDown * 1000));
-                                    map.put(specialAbility, dd);
-                                    CraftingEquipEvent.abilityCoolDown.put(player.getUniqueId(), map);
-                                }
                                 if (SpecialAbilityInfo.highPriorityAbilities.contains(specialAbility)) {
                                     highPriorities.add(specialAbility);
                                 } else {
@@ -157,6 +144,7 @@ public class CraftingEquipEvent implements Listener {
                             double criticalPercent = CraftingEquipStatUtil.getCriticalStat(player)/100.0;
                             if (Math.random() < criticalPercent) {
                                 cal = cal * 2;
+                                player.sendMessage(ChatColor.BOLD + "" + ChatColor.RED + "크리티컬");
                             }
                         }
                     }
@@ -166,7 +154,7 @@ public class CraftingEquipEvent implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerTakeDamage(EntityDamageByEntityEvent e) {
         Entity entity = e.getEntity();
         if (entity instanceof Player player) {
