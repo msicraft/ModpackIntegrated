@@ -44,6 +44,7 @@ public class CraftingEquipStatUtil {
         map.put("AttackSpeed", 0.0);
         map.put("Defense", 0.0);
         map.put("Health", 0.0);
+        map.put("Critical", 0.0);
         equipStatMap.put(player.getUniqueId(), map);
     }
 
@@ -63,6 +64,8 @@ public class CraftingEquipStatUtil {
 
     public static double getHealthStat(Player player) { return getStatMap(player).get("Health"); }
     public static double getAttackSpeedStat(Player player) { return getStatMap(player).get("AttackSpeed"); }
+
+    public static double getCriticalStat(Player player) { return getStatMap(player).get("Critical"); }
 
     public static EquipmentType getEquipmentType(ItemStack itemStack) {
         EquipmentType type = null;
@@ -90,6 +93,7 @@ public class CraftingEquipStatUtil {
     public static void setAttackSpeedStat(Player player, double amount) { getStatMap(player).put("AttackSpeed", amount); }
     public static void setDefenseStat(Player player, double amount) { getStatMap(player).put("Defense", amount); }
     public static void setHealthStat(Player player, double amount) { getStatMap(player).put("Health", amount); }
+    public static void setCriticalStat(Player player, double amount) { getStatMap(player).put("Critical", amount); }
 
     public static boolean checkEqualEquipmentTypeToSlot(ItemStack itemStack, EquipmentSlot slot) {
         boolean check = false;
@@ -126,6 +130,7 @@ public class CraftingEquipStatUtil {
         double attackSpeed = 0;
         double defense = 0;
         double health = 0;
+        double critical = 0;
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             ItemStack itemStack = player.getInventory().getItem(slot);
             if (itemStack != null && itemStack.getType() != Material.AIR) {
@@ -135,6 +140,7 @@ public class CraftingEquipStatUtil {
                     attackSpeed = attackSpeed + getAttackSpeed(itemStack);
                     defense = defense + getDefense(itemStack);
                     health = health + getHealth(itemStack);
+                    critical = critical + getCritical(itemStack);
                 }
             }
         }
@@ -143,6 +149,7 @@ public class CraftingEquipStatUtil {
         setAttackSpeedStat(player, attackSpeed);
         setDefenseStat(player, defense);
         setHealthStat(player, health);
+        setCriticalStat(player, critical);
     }
 
     public static double getTotalMeleeDamageStat(Player player) {
@@ -275,6 +282,15 @@ public class CraftingEquipStatUtil {
         return value;
     }
 
+    public static double getCritical(ItemStack itemStack) {
+        double v = 0;
+        SpecialAbility specialAbility = getSpecialAbility(itemStack);
+        if (specialAbility == SpecialAbility.doubleDamage) {
+            v = SpecialAbilityInfo.getPercent(itemStack);
+        }
+        return v;
+    }
+
     public static boolean hasItemSpecialAbility(ItemStack itemStack) {
         boolean check = false;
         if (itemStack != null && itemStack.getType() != Material.AIR) {
@@ -309,63 +325,24 @@ public class CraftingEquipStatUtil {
     public static void applySpecialAbility(ItemStack itemStack) {
         ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta != null) {
-            PersistentDataContainer data = itemMeta.getPersistentDataContainer();
-            List<String> lore = itemMeta.getLore();
-            List<String> replaceLore = new ArrayList<>();
-            if (lore != null) {
-                SpecialAbility specialAbility = CraftingEquipUtil.getRandomAbility();
-                String info = ModPackIntegrated.specialAbilityInfoFile.getConfig().getString("Ability." + specialAbility.name());
-                if (info != null) {
-                    info = ChatColor.translateAlternateColorCodes('&', info);
-                }
-                for (String s : lore) {
-                    if (s.equals(ChatColor.GRAY + "특수 능력: " + ChatColor.RED + "X")) {
-                        replaceLore.add(ChatColor.GRAY + "특수 능력: " + info);
-                    } else {
-                        replaceLore.add(s);
-                    }
-                }
-                data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-SpecialAbility"), PersistentDataType.STRING, specialAbility.name());
-                itemMeta.setLore(replaceLore);
-                itemStack.setItemMeta(itemMeta);
-            }
+            SpecialAbility specialAbility = CraftingEquipUtil.getRandomAbility();
+            SpecialAbilityInfo.applyItemStackToSpecialAbility(itemStack, specialAbility);
+            updateAbilityLore(itemStack);
         }
     }
 
     public static void rerollSpecialAbility(ItemStack itemStack) {
         ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta != null) {
-            PersistentDataContainer data = itemMeta.getPersistentDataContainer();
             SpecialAbility specialAbility = CraftingEquipUtil.getRandomAbility();
-            String replaceInfo = ModPackIntegrated.specialAbilityInfoFile.getConfig().getString("Ability." + specialAbility.name());
-            if (replaceInfo != null) {
-                replaceInfo = ChatColor.translateAlternateColorCodes('&', replaceInfo);
-            }
-            List<String> lore = itemMeta.getLore();
-            List<String> replaceLore = new ArrayList<>();
-            if (lore != null) {
-                for (String s : lore) {
-                    if (s.contains("특수 능력:")) {
-                        replaceLore.add(ChatColor.GRAY + "특수 능력: " + replaceInfo);
-                    } else {
-                        replaceLore.add(s);
-                    }
-                }
-            }
-            data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-SpecialAbility"), PersistentDataType.STRING, specialAbility.name());
-            itemMeta.setLore(replaceLore);
-            itemStack.setItemMeta(itemMeta);
+            SpecialAbilityInfo.applyItemStackToSpecialAbility(itemStack, specialAbility);
+            updateAbilityLore(itemStack);
         }
     }
 
     public static void setSpecialAbility(SpecialAbility specialAbility, ItemStack itemStack) {
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        if (itemMeta != null) {
-            PersistentDataContainer data = itemMeta.getPersistentDataContainer();
-            data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-SpecialAbility"), PersistentDataType.STRING, specialAbility.name());
-            itemStack.setItemMeta(itemMeta);
-            updateAbilityLore(itemStack);
-        }
+        SpecialAbilityInfo.applyItemStackToSpecialAbility(itemStack, specialAbility);
+        updateAbilityLore(itemStack);
     }
 
     public static SpecialAbility getSpecialAbility(ItemStack itemStack) {
@@ -403,28 +380,6 @@ public class CraftingEquipStatUtil {
         return list;
     }
 
-    private static final List<SpecialAbility> modifierAbilities = Arrays.asList(SpecialAbility.extraAttackSpeed_5,SpecialAbility.extraAttackSpeed_10
-    ,SpecialAbility.extraAttackSpeed_15,SpecialAbility.extraMovementSpeed_5,SpecialAbility.extraMovementSpeed_10,SpecialAbility.increaseMaxHealth_5,SpecialAbility.increaseMaxHealth_10,
-            SpecialAbility.increaseMaxHealthAndDecreaseDamage_20_25, SpecialAbility.increaseMaxHealthAndDecreaseDamage_25_30);
-
-    public static List<SpecialAbility> getModifierAbility(Player player) {
-        List<SpecialAbility> list = new ArrayList<>();
-        for (EquipmentSlot slot : EquipmentSlot.values()) {
-            ItemStack itemStack = player.getInventory().getItem(slot);
-            if (itemStack != null && itemStack.getType() != Material.AIR) {
-                if (checkEqualEquipmentTypeToSlot(itemStack, slot)) {
-                    SpecialAbility specialAbility = getSpecialAbility(itemStack);
-                    if (specialAbility != null) {
-                        if (!list.contains(specialAbility) && modifierAbilities.contains(specialAbility)) {
-                            list.add(specialAbility);
-                        }
-                    }
-                }
-            }
-        }
-        return list;
-    }
-
     public static void updateAbilityLore(ItemStack itemStack) {
         ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta != null) {
@@ -433,10 +388,7 @@ public class CraftingEquipStatUtil {
                 SpecialAbility originalAbility = getSpecialAbility(itemStack);
                 String info;
                 if (originalAbility != null) {
-                    info = ModPackIntegrated.specialAbilityInfoFile.getConfig().getString("Ability." + originalAbility.name());
-                    if (info != null) {
-                        info = ChatColor.translateAlternateColorCodes('&', info);
-                    }
+                    info = SpecialAbilityInfo.getLoreAboutItemStack(itemStack, originalAbility);
                 } else {
                     info = ChatColor.RED + "X";
                     PersistentDataContainer data = itemMeta.getPersistentDataContainer();

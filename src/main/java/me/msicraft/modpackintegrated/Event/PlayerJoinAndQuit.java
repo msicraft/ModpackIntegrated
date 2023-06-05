@@ -1,9 +1,11 @@
 package me.msicraft.modpackintegrated.Event;
 
+import me.msicraft.modpackintegrated.CraftingEquip.Enum.SpecialAbility;
+import me.msicraft.modpackintegrated.CraftingEquip.Event.CraftingEquipEvent;
 import me.msicraft.modpackintegrated.CraftingEquip.Task.CraftingEquipStatTask;
-import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipSpecialAbility;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipStatUtil;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipUtil;
+import me.msicraft.modpackintegrated.CraftingEquip.Util.SpecialAbilityInfo;
 import me.msicraft.modpackintegrated.KillPoint.KillPointUtil;
 import me.msicraft.modpackintegrated.ModPackIntegrated;
 import me.msicraft.modpackintegrated.PlayerData.File.PlayerDataFile;
@@ -29,12 +31,37 @@ public class PlayerJoinAndQuit implements Listener {
 
     private final ItemStack airStack = new ItemStack(Material.AIR, 1);
 
-    private void updateInventory(Player player) {
+    public static void updateInventory(Player player) {
         ItemStack[] itemStacks = player.getInventory().getContents();
         for (ItemStack itemStack : itemStacks) {
             if (itemStack != null && itemStack.getType() != Material.AIR) {
                 if (CraftingEquipUtil.isCraftingEquipment(itemStack)) {
-                    CraftingEquipStatUtil.updateAbilityLore(itemStack);
+                    SpecialAbility specialAbility = CraftingEquipStatUtil.getSpecialAbility(itemStack);
+                    if (specialAbility != null) {
+                        if (SpecialAbilityInfo.hasPercent(specialAbility)) {
+                            if (SpecialAbilityInfo.getMaxPercent(specialAbility) < SpecialAbilityInfo.getPercent(itemStack)) {
+                                SpecialAbilityInfo.applyItemStackToSpecialAbility(itemStack, specialAbility);
+                                CraftingEquipStatUtil.updateAbilityLore(itemStack);
+                                continue;
+                            }
+                        }
+                        if (SpecialAbilityInfo.hasMultiValue(specialAbility)) {
+                            if (SpecialAbilityInfo.getMaxValue_1(specialAbility) < SpecialAbilityInfo.getValue_1(itemStack)) {
+                                SpecialAbilityInfo.applyItemStackToSpecialAbility(itemStack, specialAbility);
+                                CraftingEquipStatUtil.updateAbilityLore(itemStack);
+                                continue;
+                            }
+                            if (SpecialAbilityInfo.getMaxValue_2(specialAbility) < SpecialAbilityInfo.getValue_2(itemStack)) {
+                                SpecialAbilityInfo.applyItemStackToSpecialAbility(itemStack, specialAbility);
+                                CraftingEquipStatUtil.updateAbilityLore(itemStack);
+                            }
+                        } else {
+                            if (SpecialAbilityInfo.getMaxValue(specialAbility) < SpecialAbilityInfo.getValue(itemStack)) {
+                                SpecialAbilityInfo.applyItemStackToSpecialAbility(itemStack, specialAbility);
+                                CraftingEquipStatUtil.updateAbilityLore(itemStack);
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -87,7 +114,7 @@ public class PlayerJoinAndQuit implements Listener {
         craftingEquipStatUtil.removeStatMap(player);
         PlayerRelated.removeLastDeathLocationMap(player);
         ModPackIntegrated.exportEnchantMap.remove(player.getUniqueId());
-        CraftingEquipSpecialAbility.removeAbilityMap(player);
+        CraftingEquipEvent.removeAbilityMap(player);
         CraftingEquipStatTask.removeMap(player);
         if (player.isInvulnerable()) {
             player.setInvulnerable(false);

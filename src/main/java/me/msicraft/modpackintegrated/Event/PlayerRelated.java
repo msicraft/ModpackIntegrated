@@ -5,6 +5,7 @@ import me.msicraft.modpackintegrated.ModPackIntegrated;
 import me.msicraft.modpackintegrated.Util.ExpUtil;
 import me.msicraft.modpackintegrated.Util.PlayerUtil;
 import me.msicraft.modpackintegrated.Version.Version_1_16_R3;
+import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -352,6 +353,14 @@ public class PlayerRelated implements Listener {
 
     private static boolean isEnabledFixFinalDamage = false;
     private static double minFinalDamage = 0;
+
+    public static boolean enabledFixFinalDamage() {
+        return isEnabledFixFinalDamage;
+    }
+
+    public static double getMinFinalDamage() {
+        return minFinalDamage;
+    }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void takeDamageFinalFix(EntityDamageByEntityEvent e) {

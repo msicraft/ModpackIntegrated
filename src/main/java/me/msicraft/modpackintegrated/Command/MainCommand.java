@@ -3,6 +3,8 @@ package me.msicraft.modpackintegrated.Command;
 import me.msicraft.modpackintegrated.CraftingEquip.Enum.SpecialAbility;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipStatUtil;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipUtil;
+import me.msicraft.modpackintegrated.CraftingEquip.Util.SpecialAbilityInfo;
+import me.msicraft.modpackintegrated.Event.PlayerJoinAndQuit;
 import me.msicraft.modpackintegrated.KillPoint.KillPointUtil;
 import me.msicraft.modpackintegrated.MainMenu.Inventory.MainMenuInv;
 import me.msicraft.modpackintegrated.ModPackIntegrated;
@@ -20,6 +22,9 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.List;
@@ -37,6 +42,15 @@ public class MainCommand implements CommandExecutor {
                 if (var != null) {
                     switch (var) {
                         case "test" -> {
+                            if (sender instanceof Player player) {
+                                ItemStack itemStack = player.getInventory().getItemInMainHand();
+                                ItemMeta itemMeta = itemStack.getItemMeta();
+                                PersistentDataContainer data = itemMeta.getPersistentDataContainer();
+                                for (NamespacedKey namespacedKey : data.getKeys()) {
+                                    player.sendMessage("Key: " + namespacedKey);
+                                    player.sendMessage("Value: " + data.get(namespacedKey, PersistentDataType.STRING));
+                                }
+                            }
                         }
                         case "fixentityhealth" -> {
                             int entityC = 0;
@@ -113,6 +127,9 @@ public class MainCommand implements CommandExecutor {
                                                         ItemStack itemStack = player.getInventory().getItemInMainHand();
                                                         if (itemStack != null && itemStack.getType() != Material.AIR) {
                                                             player.sendMessage("특수 능력: " + CraftingEquipStatUtil.getSpecialAbility(itemStack));
+                                                            player.sendMessage("Percent: " + SpecialAbilityInfo.getPercent(itemStack));
+                                                            player.sendMessage("Value: " + SpecialAbilityInfo.getValue(itemStack));
+                                                            player.sendMessage("Value-1 | Value- 2: " + SpecialAbilityInfo.getValue_1(itemStack) + " | " + SpecialAbilityInfo.getValue_2(itemStack));
                                                         }
                                                     }
                                                     case "set" -> {
@@ -152,14 +169,7 @@ public class MainCommand implements CommandExecutor {
                                                     target = player;
                                                 }
                                                 if (target != null) {
-                                                    ItemStack[] itemStacks = target.getInventory().getContents();
-                                                    for (ItemStack itemStack : itemStacks) {
-                                                        if (itemStack != null && itemStack.getType() != Material.AIR) {
-                                                            if (CraftingEquipUtil.isCraftingEquipment(itemStack)) {
-                                                                CraftingEquipStatUtil.updateAbilityLore(itemStack);
-                                                            }
-                                                        }
-                                                    }
+                                                    PlayerJoinAndQuit.updateInventory(target);
                                                 }
                                             }
                                         }

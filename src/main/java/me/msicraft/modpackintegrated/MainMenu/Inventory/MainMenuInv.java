@@ -1,10 +1,13 @@
 package me.msicraft.modpackintegrated.MainMenu.Inventory;
 
 import me.msicraft.modpackintegrated.CraftingEquip.Data.ExtractionInfo;
+import me.msicraft.modpackintegrated.CraftingEquip.Data.PlayerSpecialAbility;
 import me.msicraft.modpackintegrated.CraftingEquip.Data.PlayerStat;
 import me.msicraft.modpackintegrated.CraftingEquip.Enum.SpecialAbility;
+import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipStatUtil;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipUtil;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.ExtractionCraftingEquipmentUtil;
+import me.msicraft.modpackintegrated.CraftingEquip.Util.SpecialAbilityInfo;
 import me.msicraft.modpackintegrated.KillPoint.KillPointUtil;
 import me.msicraft.modpackintegrated.MainMenu.ExportEnchant.ExportEnchantUtil;
 import me.msicraft.modpackintegrated.MainMenu.KillPointShop.KillPointShopUtil;
@@ -80,6 +83,39 @@ public class MainMenuInv implements InventoryHolder {
         list.add(ChatColor.GRAY + "추가 공격 속도: " + getValueInfo(attackSpeedV));
         list.add(ChatColor.GRAY + "추가 방어력: " + getValueInfo(defenseV));
         list.add(ChatColor.GRAY + "추가 체력: " + getValueInfo(healthV));
+        list.add("");
+        list.add(ChatColor.GREEN + "----------적용된 특수 능력----------");
+        PlayerSpecialAbility playerSpecialAbility = new PlayerSpecialAbility(player);
+        list.add(ChatColor.GRAY + "추가 공격 속도: " + ChatColor.AQUA + playerSpecialAbility.getExtraAttackSpeed() + "%");
+        list.add(ChatColor.GRAY + "추가 이동 속도: " + ChatColor.AQUA + playerSpecialAbility.getExtraMovementSpeed() + "%");
+        list.add(ChatColor.GRAY + "추가 최대 체력: " + ChatColor.AQUA + playerSpecialAbility.getExtraHealth() + "%");
+        list.add("");
+        List<SpecialAbility> specialAbilities = CraftingEquipStatUtil.getContainSpecialAbilities(player);
+        for (SpecialAbility specialAbility : specialAbilities) {
+            if (!SpecialAbilityInfo.modifierSpecialAbilities.contains(specialAbility)) {
+                String a = null;
+                if (ModPackIntegrated.specialAbilityInfoFile.getConfig().contains("Ability." + specialAbility.name())) {
+                    a = ModPackIntegrated.specialAbilityInfoFile.getConfig().getString("Ability." + specialAbility.name());
+                    if (a != null) {
+                        if (SpecialAbilityInfo.hasPercent(specialAbility)) {
+                            double percent = playerSpecialAbility.getPercent(specialAbility)*100.0;
+                            a = a.replace("<percent>", String.valueOf(percent));
+                        }
+                        if (SpecialAbilityInfo.hasMultiValue(specialAbility)) {
+                            double value1 = playerSpecialAbility.getValue1(specialAbility)*100.0;
+                            double value2 = playerSpecialAbility.getValue2(specialAbility)*100.0;
+                            a = a.replace("<value-1>", String.valueOf(value1));
+                            a = a.replace("<value-2>", String.valueOf(value2));
+                        } else {
+                            double value = playerSpecialAbility.getValue(specialAbility)*100.0;
+                            a = a.replace("<value>", String.valueOf(value));
+                        }
+                        a = ChatColor.translateAlternateColorCodes('&', a);
+                    }
+                }
+                list.add(ChatColor.GRAY + "특수 능력: " + a);
+            }
+        }
         itemMeta.setLore(list);
         itemStack.setItemMeta(itemMeta);
         mainMenuInv.setItem(4, itemStack);
@@ -229,7 +265,7 @@ public class MainMenuInv implements InventoryHolder {
         }
     }
 
-    private final int[] abilityInfoSlots = {0,1,2,3,4,5,6,7,8,9, 10,11,12,13,14,15,16,17, 18,19,20,21,22,23,24,25,26, 27,28,29,30,31,32,33,34,35, 36,37,38,39,40,41,42,44};
+    //private final int[] abilityInfoSlots = {0,1,2,3,4,5,6,7,8,9, 10,11,12,13,14,15,16,17, 18,19,20,21,22,23,24,25,26, 27,28,29,30,31,32,33,34,35, 36,37,38,39,40,41,42,44};
 
     private int getSpecialAbilityPage(Player player) {
         int p = 0;
@@ -277,9 +313,8 @@ public class MainMenuInv implements InventoryHolder {
                 list.clear();
             }
             SpecialAbility specialAbility = specialAbilities.get(a);
-            String info = ModPackIntegrated.specialAbilityInfoFile.getConfig().getString("Ability." + specialAbility.name());
+            String info = SpecialAbilityInfo.getLoreAboutMenuList(specialAbility);
             if (info != null) {
-                info = ChatColor.translateAlternateColorCodes('&', info);
                 list.add(info);
                 itemStack = createNormalItem(Material.PAPER, ChatColor.WHITE + "" + count, list, "dd", "dd");
                 mainMenuInv.setItem(count, itemStack);

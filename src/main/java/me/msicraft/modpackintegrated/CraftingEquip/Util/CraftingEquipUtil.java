@@ -214,7 +214,7 @@ public class CraftingEquipUtil {
                 }
                 if (isApplySpecialAbility) {
                     if (equipmentType == EquipmentType.weapon || equipmentType == EquipmentType.armor) {
-                        lore.add(ChatColor.GREEN + "50%의 확률로 특수 능력 " + ChatColor.GRAY + SpecialAbility.values().length + ChatColor.GREEN + " 개 중 " + ChatColor.GRAY + "1" + ChatColor.GREEN +" 개 부여");
+                        lore.add(ChatColor.GREEN + "50%의 확률로 특수 능력 " + ChatColor.GRAY + (SpecialAbility.values().length-1) + ChatColor.GREEN + " 개 중 " + ChatColor.GRAY + "1" + ChatColor.GREEN +" 개 부여");
                     }
                 } else {
                     lore.add(ChatColor.GREEN + "특수 능력 부여되지 않음");
@@ -261,6 +261,18 @@ public class CraftingEquipUtil {
             }
             if (data.has(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-SpecialAbility"), PersistentDataType.STRING)) {
                 data.remove(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-SpecialAbility"));
+            }
+            if (data.has(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-SpecialAbility_Percent"), PersistentDataType.STRING)) {
+                data.remove(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-SpecialAbility_Percent"));
+            }
+            if (data.has(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-SpecialAbility_Value1"), PersistentDataType.STRING)) {
+                data.remove(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-SpecialAbility_Value1"));
+            }
+            if (data.has(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-SpecialAbility_Value2"), PersistentDataType.STRING)) {
+                data.remove(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-SpecialAbility_Value2"));
+            }
+            if (data.has(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-SpecialAbility_Value"), PersistentDataType.STRING)) {
+                data.remove(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-SpecialAbility_Value"));
             }
             if (data.has(new NamespacedKey(ModPackIntegrated.getPlugin(), meleeTagKey), PersistentDataType.STRING)) {
                 data.remove(new NamespacedKey(ModPackIntegrated.getPlugin(), meleeTagKey));
@@ -319,15 +331,14 @@ public class CraftingEquipUtil {
                     data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-TotalKillPoint"), PersistentDataType.STRING, String.valueOf(totalKillPoint));
                     data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-EquipmentType"), PersistentDataType.STRING, equipmentType.name());
                     lore.add(ChatColor.GREEN + "장비 유형: " + ChatColor.GRAY + equipmentType.name());
+                    SpecialAbility specialAbility = null;
                     if (isApplySpecialAbility) {
                         if (Math.random() < 0.5) {
-                            SpecialAbility specialAbility = getRandomAbility();
-                            String info = ModPackIntegrated.specialAbilityInfoFile.getConfig().getString("Ability." + specialAbility.name());
+                            specialAbility = getRandomAbility();
+                            String info = SpecialAbilityInfo.getLoreAboutItemStack(itemStack, specialAbility);
                             if (info != null) {
-                                info = ChatColor.translateAlternateColorCodes('&', info);
+                                lore.add(ChatColor.GRAY + "특수 능력: " + info);
                             }
-                            lore.add(ChatColor.GRAY + "특수 능력: " + info);
-                            data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-SpecialAbility"), PersistentDataType.STRING, specialAbility.name());
                         } else {
                             lore.add(ChatColor.GRAY + "특수 능력: " + ChatColor.RED + "X");
                         }
@@ -411,6 +422,10 @@ public class CraftingEquipUtil {
                     data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), healthTagKey), PersistentDataType.STRING, String.valueOf(maxHealthValue));
                     itemMeta.setLore(lore);
                     itemStack.setItemMeta(itemMeta);
+                    if (specialAbility != null) {
+                        SpecialAbilityInfo.applyItemStackToSpecialAbility(itemStack, specialAbility);
+                        CraftingEquipStatUtil.updateAbilityLore(itemStack);
+                    }
                     applyCraftingEquipmentTag(itemStack);
                     int slot = PlayerUtil.getPlayerEmptySlot(player);
                     if (slot != -1) {
@@ -491,18 +506,17 @@ public class CraftingEquipUtil {
             int melee = 0, projectile = 0, attackSpeed = 0, defense = 0, health = 0;
             double meleeValue = 0, projectileValue = 0, attackSpeedValue = 0, defenseValue = 0, maxHealthValue = 0;
             int remainingKillPoint = availableKillPoint;
+            SpecialAbility specialAbility = null;
             if (Math.random() < 0.3) {
                 if ((remainingKillPoint - requiredSpecialAbility()) < 0) {
                     lore.add(ChatColor.GRAY + "특수 능력: " + ChatColor.RED + "X");
                 } else {
                     remainingKillPoint = remainingKillPoint - requiredSpecialAbility();
-                    SpecialAbility specialAbility = getRandomAbility();
-                    String info = ModPackIntegrated.specialAbilityInfoFile.getConfig().getString("Ability." + specialAbility.name());
+                    specialAbility = getRandomAbility();
+                    String info = SpecialAbilityInfo.getLoreAboutItemStack(itemStack, specialAbility);
                     if (info != null) {
-                        info = ChatColor.translateAlternateColorCodes('&', info);
+                        lore.add(ChatColor.GRAY + "특수 능력: " + info);
                     }
-                    lore.add(ChatColor.GRAY + "특수 능력: " + info);
-                    data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-SpecialAbility"), PersistentDataType.STRING, specialAbility.name());
                 }
             } else {
                 lore.add(ChatColor.GRAY + "특수 능력: " + ChatColor.RED + "X");
@@ -600,6 +614,10 @@ public class CraftingEquipUtil {
             data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), healthTagKey), PersistentDataType.STRING, String.valueOf(maxHealthValue));
             itemMeta.setLore(lore);
             itemStack.setItemMeta(itemMeta);
+            if (specialAbility != null) {
+                SpecialAbilityInfo.applyItemStackToSpecialAbility(itemStack, specialAbility);
+                CraftingEquipStatUtil.updateAbilityLore(itemStack);
+            }
         }
     }
 

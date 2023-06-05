@@ -1,6 +1,7 @@
 package me.msicraft.modpackintegrated.CraftingEquip.Task;
 
 import me.msicraft.modpackintegrated.CraftingEquip.Util.SpecialAbilityUtil;
+import me.msicraft.modpackintegrated.Event.PlayerRelated;
 import me.msicraft.modpackintegrated.ModPackIntegrated;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -19,6 +20,11 @@ public class DotDamageTask extends BukkitRunnable {
         this.livingEntity = livingEntity;
         this.maxTicks = maxTicks;
         perDamage = (totalDamage / (maxTicks/10.0));
+        if (PlayerRelated.enabledFixFinalDamage()) {
+            if (perDamage < 0.5) {
+                perDamage = 0.5;
+            }
+        }
     }
 
     @Override

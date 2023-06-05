@@ -1,5 +1,6 @@
 package me.msicraft.modpackintegrated.CraftingEquip.Task;
 
+import me.msicraft.modpackintegrated.CraftingEquip.Data.PlayerSpecialAbility;
 import me.msicraft.modpackintegrated.CraftingEquip.Enum.SpecialAbility;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipStatUtil;
 import me.msicraft.modpackintegrated.ModPackIntegrated;
@@ -55,24 +56,11 @@ public class CraftingEquipStatTask extends BukkitRunnable {
                 }
             }
             Bukkit.getScheduler().runTask(ModPackIntegrated.getPlugin(), ()-> {
-                List<SpecialAbility> modifierAbilities = CraftingEquipStatUtil.getModifierAbility(player);
+                PlayerSpecialAbility playerSpecialAbility = new PlayerSpecialAbility(player);
                 removeAbilityModifier(player);
-                int attackSpeedM = 0;
-                int movementSpeedM = 0;
-                int maxHealthM = 0;
-                for (SpecialAbility specialAbility : modifierAbilities) {
-                    switch (specialAbility) {
-                        case extraAttackSpeed_5 -> attackSpeedM = attackSpeedM + 5;
-                        case extraAttackSpeed_10 -> attackSpeedM = attackSpeedM + 10;
-                        case extraAttackSpeed_15 -> attackSpeedM = attackSpeedM + 15;
-                        case extraMovementSpeed_5 -> movementSpeedM = movementSpeedM + 5;
-                        case extraMovementSpeed_10 -> movementSpeedM = movementSpeedM + 10;
-                        case increaseMaxHealth_5 -> maxHealthM = maxHealthM + 5;
-                        case increaseMaxHealth_10 -> maxHealthM = maxHealthM + 10;
-                        case increaseMaxHealthAndDecreaseDamage_20_25 -> maxHealthM = maxHealthM + 20;
-                        case increaseMaxHealthAndDecreaseDamage_25_30 -> maxHealthM = maxHealthM + 25;
-                    }
-                }
+                int attackSpeedM = playerSpecialAbility.getExtraAttackSpeed();
+                int movementSpeedM = playerSpecialAbility.getExtraMovementSpeed();
+                int maxHealthM = playerSpecialAbility.getExtraHealth();
                 if (attackSpeedM != 0) {
                     AttributeInstance instance = player.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
                     if (instance != null) {

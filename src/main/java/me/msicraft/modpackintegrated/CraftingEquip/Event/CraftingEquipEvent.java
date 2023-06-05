@@ -2,9 +2,7 @@ package me.msicraft.modpackintegrated.CraftingEquip.Event;
 
 import me.msicraft.modpackintegrated.CraftingEquip.Doppelganger.DoppelgangerUtil;
 import me.msicraft.modpackintegrated.CraftingEquip.Enum.SpecialAbility;
-import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipSpecialAbility;
-import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipStatUtil;
-import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipUtil;
+import me.msicraft.modpackintegrated.CraftingEquip.Util.*;
 import me.msicraft.modpackintegrated.ModPackIntegrated;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
@@ -14,6 +12,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -22,13 +21,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class CraftingEquipEvent implements Listener {
 
+    public static final Map<UUID, Map<SpecialAbility, Long>> abilityCoolDown = new HashMap<>();
     private final Random random = new Random();
 
     private static String defenseEquations = null;
@@ -52,11 +49,11 @@ public class CraftingEquipEvent implements Listener {
         }
     }
 
-    private static final List<SpecialAbility> lowPriorityAbilities = Arrays.asList(SpecialAbility.doubleDamage_5, SpecialAbility.doubleDamage_10,
-            SpecialAbility.doubleDamage_15, SpecialAbility.lifeDrain_5_25, SpecialAbility.lifeDrain_5_50, SpecialAbility.lifeDrain_10_25, SpecialAbility.lifeDrain_10_50
-    ,SpecialAbility.damageConvertTrueDamage_1,SpecialAbility.damageConvertTrueDamage_5,SpecialAbility.damageConvertTrueDamage_10);
+    public static void removeAbilityMap(Player player) {
+        abilityCoolDown.remove(player.getUniqueId());
+    }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerMeleeAttack(EntityDamageByEntityEvent e) {
         Entity damager = e.getDamager();
         Entity entity = e.getEntity();
@@ -70,20 +67,41 @@ public class CraftingEquipEvent implements Listener {
                 if (CraftingEquipStatUtil.hasSpecialAbilityEquipment(player)) {
                     List<SpecialAbility> list = CraftingEquipStatUtil.getContainSpecialAbilities(player);
                     if (!list.isEmpty()) {
-                        List<SpecialAbility> lowPriorities = new ArrayList<>();
+                        List<SpecialAbility> highPriorities = new ArrayList<>();
                         for (SpecialAbility specialAbility : list) {
-                            if (lowPriorityAbilities.contains(specialAbility)) {
-                                lowPriorities.add(specialAbility);
+                            double coolDown = SpecialAbilityUtil.calAbilityCoolDown(player, 1);
+                            if (CraftingEquipEvent.abilityCoolDown.containsKey(player.getUniqueId())) {
+                                Map<SpecialAbility, Long> map = CraftingEquipEvent.abilityCoolDown.get(player.getUniqueId());
+                                if (map.containsKey(specialAbility)) {
+                                    if (map.get(specialAbility) > System.currentTimeMillis()) {
+                                        continue;
+                                    }
+                                }
+                                long dd = (long) (System.currentTimeMillis() + (coolDown * 1000));
+                                map.put(specialAbility, dd);
+                            } else {
+                                Map<SpecialAbility, Long> map = new HashMap<>();
+                                long dd = (long) (System.currentTimeMillis() + (coolDown * 1000));
+                                map.put(specialAbility, dd);
+                                CraftingEquipEvent.abilityCoolDown.put(player.getUniqueId(), map);
+                            }
+                            if (SpecialAbilityInfo.highPriorityAbilities.contains(specialAbility)) {
+                                highPriorities.add(specialAbility);
                             } else {
                                 cal = CraftingEquipSpecialAbility.applySpecialAbilityByPlayerAttack(player, cal, specialAbility, entity);
                             }
                         }
-                        if (!lowPriorities.isEmpty()) {
-                            for (SpecialAbility specialAbility : lowPriorities) {
+                        if (!highPriorities.isEmpty()) {
+                            for (SpecialAbility specialAbility : highPriorities) {
                                 cal = CraftingEquipSpecialAbility.applySpecialAbilityByPlayerAttack(player, cal, specialAbility, entity);
                             }
                         }
                         cal = Math.floor(cal*100)/100.0;
+                        double criticalPercent = CraftingEquipStatUtil.getCriticalStat(player)/100.0;
+                        Bukkit.getConsoleSender().sendMessage("크리티컬 확률: " + criticalPercent);
+                        if (Math.random() < criticalPercent) {
+                            cal = cal * 2;
+                        }
                     }
                 }
                 e.setDamage(cal);
@@ -91,7 +109,7 @@ public class CraftingEquipEvent implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerArrowAttack(EntityDamageByEntityEvent e) {
         if (e.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
             Entity damager = e.getDamager();
@@ -102,24 +120,44 @@ public class CraftingEquipEvent implements Listener {
                         return;
                     }
                     double originalDamage = e.getDamage();
-                    double cal = originalDamage + CraftingEquipStatUtil.getProjectileValue(player);
+                    double cal = originalDamage + CraftingEquipStatUtil.getMeleeValue(player);
                     if (CraftingEquipStatUtil.hasSpecialAbilityEquipment(player)) {
                         List<SpecialAbility> list = CraftingEquipStatUtil.getContainSpecialAbilities(player);
                         if (!list.isEmpty()) {
-                            List<SpecialAbility> lowPriorities = new ArrayList<>();
+                            List<SpecialAbility> highPriorities = new ArrayList<>();
                             for (SpecialAbility specialAbility : list) {
-                                if (lowPriorityAbilities.contains(specialAbility)) {
-                                    lowPriorities.add(specialAbility);
+                                double coolDown = SpecialAbilityUtil.calAbilityCoolDown(player, 1);
+                                if (CraftingEquipEvent.abilityCoolDown.containsKey(player.getUniqueId())) {
+                                    Map<SpecialAbility, Long> map = CraftingEquipEvent.abilityCoolDown.get(player.getUniqueId());
+                                    if (map.containsKey(specialAbility)) {
+                                        if (map.get(specialAbility) > System.currentTimeMillis()) {
+                                            continue;
+                                        }
+                                    }
+                                    long dd = (long) (System.currentTimeMillis() + (coolDown * 1000));
+                                    map.put(specialAbility, dd);
+                                } else {
+                                    Map<SpecialAbility, Long> map = new HashMap<>();
+                                    long dd = (long) (System.currentTimeMillis() + (coolDown * 1000));
+                                    map.put(specialAbility, dd);
+                                    CraftingEquipEvent.abilityCoolDown.put(player.getUniqueId(), map);
+                                }
+                                if (SpecialAbilityInfo.highPriorityAbilities.contains(specialAbility)) {
+                                    highPriorities.add(specialAbility);
                                 } else {
                                     cal = CraftingEquipSpecialAbility.applySpecialAbilityByPlayerAttack(player, cal, specialAbility, entity);
                                 }
                             }
-                            if (!lowPriorities.isEmpty()) {
-                                for (SpecialAbility specialAbility : lowPriorities) {
+                            if (!highPriorities.isEmpty()) {
+                                for (SpecialAbility specialAbility : highPriorities) {
                                     cal = CraftingEquipSpecialAbility.applySpecialAbilityByPlayerAttack(player, cal, specialAbility, entity);
                                 }
                             }
                             cal = Math.floor(cal*100)/100.0;
+                            double criticalPercent = CraftingEquipStatUtil.getCriticalStat(player)/100.0;
+                            if (Math.random() < criticalPercent) {
+                                cal = cal * 2;
+                            }
                         }
                     }
                     e.setDamage(cal);
