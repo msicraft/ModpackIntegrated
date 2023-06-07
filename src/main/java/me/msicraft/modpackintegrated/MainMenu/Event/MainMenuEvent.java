@@ -11,6 +11,7 @@ import me.msicraft.modpackintegrated.MainMenu.KillPointShop.Skill.KillPointShopS
 import me.msicraft.modpackintegrated.ModPackIntegrated;
 import me.msicraft.modpackintegrated.PlayerData.File.PlayerDataFile;
 import me.msicraft.modpackintegrated.Version.Version_1_16_R3;
+import me.msicraft.modpackintegrated.Version.Version_1_18_R2;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -271,12 +272,17 @@ public class MainMenuEvent implements Listener {
             ItemStack infoBook = e.getInventory().getItem(4);
             if (infoBook != null && infoBook.getType() == Material.BOOK) {
                 if (e.isShiftClick()) {
+                    ItemStack temp = new ItemStack(infoBook);
+                    TextComponent main = new TextComponent(ChatColor.WHITE + player.getName() + ": ");
+                    main.setColor(net.md_5.bungee.api.ChatColor.WHITE);
+                    TextComponent sub = new TextComponent("[" + ChatColor.AQUA + "플레이어 정보" + ChatColor.WHITE + "]");
+                    HoverEvent hoverEvent = null;
                     if (ModPackIntegrated.bukkitVersion.equals("1.16.5")) {
-                        ItemStack temp = new ItemStack(infoBook);
-                        TextComponent main = new TextComponent(ChatColor.WHITE + player.getName() + ": ");
-                        main.setColor(net.md_5.bungee.api.ChatColor.WHITE);
-                        TextComponent sub = new TextComponent("[" + ChatColor.AQUA + "플레이어 정보" + ChatColor.WHITE + "]");
-                        HoverEvent hoverEvent = Version_1_16_R3.getHoverEventByShowItem(temp);
+                        hoverEvent = Version_1_16_R3.getHoverEventByShowItem(temp);
+                    } else if (ModPackIntegrated.bukkitVersion.equals("1.18.2")) {
+                        hoverEvent = Version_1_18_R2.getHoverEventByShowItem(temp);
+                    }
+                    if (hoverEvent != null) {
                         sub.setHoverEvent(hoverEvent);
                         main.addExtra(sub);
                         Bukkit.spigot().broadcast(main);

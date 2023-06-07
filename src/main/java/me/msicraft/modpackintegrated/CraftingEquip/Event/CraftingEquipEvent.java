@@ -2,7 +2,10 @@ package me.msicraft.modpackintegrated.CraftingEquip.Event;
 
 import me.msicraft.modpackintegrated.CraftingEquip.Doppelganger.DoppelgangerUtil;
 import me.msicraft.modpackintegrated.CraftingEquip.Enum.SpecialAbility;
-import me.msicraft.modpackintegrated.CraftingEquip.Util.*;
+import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipSpecialAbility;
+import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipStatUtil;
+import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipUtil;
+import me.msicraft.modpackintegrated.CraftingEquip.Util.SpecialAbilityInfo;
 import me.msicraft.modpackintegrated.ModPackIntegrated;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
@@ -72,7 +75,7 @@ public class CraftingEquipEvent implements Listener {
         abilityCoolDown.remove(player.getUniqueId());
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerMeleeAttack(EntityDamageByEntityEvent e) {
         Entity damager = e.getDamager();
         Entity entity = e.getEntity();
@@ -112,7 +115,7 @@ public class CraftingEquipEvent implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerArrowAttack(EntityDamageByEntityEvent e) {
         if (e.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
             Entity damager = e.getDamager();
@@ -154,7 +157,7 @@ public class CraftingEquipEvent implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerTakeDamage(EntityDamageByEntityEvent e) {
         Entity entity = e.getEntity();
         if (entity instanceof Player player) {

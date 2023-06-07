@@ -36,7 +36,12 @@ public class DotDamageTask extends BukkitRunnable {
                 player.sendMessage(ChatColor.GRAY + "도트 데미지 받음: " + ChatColor.RED + cal);
             }
             tickCount = tickCount + 10;
-            Bukkit.getScheduler().runTask(ModPackIntegrated.getPlugin(), ()-> livingEntity.setNoDamageTicks(0));
+            Bukkit.getScheduler().runTask(ModPackIntegrated.getPlugin(), ()-> {
+                livingEntity.setNoDamageTicks(0);
+                if (livingEntity.getHealth() <= 0 || livingEntity.isDead()) {
+                    cancel();
+                }
+            });
             if (tickCount > maxTicks) {
                 cancel();
             }

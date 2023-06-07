@@ -5,7 +5,7 @@ import me.msicraft.modpackintegrated.ModPackIntegrated;
 import me.msicraft.modpackintegrated.Util.ExpUtil;
 import me.msicraft.modpackintegrated.Util.PlayerUtil;
 import me.msicraft.modpackintegrated.Version.Version_1_16_R3;
-import net.md_5.bungee.api.chat.ClickEvent;
+import me.msicraft.modpackintegrated.Version.Version_1_18_R2;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -225,6 +225,8 @@ public class PlayerRelated implements Listener {
                         HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(tempS.toString()).create());
                         if (ModPackIntegrated.bukkitVersion.equals("1.16.5")) {
                             hoverEvent = Version_1_16_R3.getHoverEventByShowItem(temp);
+                        } else if (ModPackIntegrated.bukkitVersion.equals("1.18.2")) {
+                            hoverEvent = Version_1_18_R2.getHoverEventByShowItem(temp);
                         }
                         sub.setHoverEvent(hoverEvent);
                         main.addExtra(sub);
@@ -305,8 +307,6 @@ public class PlayerRelated implements Listener {
             }
         }
     }
-
-    private final Map<UUID, Boolean> attackCoolDownMap = new HashMap<>();
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void attackCoolDown(EntityDamageByEntityEvent e) {

@@ -13,9 +13,9 @@ import java.util.Map;
 public class PlayerSpecialAbility {
 
     private Player player;
-    private Map<SpecialAbility, Double> percentMap = new HashMap<>();
-    private Map<SpecialAbility, Double> valueMap = new HashMap<>();
-    private Map<SpecialAbility, String> multiValueMap = new HashMap<>();
+    private final Map<SpecialAbility, Double> percentMap = new HashMap<>();
+    private final Map<SpecialAbility, Double> valueMap = new HashMap<>();
+    private final Map<SpecialAbility, String> multiValueMap = new HashMap<>();
 
     private int extraAttackSpeed;
     private int extraMovementSpeed;

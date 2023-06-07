@@ -3,7 +3,6 @@ package me.msicraft.modpackintegrated.CraftingEquip.Util;
 import me.msicraft.modpackintegrated.CraftingEquip.Enum.SpecialAbility;
 import me.msicraft.modpackintegrated.ModPackIntegrated;
 import me.msicraft.modpackintegrated.Util.MathUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -18,11 +17,13 @@ public class SpecialAbilityInfo {
 
     private static final List<SpecialAbility> percentSpecialAbilities = Arrays.asList(SpecialAbility.doubleDamage, SpecialAbility.lifeDrain);
 
-    public static final List<SpecialAbility> multiValueSpecialAbilities = Arrays.asList(SpecialAbility.increaseTakeDamageAndExtraDamage,
+    private static final List<SpecialAbility> multiValueSpecialAbilities = Arrays.asList(SpecialAbility.increaseTakeDamageAndExtraDamage,
             SpecialAbility.increaseMaxHealthAndDecreaseDamage,SpecialAbility.decreaseTakeAndAttackDamage);
 
+    /*
     public static final List<SpecialAbility> modifierSpecialAbilities = Arrays.asList(SpecialAbility.extraAttackSpeed, SpecialAbility.extraMovementSpeed,
             SpecialAbility.increaseMaxHealth, SpecialAbility.increaseMaxHealthAndDecreaseDamage);
+     */
 
     public static final List<SpecialAbility> highPriorityAbilities = Arrays.asList(SpecialAbility.lifeDrain, SpecialAbility.damageConvertTrueDamage);
 
@@ -37,8 +38,8 @@ public class SpecialAbilityInfo {
     public static double getMaxPercent(SpecialAbility specialAbility) {
         double p = 0;
         switch (specialAbility) {
-            case doubleDamage -> p = 20;
-            case lifeDrain -> p = 15;
+            case doubleDamage -> p = 16;
+            case lifeDrain -> p = 11;
         }
         return p;
     }
@@ -46,22 +47,21 @@ public class SpecialAbilityInfo {
     public static double getMaxValue(SpecialAbility specialAbility) {
         double v = 0;
         switch (specialAbility) {
-            case doubleDamage -> v = 0;
-            case lifeDrain -> v = 14;
-            case extraDamage -> v = 6;
+            case lifeDrain -> v = 20;
+            case extraDamage -> v = 4;
             case extraDamagePlayerBaseHealth -> v = 10;
-            case extraAttackSpeed -> v = 15;
-            case extraMovementSpeed -> v = 10.0;
-            case extraDamageToDay -> v = 20;
-            case extraDamageToNight -> v = 20.0;
+            case extraAttackSpeed -> v = 7;
+            case extraMovementSpeed -> v = 3;
+            case extraDamageToDay -> v = 15;
+            case extraDamageToNight -> v = 15.0;
             case heal -> v = 2;
-            case changeDamageToRange -> v = 30;
-            case increaseMaxHealth -> v = 10;
-            case extraDamageTargetMaxHealth -> v = 5;
-            case extraDamageTargetCurrentHealth -> v = 10;
-            case damageConvertTrueDamage -> v = 10;
-            case healBaseMaxHealth -> v = 10;
-            case takeDamageConvertDotDamage -> v = 30;
+            case changeDamageToRange -> v = 20.0;
+            case increaseMaxHealth -> v = 8;
+            case extraDamageTargetMaxHealth -> v = 3.0;
+            case extraDamageTargetCurrentHealth -> v = 9;
+            case damageConvertTrueDamage -> v = 5;
+            case healBaseMaxHealth -> v = 8.0;
+            case takeDamageConvertDotDamage -> v = 21;
         }
         return v;
     }
@@ -70,8 +70,8 @@ public class SpecialAbilityInfo {
         double v = 0;
         switch (specialAbility) {
             case increaseTakeDamageAndExtraDamage -> v = 15;
-            case increaseMaxHealthAndDecreaseDamage -> v = 20;
-            case decreaseTakeAndAttackDamage -> v = 15;
+            case increaseMaxHealthAndDecreaseDamage -> v = 16;
+            case decreaseTakeAndAttackDamage -> v = 10;
         }
         return v;
     }
@@ -79,9 +79,10 @@ public class SpecialAbilityInfo {
     public static double getMaxValue_2(SpecialAbility specialAbility) {
         double v = 0;
         switch (specialAbility) {
-            case increaseTakeDamageAndExtraDamage -> v = 20;
-            case increaseMaxHealthAndDecreaseDamage -> v = 30;
-            case decreaseTakeAndAttackDamage -> v = 20;
+            case increaseTakeDamageAndExtraDamage -> v = 15;
+            case increaseMaxHealthAndDecreaseDamage -> v = 20;
+            case decreaseTakeAndAttackDamage -> v = 15.0
+            ;
         }
         return v;
     }

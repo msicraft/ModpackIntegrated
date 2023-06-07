@@ -24,9 +24,9 @@ Setting:
   FixHealthRegen:
     Enabled: false
   InventoryTotem:
-    Enabled: false
+    Enabled: true
   FixFinalDamage:
-    Enabled: false
+    Enabled: true
     MinDamage: 0.5
 
 EntityScaling:

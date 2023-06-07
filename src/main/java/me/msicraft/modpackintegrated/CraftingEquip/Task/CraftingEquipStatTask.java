@@ -1,7 +1,6 @@
 package me.msicraft.modpackintegrated.CraftingEquip.Task;
 
 import me.msicraft.modpackintegrated.CraftingEquip.Data.PlayerSpecialAbility;
-import me.msicraft.modpackintegrated.CraftingEquip.Enum.SpecialAbility;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipStatUtil;
 import me.msicraft.modpackintegrated.ModPackIntegrated;
 import org.bukkit.Bukkit;
@@ -12,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
