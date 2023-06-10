@@ -91,9 +91,9 @@ public class MainMenuInv implements InventoryHolder {
         list.add("");
         list.add(ChatColor.GREEN + "----------적용된 특수 능력----------");
         PlayerSpecialAbility playerSpecialAbility = new PlayerSpecialAbility(player);
-        list.add(ChatColor.GRAY + "추가 공격 속도: " + ChatColor.AQUA + playerSpecialAbility.getExtraAttackSpeed() + "%");
-        list.add(ChatColor.GRAY + "추가 이동 속도: " + ChatColor.AQUA + playerSpecialAbility.getExtraMovementSpeed() + "%");
-        list.add(ChatColor.GRAY + "추가 최대 체력: " + ChatColor.AQUA + playerSpecialAbility.getExtraHealth() + "%");
+        list.add(ChatColor.GRAY + "추가 공격 속도: " + ChatColor.AQUA + playerSpecialAbility.getExtraPercentAttackSpeed() + "%");
+        list.add(ChatColor.GRAY + "추가 이동 속도: " + ChatColor.AQUA + playerSpecialAbility.getExtraPercentMovementSpeed() + "%");
+        list.add(ChatColor.GRAY + "추가 최대 체력: " + ChatColor.AQUA + playerSpecialAbility.getExtraPercentHealth() + "%");
         list.add("");
         List<SpecialAbility> specialAbilities = CraftingEquipStatUtil.getContainSpecialAbilities(player);
         for (SpecialAbility specialAbility : specialAbilities) {
@@ -324,7 +324,7 @@ public class MainMenuInv implements InventoryHolder {
             String info = SpecialAbilityInfo.getLoreAboutMenuList(specialAbility);
             if (info != null) {
                 list.add(info);
-                itemStack = createNormalItem(Material.PAPER, ChatColor.WHITE + "" + count, list, "dd", "dd");
+                itemStack = createNormalItem(Material.PAPER, ChatColor.WHITE + "" + count + " | (최대 수치)", list, "dd", "dd");
                 mainMenuInv.setItem(count, itemStack);
                 count++;
             }

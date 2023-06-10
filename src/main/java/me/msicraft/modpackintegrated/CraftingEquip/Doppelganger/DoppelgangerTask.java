@@ -5,16 +5,12 @@ import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class DoppelgangerTask extends BukkitRunnable {
 
@@ -65,6 +61,16 @@ public class DoppelgangerTask extends BukkitRunnable {
                             double attackDamage = getAttackDamage(livingEntity);
                             livingEntity.swingMainHand();
                             player.damage(attackDamage, livingEntity);
+                        }
+                    }
+                }
+            }
+            if (Math.random() < 0.75) {
+                if (livingEntity instanceof Mob mob) {
+                    for (Entity entity : livingEntity.getNearbyEntities(3, 2, 3)) {
+                        if (entity instanceof Player player) {
+                            mob.setTarget(player);
+                            break;
                         }
                     }
                 }

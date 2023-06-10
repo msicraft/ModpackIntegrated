@@ -28,7 +28,6 @@ import java.util.*;
 
 public class CraftingEquipEvent implements Listener {
 
-    public static final Map<UUID, Map<SpecialAbility, Long>> abilityCoolDown = new HashMap<>();
     private final Random random = new Random();
 
     private static String defenseEquations = null;
@@ -50,29 +49,6 @@ public class CraftingEquipEvent implements Listener {
             Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "기본 표현식이 사용됩니다. " + " DA * (1 - (DE / (5 * DA + DE)))");
             defenseEquations = "DA * (1 - (DE / (5 * DA + DE)))";
         }
-    }
-
-    /*
-    double coolDown = SpecialAbilityUtil.calAbilityCoolDown(player, 1);
-                                if (CraftingEquipEvent.abilityCoolDown.containsKey(player.getUniqueId())) {
-                                    Map<SpecialAbility, Long> map = CraftingEquipEvent.abilityCoolDown.get(player.getUniqueId());
-                                    if (map.containsKey(specialAbility)) {
-                                        if (map.get(specialAbility) > System.currentTimeMillis()) {
-                                            continue;
-                                        }
-                                    }
-                                    long dd = (long) (System.currentTimeMillis() + (coolDown * 1000));
-                                    map.put(specialAbility, dd);
-                                } else {
-                                    Map<SpecialAbility, Long> map = new HashMap<>();
-                                    long dd = (long) (System.currentTimeMillis() + (coolDown * 1000));
-                                    map.put(specialAbility, dd);
-                                    CraftingEquipEvent.abilityCoolDown.put(player.getUniqueId(), map);
-                                }
-     */
-
-    public static void removeAbilityMap(Player player) {
-        abilityCoolDown.remove(player.getUniqueId());
     }
 
     @EventHandler(priority = EventPriority.HIGH)

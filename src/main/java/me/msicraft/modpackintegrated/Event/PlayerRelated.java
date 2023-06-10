@@ -374,4 +374,9 @@ public class PlayerRelated implements Listener {
             }
         }
     }
+
+    public enum PersonalDifficultType {
+        easy,normal,hard,hardcore
+    }
+
 }

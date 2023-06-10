@@ -1,7 +1,6 @@
 package me.msicraft.modpackintegrated.Event;
 
 import me.msicraft.modpackintegrated.CraftingEquip.Enum.SpecialAbility;
-import me.msicraft.modpackintegrated.CraftingEquip.Event.CraftingEquipEvent;
 import me.msicraft.modpackintegrated.CraftingEquip.Task.CraftingEquipStatTask;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipStatUtil;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipUtil;
@@ -117,7 +116,6 @@ public class PlayerJoinAndQuit implements Listener {
         craftingEquipStatUtil.removeStatMap(player);
         PlayerRelated.removeLastDeathLocationMap(player);
         ModPackIntegrated.exportEnchantMap.remove(player.getUniqueId());
-        CraftingEquipEvent.removeAbilityMap(player);
         CraftingEquipStatTask.removeMap(player);
         if (player.isInvulnerable()) {
             player.setInvulnerable(false);

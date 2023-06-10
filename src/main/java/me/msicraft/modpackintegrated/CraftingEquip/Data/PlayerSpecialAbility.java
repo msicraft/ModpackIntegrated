@@ -3,6 +3,7 @@ package me.msicraft.modpackintegrated.CraftingEquip.Data;
 import me.msicraft.modpackintegrated.CraftingEquip.Enum.SpecialAbility;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipStatUtil;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.SpecialAbilityInfo;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -17,15 +18,13 @@ public class PlayerSpecialAbility {
     private final Map<SpecialAbility, Double> valueMap = new HashMap<>();
     private final Map<SpecialAbility, String> multiValueMap = new HashMap<>();
 
-    private int extraAttackSpeed;
-    private int extraMovementSpeed;
-    private int extraHealth;
+    private int extraPercentAttackSpeed, extraPercentMovementSpeed, extraPercentHealth, extraPercentArmor, extraPercentArmorToughness;
+    private double extraFlatAttackSpeed, extraFlatMovementSpeed, extraFlatHealth, extraFlatArmor, extraFlatArmorToughness;
 
     public PlayerSpecialAbility(Player player) {
         this.player = player;
-        double attackSpeed = 0;
-        double movementSpeed = 0;
-        double health = 0;
+        double percentAttackSpeed = 0, percentMovementSpeed = 0, percentHealth = 0, percentArmor = 0, percentArmorToughness = 0, percentDefense = 0;
+        double flatAttackSpeed = 0, flatMovementSpeed = 0, flatHealth = 0, flatArmor = 0, flatArmorToughness = 0, flatDefense = 0;
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             ItemStack itemStack = player.getInventory().getItem(slot);
             if (itemStack != null && CraftingEquipStatUtil.checkEqualEquipmentTypeToSlot(itemStack, slot)) {
@@ -34,15 +33,15 @@ public class PlayerSpecialAbility {
                     switch (specialAbility) {
                         case extraAttackSpeed -> {
                             double v = SpecialAbilityInfo.getValue(itemStack);
-                            attackSpeed = attackSpeed + v;
+                            percentAttackSpeed = percentAttackSpeed + v;
                         }
                         case extraMovementSpeed -> {
                             double v = SpecialAbilityInfo.getValue(itemStack);
-                            movementSpeed = movementSpeed + v;
+                            percentMovementSpeed = percentMovementSpeed + v;
                         }
                         case increaseMaxHealth -> {
                             double v = SpecialAbilityInfo.getValue(itemStack);
-                            health = health + v;
+                            percentHealth = percentHealth + v;
                         }
                         case lifeDrain -> {
                             double getP = percentMap.containsKey(specialAbility) ? percentMap.get(specialAbility) : 0;
@@ -70,16 +69,23 @@ public class PlayerSpecialAbility {
                             multiValueMap.put(specialAbility, c);
                             if (specialAbility == SpecialAbility.increaseMaxHealthAndDecreaseDamage) {
                                 double v = SpecialAbilityInfo.getValue_1(itemStack);
-                                health = health + v;
+                                percentHealth = percentHealth + v;
                             }
                         }
                     }
                 }
             }
         }
-        extraAttackSpeed = (int) (Math.floor(attackSpeed * 100.0) / 100.0);
-        extraMovementSpeed = (int) (Math.floor(movementSpeed * 100.0) / 100.0);
-        extraHealth = (int) (Math.floor(health * 100.0) / 100.0);
+        extraPercentAttackSpeed = (int) (Math.floor(percentAttackSpeed * 100.0) / 100.0);
+        extraPercentMovementSpeed = (int) (Math.floor(percentMovementSpeed * 100.0) / 100.0);
+        extraPercentHealth = (int) (Math.floor(percentHealth * 100.0) / 100.0);
+        extraPercentArmor = (int) (Math.floor(percentArmor * 100.0) / 100.0);
+        extraPercentArmorToughness = (int) (Math.floor(percentArmorToughness * 100.0) / 100.0);
+        extraFlatAttackSpeed = Math.round(flatAttackSpeed * 100.0) / 100.0;
+        extraFlatMovementSpeed = Math.round(flatMovementSpeed * 100.0) / 100.0;
+        extraFlatHealth = Math.round(flatHealth * 100.0) / 100.0;
+        extraFlatArmor = Math.round(flatArmor * 100.0) / 100.0;
+        extraFlatArmorToughness = Math.round(flatArmorToughness * 100.0) / 100.0;
     }
 
     public Player getPlayer() {
@@ -122,15 +128,44 @@ public class PlayerSpecialAbility {
         return v2;
     }
 
-    public int getExtraAttackSpeed() {
-        return extraAttackSpeed;
+    public int getExtraPercentAttackSpeed() {
+        return extraPercentAttackSpeed;
     }
 
-    public int getExtraMovementSpeed() {
-        return extraMovementSpeed;
+    public int getExtraPercentMovementSpeed() {
+        return extraPercentMovementSpeed;
     }
 
-    public int getExtraHealth() {
-        return extraHealth;
+    public int getExtraPercentHealth() {
+        return extraPercentHealth;
     }
+
+    public int getExtraPercentArmor() {
+        return extraPercentArmor;
+    }
+
+    public int getExtraPercentArmorToughness() {
+        return extraPercentArmorToughness;
+    }
+
+    public double getExtraFlatAttackSpeed() {
+        return extraFlatAttackSpeed;
+    }
+
+    public double getExtraFlatMovementSpeed() {
+        return extraFlatMovementSpeed;
+    }
+
+    public double getExtraFlatHealth() {
+        return extraFlatHealth;
+    }
+
+    public double getExtraFlatArmor() {
+        return extraFlatArmor;
+    }
+
+    public double getExtraFlatArmorToughness() {
+        return extraFlatArmorToughness;
+    }
+
 }

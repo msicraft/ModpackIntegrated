@@ -34,7 +34,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.2.2</version>
                 <configuration>
-                    <outputDirectory>B:\Bukkit\1.18.2 플러그인 테스트\plugins</outputDirectory>
+                    <outputDirectory>B:\Bukkit\ModServer\1.16.5catserver test\plugins</outputDirectory>
                 </configuration>
             </plugin>
             <plugin>

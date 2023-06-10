@@ -10,15 +10,11 @@ import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class CraftingEquipStatTask extends BukkitRunnable {
 
     private Player player;
-
-    private final UUID attackSpeedUUID = UUID.fromString("45f9581f-b5a0-45d1-8b8d-d4fd8ebf4662");
 
     private static final Map<UUID, Double> beforeMaxHealthMap = new HashMap<>();
 
@@ -39,7 +35,7 @@ public class CraftingEquipStatTask extends BukkitRunnable {
             if (Double.compare(currentAttackSpeed, afterAttackSpeed) != 0) {
                 AttributeInstance instance = player.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
                 if (instance != null) {
-                    AttributeModifier attackSpeedModifier = new AttributeModifier(attackSpeedUUID, "MPI-CE-AttackSpeedModifier", afterAttackSpeed, AttributeModifier.Operation.ADD_NUMBER);
+                    AttributeModifier attackSpeedModifier = new AttributeModifier(UUID.fromString("45f9581f-b5a0-45d1-8b8d-d4fd8ebf4662"), "MPI-CE-AttackSpeedModifier", afterAttackSpeed, AttributeModifier.Operation.ADD_NUMBER);
                     instance.removeModifier(attackSpeedModifier);
                     instance.addModifier(attackSpeedModifier);
                 }
@@ -48,7 +44,7 @@ public class CraftingEquipStatTask extends BukkitRunnable {
                 AttributeInstance instance = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
                 if (instance != null) {
                     int last = (int) CraftingEquipStatUtil.getHealthStat(player);
-                    AttributeModifier m = getFlatMaxHealthModifier(player, last);
+                    AttributeModifier m = new AttributeModifier(UUID.fromString("54a659f6-4ec9-4f3c-803e-993023a7cba3"), "MPI-CE-HealthModifier", last, AttributeModifier.Operation.ADD_NUMBER);
                     instance.removeModifier(m);
                     instance.addModifier(m);
                 }
@@ -56,32 +52,30 @@ public class CraftingEquipStatTask extends BukkitRunnable {
             Bukkit.getScheduler().runTask(ModPackIntegrated.getPlugin(), ()-> {
                 PlayerSpecialAbility playerSpecialAbility = new PlayerSpecialAbility(player);
                 removeAbilityModifier(player);
-                int attackSpeedM = playerSpecialAbility.getExtraAttackSpeed();
-                int movementSpeedM = playerSpecialAbility.getExtraMovementSpeed();
-                int maxHealthM = playerSpecialAbility.getExtraHealth();
-                if (attackSpeedM != 0) {
-                    AttributeInstance instance = player.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
+                for (Attribute attribute : modifierAttributes) {
+                    int percentM = 0;
+                    double flatM = 0;
+                    AttributeInstance instance = player.getAttribute(attribute);
                     if (instance != null) {
-                        AttributeModifier modifier = getMultipleAttackSpeedModifier(player, attackSpeedM);
-                        if (modifier != null) {
-                            instance.addModifier(modifier);
+                        switch (attribute) {
+                            case GENERIC_ATTACK_SPEED -> {
+                                percentM = playerSpecialAbility.getExtraPercentAttackSpeed();
+                            }
+                            case GENERIC_MOVEMENT_SPEED -> {
+                                percentM = playerSpecialAbility.getExtraPercentMovementSpeed();
+                            }
+                            case GENERIC_MAX_HEALTH -> {
+                                percentM = playerSpecialAbility.getExtraPercentHealth();
+                            }
+                            case GENERIC_ARMOR -> {
+                                percentM = playerSpecialAbility.getExtraPercentArmor();
+                            }
+                            case GENERIC_ARMOR_TOUGHNESS -> {
+                                percentM = playerSpecialAbility.getExtraPercentArmorToughness();
+                            }
                         }
-                    }
-                }
-                if (movementSpeedM != 0) {
-                    AttributeInstance instance = player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
-                    if (instance != null) {
-                        AttributeModifier modifier = getMultipleMovementSpeedModifier(player, movementSpeedM);
-                        if (modifier != null) {
-                            instance.addModifier(modifier);
-                        }
-                    }
-                }
-                if (maxHealthM != 0) {
-                    AttributeInstance instance = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
-                    if (instance != null) {
-                        AttributeModifier modifier = getMultipleMaxHealthModifier(player, maxHealthM);
-                        if (modifier != null) {
+                        if (percentM != 0) {
+                            AttributeModifier modifier = getPercentModifier(percentM, instance);
                             instance.addModifier(modifier);
                         }
                     }
@@ -98,62 +92,31 @@ public class CraftingEquipStatTask extends BukkitRunnable {
         }
     }
 
+    private static final List<Attribute> modifierAttributes = Arrays.asList(Attribute.GENERIC_ATTACK_SPEED, Attribute.GENERIC_MOVEMENT_SPEED, Attribute.GENERIC_MAX_HEALTH, Attribute.GENERIC_ARMOR, Attribute.GENERIC_ARMOR_TOUGHNESS);
+
     private void removeAbilityModifier(Player player) {
-        AttributeInstance attackSpeedInstance = player.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
-        if (attackSpeedInstance != null) {
-            AttributeModifier modifier = getMultipleAttackSpeedModifier(player, 0);
-            attackSpeedInstance.removeModifier(modifier);
-        }
-        AttributeInstance movementSpeedInstance = player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
-        if (movementSpeedInstance != null) {
-            AttributeModifier modifier = getMultipleMovementSpeedModifier(player, 0);
-            movementSpeedInstance.removeModifier(modifier);
-        }
-        AttributeInstance healthSpeedInstance = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
-        if (healthSpeedInstance != null) {
-            AttributeModifier modifier = getMultipleMaxHealthModifier(player, 0);
-            healthSpeedInstance.removeModifier(modifier);
+        for (Attribute attribute : modifierAttributes) {
+            AttributeInstance instance = player.getAttribute(attribute);
+            if (instance != null) {
+                AttributeModifier modifier = getPercentModifier(0, instance);
+                instance.removeModifier(modifier);
+            }
         }
     }
 
-    private AttributeModifier getMultipleAttackSpeedModifier(Player player, int amount) {
-        AttributeModifier modifier = null;
-        AttributeInstance instance = player.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
-        if (instance != null) {
-            double value = instance.getValue();
-            double cal = value * (amount / 100.0);
-            modifier = new AttributeModifier(UUID.fromString("c86f3327-9967-41e2-aaaa-8207d850a31b"), "MPI-CE-ExtraAttackSpeedModifier", cal, AttributeModifier.Operation.ADD_NUMBER);
-        }
+    private AttributeModifier getPercentModifier(int amount, AttributeInstance instance) {
+        AttributeModifier modifier;
+        double value = instance.getValue();
+        double cal = value * (amount / 100.0);
+        String modifierName = "MPI-CE-ExtraPercent" + instance.getAttribute().name();
+        modifier = new AttributeModifier(UUID.fromString("d55c711c-9b67-4122-a289-b075f2e00063"), modifierName, cal, AttributeModifier.Operation.ADD_NUMBER);
         return modifier;
     }
 
-    private AttributeModifier getMultipleMovementSpeedModifier(Player player, int amount) {
-        AttributeModifier modifier = null;
-        AttributeInstance instance = player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
-        if (instance != null) {
-            double value = instance.getValue();
-            double cal = value * (amount / 100.0);
-            modifier = new AttributeModifier(UUID.fromString("6bb865cb-7e1f-48fd-86d4-494395e10dbe"), "MPI-CE-ExtraAttackSpeedModifier", cal, AttributeModifier.Operation.ADD_NUMBER);
-        }
-        return modifier;
-    }
-
-    private AttributeModifier getMultipleMaxHealthModifier(Player player, int amount) {
-        AttributeModifier modifier = null;
-        AttributeInstance instance = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
-        if (instance != null) {
-            double cal = player.getMaxHealth() * (amount / 100.0);
-            modifier = new AttributeModifier(UUID.fromString("dcbeed8f-6e43-4dfb-9d85-1eec32bfac0f"), "MPI-CE-ExtraMaxHealthModifier2", cal, AttributeModifier.Operation.ADD_NUMBER);
-        }
-        return modifier;
-    }
-
-    private AttributeModifier getFlatMaxHealthModifier(Player player, double amount) {
-        AttributeModifier modifier = null;
-        AttributeInstance instance = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
-        if (instance != null) {
-            modifier = new AttributeModifier(UUID.fromString("54a659f6-4ec9-4f3c-803e-993023a7cba3"), "MPI-CE-ExtraMaxHealthModifier", amount, AttributeModifier.Operation.ADD_NUMBER);
-        }
+    private AttributeModifier getFlatModifier(double amount, AttributeInstance instance) {
+        AttributeModifier modifier;
+        String modifierName = "MPI-CE-ExtraFlat" + instance.getAttribute().name();
+        modifier = new AttributeModifier(UUID.fromString("987b86f7-6f19-4f06-a7ec-25d8c14a5d57"), modifierName, amount, AttributeModifier.Operation.ADD_NUMBER);
         return modifier;
     }
 

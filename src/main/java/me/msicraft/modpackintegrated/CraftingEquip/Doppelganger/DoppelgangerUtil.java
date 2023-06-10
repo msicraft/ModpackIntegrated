@@ -120,6 +120,7 @@ public class DoppelgangerUtil {
                 PersistentDataContainer data = husk.getPersistentDataContainer();
                 data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-Doppelganger"), PersistentDataType.STRING, husk.getUniqueId().toString());
                 BukkitTask doppelTask = new DoppelgangerTask(husk).runTaskTimer(ModPackIntegrated.getPlugin(), 0, 40L);
+                husk.setTarget(player);
                 if (ModPackIntegrated.isDebugEnabled) {
                     Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "========================================");
                     Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "도플갱어 소환");

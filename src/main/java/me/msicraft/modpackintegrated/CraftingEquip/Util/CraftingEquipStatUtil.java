@@ -21,7 +21,7 @@ import java.util.*;
 
 public class CraftingEquipStatUtil {
 
-    private static final Map<UUID, Map<String, Double>> equipStatMap = new HashMap<>();
+    private static final Map<UUID, Map<String, Double>> equipStatMap = new HashMap<>(8);
 
     private static boolean isEnabledCheckEquipmentType = false;
 
