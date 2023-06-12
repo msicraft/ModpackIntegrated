@@ -24,7 +24,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class CraftingEquipEvent implements Listener {
 
@@ -167,7 +169,7 @@ public class CraftingEquipEvent implements Listener {
 
     @EventHandler
     public void onDropCraftingEquipment(EntityDeathEvent e) {
-        if (Math.random() < 0.05) {
+        if (Math.random() < 0.03) {
             LivingEntity livingEntity = e.getEntity();
             ItemStack itemStack = CraftingEquipUtil.createRandomEquipment();
             Location location = livingEntity.getLocation();

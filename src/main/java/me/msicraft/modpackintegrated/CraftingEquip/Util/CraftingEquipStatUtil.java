@@ -45,6 +45,7 @@ public class CraftingEquipStatUtil {
         map.put("Defense", 0.0);
         map.put("Health", 0.0);
         map.put("Critical", 0.0);
+        map.put("ExtraKillPointExp", 0.0);
         equipStatMap.put(player.getUniqueId(), map);
     }
 
@@ -66,6 +67,7 @@ public class CraftingEquipStatUtil {
     public static double getAttackSpeedStat(Player player) { return getStatMap(player).get("AttackSpeed"); }
 
     public static double getCriticalStat(Player player) { return getStatMap(player).get("Critical"); }
+    public static double getExtraKillPointStat(Player player) { return getStatMap(player).get("ExtraKillPointExp"); }
 
     public static EquipmentType getEquipmentType(ItemStack itemStack) {
         EquipmentType type = null;
@@ -94,6 +96,7 @@ public class CraftingEquipStatUtil {
     public static void setDefenseStat(Player player, double amount) { getStatMap(player).put("Defense", amount); }
     public static void setHealthStat(Player player, double amount) { getStatMap(player).put("Health", amount); }
     public static void setCriticalStat(Player player, double amount) { getStatMap(player).put("Critical", amount); }
+    public static void setExtraKillPointStat(Player player, double amount) { getStatMap(player).put("ExtraKillPointExp", amount); }
 
     public static boolean checkEqualEquipmentTypeToSlot(ItemStack itemStack, EquipmentSlot slot) {
         boolean check = false;
@@ -131,6 +134,7 @@ public class CraftingEquipStatUtil {
         double defense = 0;
         double health = 0;
         double critical = 0;
+        double killPointExp = 0;
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             ItemStack itemStack = player.getInventory().getItem(slot);
             if (itemStack != null && itemStack.getType() != Material.AIR) {
@@ -141,6 +145,7 @@ public class CraftingEquipStatUtil {
                     defense = defense + getDefense(itemStack);
                     health = health + getHealth(itemStack);
                     critical = critical + getCritical(itemStack);
+                    killPointExp = killPointExp + getKillPointExp(itemStack);
                 }
             }
         }
@@ -150,6 +155,7 @@ public class CraftingEquipStatUtil {
         setDefenseStat(player, defense);
         setHealthStat(player, health);
         setCriticalStat(player, critical);
+        setExtraKillPointStat(player, killPointExp);
     }
 
     public static double getTotalMeleeDamageStat(Player player) {
@@ -287,6 +293,15 @@ public class CraftingEquipStatUtil {
         SpecialAbility specialAbility = getSpecialAbility(itemStack);
         if (specialAbility == SpecialAbility.doubleDamage) {
             v = SpecialAbilityInfo.getPercent(itemStack);
+        }
+        return v;
+    }
+
+    public static double getKillPointExp(ItemStack itemStack) {
+        double v = 0;
+        SpecialAbility specialAbility = getSpecialAbility(itemStack);
+        if (specialAbility == SpecialAbility.extraKillPointExp) {
+            v = SpecialAbilityInfo.getValue(itemStack);
         }
         return v;
     }

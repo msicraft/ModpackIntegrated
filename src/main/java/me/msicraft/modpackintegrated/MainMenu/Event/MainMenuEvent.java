@@ -249,23 +249,37 @@ public class MainMenuEvent implements Listener {
                     }
                 } else if (data.has(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI_PersonalOption"), PersistentDataType.STRING)) {
                     String var = data.get(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI_PersonalOption"), PersistentDataType.STRING);
-                    if (var != null) {
+                    if (var != null && e.isLeftClick()) {
                         PlayerDataFile dataFile = new PlayerDataFile(player);
                         switch (var) {
                             case "MenuQuickOpen" -> {
                                 boolean quickOpen = dataFile.getConfig().contains("Option.MenuQuickOpen") && dataFile.getConfig().getBoolean("Option.MenuQuickOpen");
-                                if (e.isLeftClick()) {
-                                    if (quickOpen) {
-                                        dataFile.getConfig().set("Option.MenuQuickOpen", false);
-                                    } else {
-                                        dataFile.getConfig().set("Option.MenuQuickOpen", true);
-                                    }
-                                    dataFile.saveConfig();
+                                if (quickOpen) {
+                                    dataFile.getConfig().set("Option.MenuQuickOpen", false);
+                                } else {
+                                    dataFile.getConfig().set("Option.MenuQuickOpen", true);
                                 }
-                                player.openInventory(mainMenuInv.getInventory());
-                                mainMenuInv.setPersonalOption(player);
+                            }
+                            case "DisplayDotDamage" -> {
+                                boolean displayDotDamage = dataFile.getConfig().contains("Option.DisplayDotDamage") && dataFile.getConfig().getBoolean("Option.DisplayDotDamage");
+                                if (displayDotDamage) {
+                                    dataFile.getConfig().set("Option.DisplayDotDamage", false);
+                                } else {
+                                    dataFile.getConfig().set("Option.DisplayDotDamage", true);
+                                }
+                            }
+                            case "DisplayBackAttack" -> {
+                                boolean displayBackAttack = dataFile.getConfig().contains("Option.DisplayBackAttack") && dataFile.getConfig().getBoolean("Option.DisplayBackAttack");
+                                if (displayBackAttack) {
+                                    dataFile.getConfig().set("Option.DisplayBackAttack", false);
+                                } else {
+                                    dataFile.getConfig().set("Option.DisplayBackAttack", true);
+                                }
                             }
                         }
+                        dataFile.saveConfig();
+                        player.openInventory(mainMenuInv.getInventory());
+                        mainMenuInv.setPersonalOption(player);
                     }
                 }
             }

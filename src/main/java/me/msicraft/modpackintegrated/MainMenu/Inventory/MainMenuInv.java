@@ -87,43 +87,16 @@ public class MainMenuInv implements InventoryHolder {
         list.add(ChatColor.GRAY + "추가 공격 속도: " + getValueInfo(attackSpeedV));
         list.add(ChatColor.GRAY + "추가 방어력: " + getValueInfo(defenseV));
         list.add(ChatColor.GRAY + "추가 체력: " + getValueInfo(healthV));
-        list.add(ChatColor.GRAY + "크리티컬 확률: " + ChatColor.WHITE + CraftingEquipStatUtil.getCriticalStat(player));
+        list.add(ChatColor.GRAY + "크리티컬 확률: " + ChatColor.WHITE + CraftingEquipStatUtil.getCriticalStat(player) + "%");
+        list.add(ChatColor.GRAY + "추기 킬포인트 경험치: " + ChatColor.WHITE + CraftingEquipStatUtil.getExtraKillPointStat(player) + "%");
         list.add("");
-        list.add(ChatColor.GREEN + "----------적용된 특수 능력----------");
+        list.add(ChatColor.GREEN + "----------적용된 추가 능력치----------");
         PlayerSpecialAbility playerSpecialAbility = new PlayerSpecialAbility(player);
+        list.add(ChatColor.GRAY + "추가 체력: " + ChatColor.AQUA + playerSpecialAbility.getExtraPercentHealth() + "%");
         list.add(ChatColor.GRAY + "추가 공격 속도: " + ChatColor.AQUA + playerSpecialAbility.getExtraPercentAttackSpeed() + "%");
         list.add(ChatColor.GRAY + "추가 이동 속도: " + ChatColor.AQUA + playerSpecialAbility.getExtraPercentMovementSpeed() + "%");
-        list.add(ChatColor.GRAY + "추가 최대 체력: " + ChatColor.AQUA + playerSpecialAbility.getExtraPercentHealth() + "%");
-        list.add("");
-        List<SpecialAbility> specialAbilities = CraftingEquipStatUtil.getContainSpecialAbilities(player);
-        for (SpecialAbility specialAbility : specialAbilities) {
-            if (!ignoredSpecialAbilities.contains(specialAbility)) {
-                String a = null;
-                if (ModPackIntegrated.specialAbilityInfoFile.getConfig().contains("Ability." + specialAbility.name())) {
-                    a = ModPackIntegrated.specialAbilityInfoFile.getConfig().getString("Ability." + specialAbility.name());
-                    if (a != null) {
-                        if (SpecialAbilityInfo.hasPercent(specialAbility)) {
-                            double percent = playerSpecialAbility.getPercent(specialAbility)*100.0;
-                            if (specialAbility == SpecialAbility.doubleDamage) {
-                                percent = CraftingEquipStatUtil.getCriticalStat(player);
-                            }
-                            a = a.replace("<percent>", String.valueOf(percent));
-                        }
-                        if (SpecialAbilityInfo.hasMultiValue(specialAbility)) {
-                            double value1 = playerSpecialAbility.getValue1(specialAbility)*100.0;
-                            double value2 = playerSpecialAbility.getValue2(specialAbility)*100.0;
-                            a = a.replace("<value-1>", String.valueOf(value1));
-                            a = a.replace("<value-2>", String.valueOf(value2));
-                        } else {
-                            double value = playerSpecialAbility.getValue(specialAbility)*100.0;
-                            a = a.replace("<value>", String.valueOf(value));
-                        }
-                        a = ChatColor.translateAlternateColorCodes('&', a);
-                    }
-                }
-                list.add(ChatColor.GRAY + "특수 능력: " + a);
-            }
-        }
+        list.add(ChatColor.GRAY + "추가 방어: " + ChatColor.AQUA + playerSpecialAbility.getExtraPercentArmor() + "%");
+        list.add(ChatColor.GRAY + "추가 방어강도: " + ChatColor.AQUA + playerSpecialAbility.getExtraPercentArmorToughness() + "%");
         itemMeta.setLore(list);
         itemStack.setItemMeta(itemMeta);
         mainMenuInv.setItem(4, itemStack);
@@ -161,6 +134,24 @@ public class MainMenuInv implements InventoryHolder {
         lore.add(ChatColor.WHITE + "Shift + f 로 빠른 메뉴 열기");
         itemStack = createNormalItem(Material.BOOK, ChatColor.WHITE + "GUI 단축키", lore, tag, "MenuQuickOpen");
         mainMenuInv.setItem(10, itemStack);
+        boolean displayDotDamage = dataFile.getConfig().contains("Option.DisplayDotDamage") && dataFile.getConfig().getBoolean("Option.DisplayDotDamage");
+        if (!lore.isEmpty()) { lore.clear(); }
+        lore.add(ChatColor.YELLOW + "좌 클릭: 변경");
+        lore.add("");
+        lore.add(ChatColor.GRAY + "현재: " + displayDotDamage);
+        lore.add("");
+        lore.add(ChatColor.WHITE + "도트 데미지 메시지 표시");
+        itemStack = createNormalItem(Material.BOOK, ChatColor.WHITE + "도트 데미지 표시", lore, tag, "DisplayDotDamage");
+        mainMenuInv.setItem(11, itemStack);
+        boolean displayBackAttack = dataFile.getConfig().contains("Option.DisplayBackAttack") && dataFile.getConfig().getBoolean("Option.DisplayBackAttack");
+        if (!lore.isEmpty()) { lore.clear(); }
+        lore.add(ChatColor.YELLOW + "좌 클릭: 변경");
+        lore.add("");
+        lore.add(ChatColor.GRAY + "현재: " + displayBackAttack);
+        lore.add("");
+        lore.add(ChatColor.WHITE + "백어택 메시지 표시");
+        itemStack = createNormalItem(Material.BOOK, ChatColor.WHITE + "백어택 표시", lore, tag, "DisplayBackAttack");
+        mainMenuInv.setItem(12, itemStack);
     }
 
     public void setExtractInv(Player player) {

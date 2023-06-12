@@ -3,6 +3,7 @@ package me.msicraft.modpackintegrated.CraftingEquip.Task;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.SpecialAbilityUtil;
 import me.msicraft.modpackintegrated.Event.PlayerRelated;
 import me.msicraft.modpackintegrated.ModPackIntegrated;
+import me.msicraft.modpackintegrated.PlayerData.File.PlayerDataFile;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
@@ -15,15 +16,19 @@ public class DotDamageTask extends BukkitRunnable {
     private int maxTicks;
     private double perDamage;
     private int tickCount = 0;
+    private PlayerDataFile dataFile = null;
 
     public DotDamageTask(LivingEntity livingEntity, int maxTicks, double totalDamage) {
         this.livingEntity = livingEntity;
         this.maxTicks = maxTicks;
         perDamage = (totalDamage / (maxTicks/10.0));
         if (PlayerRelated.enabledFixFinalDamage()) {
-            if (perDamage < 0.5) {
-                perDamage = 0.5;
+            if (perDamage < 0.25) {
+                perDamage = 0.25;
             }
+        }
+        if (livingEntity instanceof Player player) {
+            dataFile = new PlayerDataFile(player);
         }
     }
 
@@ -33,7 +38,12 @@ public class DotDamageTask extends BukkitRunnable {
             SpecialAbilityUtil.applyTrueDamage(livingEntity, perDamage);
             if (livingEntity instanceof Player player) {
                 double cal = Math.round(perDamage * 100.0) /100.0;
-                player.sendMessage(ChatColor.GRAY + "도트 데미지 받음: " + ChatColor.RED + cal);
+                if (dataFile != null && dataFile.hasConfigFile()) {
+                    boolean displayDotDamage = dataFile.getConfig().contains("Option.DisplayDotDamage") && dataFile.getConfig().getBoolean("Option.DisplayDotDamage");
+                    if (displayDotDamage) {
+                        player.sendMessage(ChatColor.GRAY + "도트 데미지 받음: " + ChatColor.RED + cal);
+                    }
+                }
             }
             tickCount = tickCount + 10;
             Bukkit.getScheduler().runTask(ModPackIntegrated.getPlugin(), ()-> {

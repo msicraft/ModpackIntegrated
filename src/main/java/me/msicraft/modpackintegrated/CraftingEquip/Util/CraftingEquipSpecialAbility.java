@@ -4,7 +4,9 @@ import me.msicraft.modpackintegrated.CraftingEquip.Data.PlayerSpecialAbility;
 import me.msicraft.modpackintegrated.CraftingEquip.Enum.SpecialAbility;
 import me.msicraft.modpackintegrated.CraftingEquip.Task.DotDamageTask;
 import me.msicraft.modpackintegrated.ModPackIntegrated;
+import me.msicraft.modpackintegrated.PlayerData.File.PlayerDataFile;
 import me.msicraft.modpackintegrated.Util.MathUtil;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -90,6 +92,17 @@ public class CraftingEquipSpecialAbility {
                 value = playerSpecialAbility.getValue(specialAbility);
                 double healV = SpecialAbilityUtil.getPlayerMaxHealthPercent(player, value);
                 SpecialAbilityUtil.healPlayer(player, healV);
+            }
+            case extraBackAttackDamage -> {
+                if (SpecialAbilityUtil.isBackAttack(player, entity)) {
+                    value = playerSpecialAbility.getValue(specialAbility);
+                    cal = cal + (cal * value);
+                    PlayerDataFile dataFile = new PlayerDataFile(player);
+                    boolean displayBackAttack = dataFile.getConfig().contains("Option.DisplayBackAttack") && dataFile.getConfig().getBoolean("Option.DisplayBackAttack");
+                    if (displayBackAttack) {
+                        player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "백어택");
+                    }
+                }
             }
         }
         if (cal < 0) {

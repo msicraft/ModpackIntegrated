@@ -60,22 +60,31 @@ public class CraftingEquipStatTask extends BukkitRunnable {
                         switch (attribute) {
                             case GENERIC_ATTACK_SPEED -> {
                                 percentM = playerSpecialAbility.getExtraPercentAttackSpeed();
+                                flatM = playerSpecialAbility.getExtraFlatAttackSpeed();
                             }
                             case GENERIC_MOVEMENT_SPEED -> {
                                 percentM = playerSpecialAbility.getExtraPercentMovementSpeed();
+                                flatM = playerSpecialAbility.getExtraFlatMovementSpeed();
                             }
                             case GENERIC_MAX_HEALTH -> {
                                 percentM = playerSpecialAbility.getExtraPercentHealth();
+                                flatM = playerSpecialAbility.getExtraFlatHealth();
                             }
                             case GENERIC_ARMOR -> {
                                 percentM = playerSpecialAbility.getExtraPercentArmor();
+                                flatM = playerSpecialAbility.getExtraFlatArmor();
                             }
                             case GENERIC_ARMOR_TOUGHNESS -> {
                                 percentM = playerSpecialAbility.getExtraPercentArmorToughness();
+                                flatM = playerSpecialAbility.getExtraFlatArmorToughness();
                             }
                         }
                         if (percentM != 0) {
                             AttributeModifier modifier = getPercentModifier(percentM, instance);
+                            instance.addModifier(modifier);
+                        }
+                        if (Double.compare(flatM, 0) != 0) {
+                            AttributeModifier modifier = getFlatModifier(flatM, instance);
                             instance.addModifier(modifier);
                         }
                     }
@@ -98,8 +107,10 @@ public class CraftingEquipStatTask extends BukkitRunnable {
         for (Attribute attribute : modifierAttributes) {
             AttributeInstance instance = player.getAttribute(attribute);
             if (instance != null) {
-                AttributeModifier modifier = getPercentModifier(0, instance);
-                instance.removeModifier(modifier);
+                AttributeModifier percentModifier = getPercentModifier(0, instance);
+                AttributeModifier flatModifier = getFlatModifier(0, instance);
+                instance.removeModifier(percentModifier);
+                instance.removeModifier(flatModifier);
             }
         }
     }

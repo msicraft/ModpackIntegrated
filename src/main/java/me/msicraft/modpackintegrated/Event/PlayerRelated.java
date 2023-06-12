@@ -368,7 +368,7 @@ public class PlayerRelated implements Listener {
             Entity entity = e.getEntity();
             if (entity instanceof Player player) {
                 if (e.getFinalDamage() < minFinalDamage) {
-                    e.setDamage(0);
+                    e.setCancelled(true);
                     SpecialAbilityUtil.applyTrueDamage(player, minFinalDamage);
                 }
             }

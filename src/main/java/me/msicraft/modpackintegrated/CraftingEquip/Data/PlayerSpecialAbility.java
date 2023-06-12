@@ -3,7 +3,6 @@ package me.msicraft.modpackintegrated.CraftingEquip.Data;
 import me.msicraft.modpackintegrated.CraftingEquip.Enum.SpecialAbility;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipStatUtil;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.SpecialAbilityInfo;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -18,13 +17,13 @@ public class PlayerSpecialAbility {
     private final Map<SpecialAbility, Double> valueMap = new HashMap<>();
     private final Map<SpecialAbility, String> multiValueMap = new HashMap<>();
 
-    private int extraPercentAttackSpeed, extraPercentMovementSpeed, extraPercentHealth, extraPercentArmor, extraPercentArmorToughness;
-    private double extraFlatAttackSpeed, extraFlatMovementSpeed, extraFlatHealth, extraFlatArmor, extraFlatArmorToughness;
+    private int extraPercentAttackSpeed, extraPercentMovementSpeed, extraPercentHealth, extraPercentArmor, extraPercentArmorToughness; // 10 = 0.1, 80 = 0.8
+    private double extraFlatAttackSpeed, extraFlatMovementSpeed, extraFlatHealth, extraFlatArmor, extraFlatArmorToughness; // 1.24, 15.23, 21.22
 
     public PlayerSpecialAbility(Player player) {
         this.player = player;
-        double percentAttackSpeed = 0, percentMovementSpeed = 0, percentHealth = 0, percentArmor = 0, percentArmorToughness = 0, percentDefense = 0;
-        double flatAttackSpeed = 0, flatMovementSpeed = 0, flatHealth = 0, flatArmor = 0, flatArmorToughness = 0, flatDefense = 0;
+        double percentAttackSpeed = 0, percentMovementSpeed = 0, percentHealth = 0, percentArmor = 0, percentArmorToughness = 0;
+        double flatAttackSpeed = 0, flatMovementSpeed = 0, flatHealth = 0, flatArmor = 0, flatArmorToughness = 0;
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             ItemStack itemStack = player.getInventory().getItem(slot);
             if (itemStack != null && CraftingEquipStatUtil.checkEqualEquipmentTypeToSlot(itemStack, slot)) {
@@ -43,6 +42,14 @@ public class PlayerSpecialAbility {
                             double v = SpecialAbilityInfo.getValue(itemStack);
                             percentHealth = percentHealth + v;
                         }
+                        case extraArmor -> {
+                            double v = SpecialAbilityInfo.getValue(itemStack);
+                            percentArmor = percentArmor + v;
+                        }
+                        case addArmor -> {
+                            double v = SpecialAbilityInfo.getValue(itemStack);
+                            flatArmor = flatArmor + v;
+                        }
                         case lifeDrain -> {
                             double getP = percentMap.containsKey(specialAbility) ? percentMap.get(specialAbility) : 0;
                             double getV = valueMap.containsKey(specialAbility) ? valueMap.get(specialAbility) : 0;
@@ -53,8 +60,8 @@ public class PlayerSpecialAbility {
                         }
                         case extraDamage, extraDamagePlayerBaseHealth, extraDamageToDay, extraDamageToNight, heal
                                 ,changeDamageToRange, extraDamageTargetMaxHealth, extraDamageTargetCurrentHealth, damageConvertTrueDamage, healBaseMaxHealth
-                                , takeDamageConvertDotDamage-> {
-                            double getV = valueMap.containsKey(specialAbility) ?  valueMap.get(specialAbility) : 0;
+                                , takeDamageConvertDotDamage, extraBackAttackDamage -> {
+                            double getV = valueMap.containsKey(specialAbility) ? valueMap.get(specialAbility) : 0;
                             getV = getV + SpecialAbilityInfo.getValue(itemStack);
                             valueMap.put(specialAbility, getV);
                         }

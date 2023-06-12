@@ -6,6 +6,7 @@ import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 public class SpecialAbilityUtil {
 
@@ -88,6 +89,17 @@ public class SpecialAbilityUtil {
     public static double getPlayerMaxHealthPercent(Player player, double percent) {
         double maxHealth = player.getMaxHealth();
         return Math.round(maxHealth * percent * 100.0)/100.0;
+    }
+
+    public static boolean isBackAttack(Player player, Entity entity) {
+        boolean check = false;
+        Vector pDir = player.getLocation().getDirection();
+        Vector eDir = entity.getLocation().getDirection();
+        double relativeAngle = (Math.atan2(pDir.getX() * eDir.getZ() - pDir.getZ() * eDir.getX(), pDir.getX() * eDir.getX() + pDir.getZ() * eDir.getZ()) * 180) / Math.PI;
+        if (relativeAngle <= 60 && relativeAngle >= -60) {
+            check = true;
+        }
+        return check;
     }
 
 }

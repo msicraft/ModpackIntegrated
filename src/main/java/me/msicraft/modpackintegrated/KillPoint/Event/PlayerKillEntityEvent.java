@@ -1,5 +1,6 @@
 package me.msicraft.modpackintegrated.KillPoint.Event;
 
+import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipStatUtil;
 import me.msicraft.modpackintegrated.EntityScaling.EntityScalingUtil;
 import me.msicraft.modpackintegrated.KillPoint.KillPointUtil;
 import me.msicraft.modpackintegrated.ModPackIntegrated;
@@ -104,9 +105,11 @@ public class PlayerKillEntityEvent implements Listener {
                 double armor = getArmorValue(livingEntity);
                 double armorToughness = getArmorToughnessValue(livingEntity);
                 if (player != null) {
+                    double scalingP = 0;
                     if (EntityScalingUtil.isScalingEntity(livingEntity)) {
                         double percent = EntityScalingUtil.getPercentDamage(livingEntity);
                         damage = damage + (damage * percent);
+                        scalingP = percent;
                     }
                     exp = KillPointUtil.getToEntityKillPointExp(maxHealth, damage, armor, armorToughness);
                     boolean isSpawner = hasSpawnerTag(livingEntity);
@@ -123,7 +126,9 @@ public class PlayerKillEntityEvent implements Listener {
                         if (!nearPlayers.isEmpty()) {
                             double perPlayerExp = exp / nearPlayers.size();
                             for (Player np : nearPlayers) {
-                                KillPointUtil.addKillPointExp(np, perPlayerExp);
+                                double expPercent = CraftingEquipStatUtil.getExtraKillPointStat(np) / 100.0;
+                                double calExtraExp = perPlayerExp + (perPlayerExp * expPercent);
+                                KillPointUtil.addKillPointExp(np, calExtraExp);
                             }
                             if (ModPackIntegrated.isDebugEnabled) {
                                 Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "===================================");
@@ -132,13 +137,15 @@ public class PlayerKillEntityEvent implements Listener {
                                 Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "Killer Player: " + ChatColor.GREEN + player.getName());
                                 Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "총 플레이어: " + ChatColor.GREEN + nearPlayers.size() + "| 플레이어: " + ChatColor.GREEN + nearPlayers);
                                 Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "총 경험치: " + ChatColor.GREEN + exp + " | 분배 경험치: " + ChatColor.GREEN + perPlayerExp);
-                                Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "스포너 몹: " + ChatColor.GREEN + isSpawner);
+                                Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "스포너 몹: " + ChatColor.GREEN + isSpawner + " | 스케일링 값: " + scalingP);
                                 Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "Health: " + ChatColor.GREEN + maxHealth + " | Damage: " + damage);
                                 Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "Armor: " + ChatColor.GREEN + armor + " | ArmorToughness: " + armorToughness);
                                 Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "===================================");
                             }
                         }
                     } else {
+                        double expPercent = CraftingEquipStatUtil.getExtraKillPointStat(player) / 100.0;
+                        exp = exp + (exp * expPercent);
                         KillPointUtil.addKillPointExp(player, exp);
                         if (ModPackIntegrated.isDebugEnabled) {
                             Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "===================================");
@@ -148,7 +155,7 @@ public class PlayerKillEntityEvent implements Listener {
                             Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "Health: " + ChatColor.GREEN + livingEntity.getMaxHealth() + " | Damage: " + getDamageValue(livingEntity));
                             Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "Armor: " + ChatColor.GREEN + getArmorValue(livingEntity) + " | ArmorToughness: " + getArmorToughnessValue(livingEntity));
                             Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "Equations: " + ChatColor.GREEN + killPointExpEquations);
-                            Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "Get KillPoint Exp: " + ChatColor.GREEN + exp);
+                            Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "Get KillPoint Exp: " + ChatColor.GREEN + exp + " | ExtraExp: " + expPercent);
                             Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "===================================");
                         }
                     }
@@ -180,6 +187,10 @@ public class PlayerKillEntityEvent implements Listener {
                                         damage = damage + (damage * percent);
                                     }
                                     exp = KillPointUtil.getToEntityKillPointExp(maxHealth, damage, armor, armorToughness);
+                                    boolean isSpawner = hasSpawnerTag(livingEntity);
+                                    if (isSpawner) {
+                                        exp = exp * 0.25;
+                                    }
                                     ItemStack itemStack = getKillPointItemStack(exp);
                                     Location location = livingEntity.getLocation();
                                     World world = livingEntity.getWorld();
@@ -229,12 +240,14 @@ public class PlayerKillEntityEvent implements Listener {
                     String s = data.get(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI_KillPointItem-Value"), PersistentDataType.STRING);
                     if (s != null) {
                         double value = Double.parseDouble(s);
+                        double expPercent = CraftingEquipStatUtil.getExtraKillPointStat(player) / 100.0;
+                        value = value + (value * expPercent);
                         KillPointUtil.addKillPointExp(player, value);
                         if (ModPackIntegrated.isDebugEnabled) {
                             Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "===================================");
                             Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "Player Pickup KillPoint item");
                             Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "Player: " + ChatColor.GREEN + player.getName());
-                            Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "Drop KillPoint Exp: " + ChatColor.GREEN + value);
+                            Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "Drop KillPoint Exp: " + ChatColor.GREEN + value + " | ExtraExp: " + expPercent);
                             Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "===================================");
                         }
                     }
