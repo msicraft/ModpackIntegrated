@@ -108,8 +108,8 @@ public class DoppelgangerUtil {
                 }
                 double baseMaxHealth = getPlayerMaxHealth(player);
                 double baseDamage = getPlayerExtraDamage(player);
-                double randomHealthMultiple = MathUtil.getRandomValueDouble(10.1, 3.1);
-                double randomDamageMultiple = MathUtil.getRandomValueDouble(7.1, 2.1);
+                double randomHealthMultiple = MathUtil.getRandomValueDouble(10.1, 3.0);
+                double randomDamageMultiple = MathUtil.getRandomValueDouble(5.1, 1.0);
                 if (baseDamage < 0) {
                     baseDamage = 1;
                 }

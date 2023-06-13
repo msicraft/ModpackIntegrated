@@ -97,11 +97,6 @@ public class CraftingEquipInv implements InventoryHolder {
         list.add(ChatColor.GREEN + "방어력에 대해(계산식: " + CraftingEquipEvent.getDefenseEquations() + ")");
         list.add(ChatColor.GREEN + "DA = 받은피해, DE = 방어력");
         list.add(ChatColor.GREEN + "");
-        list.add(ChatColor.GREEN + "피해의 1/3을 방지하기위해서는 2.5배의 방어력 필요");
-        list.add(ChatColor.GREEN + "피해의 1/2을 방지하기위해서는 5배의 방어력 필요");
-        list.add(ChatColor.GREEN + "피해의 2/3을 방지하기위해서는 10배의 방어력 필요");
-        list.add(ChatColor.GREEN + "피해의 3/4을 방지하기위해서는 15배의 방어력 필요");
-        list.add(ChatColor.GREEN + "피해의 90%을 방지하기위해서는 45배의 방어력 필요");
         itemStack = createNormalItem(Material.SHIELD, ChatColor.WHITE + "추가 방어력 ("+CraftingEquipUtil.requiredDefense()+")", list, tag, "addDefense");
         craftingInv.setItem(31, itemStack);
         if (!list.isEmpty()) { list.clear(); }

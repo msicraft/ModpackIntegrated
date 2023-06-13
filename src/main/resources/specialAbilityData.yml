@@ -1,0 +1,81 @@
+SpecialAbility:
+  critical:
+    MaxPercent: 15
+    MinPercent: 1
+  lifeDrain:
+    MaxPercent: 15
+    MinPercent: 1
+    MaxValue: 20
+    MinValue: 5
+  addDamage:
+    MaxValue: 5
+    MinValue: 0
+  extraDamagePlayerBaseHealth:
+    MaxValue: 10
+    MinValue: 1
+  extraAttackSpeed:
+    MaxValue: 10
+    MinValue: 1
+  extraMovementSpeed:
+    MaxValue: 10
+    MinValue: 1
+  increaseMaxHealth:
+    MaxValue: 9
+    MinValue: 1
+  extraDamageToDay:
+    MaxValue: 15
+    MinValue: 1
+  extraDamageToNight:
+    MaxValue: 10
+    MinValue: 1
+  increaseTakeDamageAndExtraDamage:
+    MaxValue-1: 15
+    MinValue-1: 1
+    MaxValue-2: 15
+    MinValue-2: 1
+  heal:
+    MaxValue: 4
+    MinValue: 0
+  changeDamageToRange:
+    MaxValue: 25
+    MinValue: 10
+  extraDamageTargetMaxHealth:
+    MaxValue: 4
+    MinValue: 0
+  extraDamageTargetCurrentHealth:
+    MaxValue: 10
+    MinValue: 0
+  increaseMaxHealthAndDecreaseDamage:
+    MaxValue-1: 15
+    MinValue-1: 0
+    MaxValue-2: 20
+    MinValue-2: 0
+  damageConvertTrueDamage:
+    MaxValue: 8
+    MinValue: 0
+  decreaseTakeAndAttackDamage:
+    MaxValue-1: 10
+    MinValue-1: 0
+    MaxValue-2: 15
+    MinValue-2: 0
+  healBaseMaxHealth:
+    MaxValue: 5
+    MinValue: 0
+  takeDamageConvertDotDamage:
+    MaxValue: 25
+    MinValue: 5
+  extraBackAttackDamage:
+    MaxValue: 20
+    MinValue: 0
+  extraArmor:
+    MaxValue: 10
+    MinValue: 0
+  addArmor:
+    MaxValue: 3.5
+    MinValue: 0
+  extraKillPointExp:
+    MaxValue: 15
+    MinValue: 0
+  extraCriticalDamage:
+    MaxValue: 13
+    MinValue: 0

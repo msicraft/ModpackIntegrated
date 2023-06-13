@@ -58,7 +58,7 @@ public class PlayerSpecialAbility {
                             percentMap.put(specialAbility, getP);
                             valueMap.put(specialAbility, getV);
                         }
-                        case extraDamage, extraDamagePlayerBaseHealth, extraDamageToDay, extraDamageToNight, heal
+                        case addDamage, extraDamagePlayerBaseHealth, extraDamageToDay, extraDamageToNight, heal
                                 ,changeDamageToRange, extraDamageTargetMaxHealth, extraDamageTargetCurrentHealth, damageConvertTrueDamage, healBaseMaxHealth
                                 , takeDamageConvertDotDamage, extraBackAttackDamage -> {
                             double getV = valueMap.containsKey(specialAbility) ? valueMap.get(specialAbility) : 0;

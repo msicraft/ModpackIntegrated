@@ -21,7 +21,9 @@ import java.util.*;
 
 public class CraftingEquipStatUtil {
 
-    private static final Map<UUID, Map<String, Double>> equipStatMap = new HashMap<>(8);
+    private static final int statCapacity = 9;
+
+    private static final Map<UUID, Map<String, Double>> equipStatMap = new HashMap<>(statCapacity);
 
     private static boolean isEnabledCheckEquipmentType = false;
 
@@ -38,13 +40,14 @@ public class CraftingEquipStatUtil {
     }
 
     public void registerStatMap(Player player) {
-        Map<String, Double> map = new HashMap<>();
+        Map<String, Double> map = new HashMap<>(statCapacity);
         map.put("MeleeDamage", 0.0);
         map.put("ProjectileDamage", 0.0);
         map.put("AttackSpeed", 0.0);
         map.put("Defense", 0.0);
         map.put("Health", 0.0);
         map.put("Critical", 0.0);
+        map.put("Critical-Damage", 0.0);
         map.put("ExtraKillPointExp", 0.0);
         equipStatMap.put(player.getUniqueId(), map);
     }
@@ -67,6 +70,8 @@ public class CraftingEquipStatUtil {
     public static double getAttackSpeedStat(Player player) { return getStatMap(player).get("AttackSpeed"); }
 
     public static double getCriticalStat(Player player) { return getStatMap(player).get("Critical"); }
+    public static double getCriticalDamageStat(Player player) { return getStatMap(player).get("Critical-Damage"); }
+
     public static double getExtraKillPointStat(Player player) { return getStatMap(player).get("ExtraKillPointExp"); }
 
     public static EquipmentType getEquipmentType(ItemStack itemStack) {
@@ -96,6 +101,7 @@ public class CraftingEquipStatUtil {
     public static void setDefenseStat(Player player, double amount) { getStatMap(player).put("Defense", amount); }
     public static void setHealthStat(Player player, double amount) { getStatMap(player).put("Health", amount); }
     public static void setCriticalStat(Player player, double amount) { getStatMap(player).put("Critical", amount); }
+    public static void setCriticalDamageStat(Player player, double amount) { getStatMap(player).put("Critical-Damage", amount); }
     public static void setExtraKillPointStat(Player player, double amount) { getStatMap(player).put("ExtraKillPointExp", amount); }
 
     public static boolean checkEqualEquipmentTypeToSlot(ItemStack itemStack, EquipmentSlot slot) {
@@ -134,6 +140,7 @@ public class CraftingEquipStatUtil {
         double defense = 0;
         double health = 0;
         double critical = 0;
+        double criticalDamage = 0;
         double killPointExp = 0;
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             ItemStack itemStack = player.getInventory().getItem(slot);
@@ -144,8 +151,9 @@ public class CraftingEquipStatUtil {
                     attackSpeed = attackSpeed + getAttackSpeed(itemStack);
                     defense = defense + getDefense(itemStack);
                     health = health + getHealth(itemStack);
-                    critical = critical + getCritical(itemStack);
-                    killPointExp = killPointExp + getKillPointExp(itemStack);
+                    critical = critical + getCriticalByItemStack(itemStack);
+                    criticalDamage = criticalDamage + getCriticalDamageByItemStack(itemStack);
+                    killPointExp = killPointExp + getKillPointExpByItemStack(itemStack);
                 }
             }
         }
@@ -155,6 +163,7 @@ public class CraftingEquipStatUtil {
         setDefenseStat(player, defense);
         setHealthStat(player, health);
         setCriticalStat(player, critical);
+        setCriticalDamageStat(player, criticalDamage);
         setExtraKillPointStat(player, killPointExp);
     }
 
@@ -288,19 +297,28 @@ public class CraftingEquipStatUtil {
         return value;
     }
 
-    public static double getCritical(ItemStack itemStack) {
+    public static double getCriticalByItemStack(ItemStack itemStack) {
         double v = 0;
         SpecialAbility specialAbility = getSpecialAbility(itemStack);
-        if (specialAbility == SpecialAbility.doubleDamage) {
+        if (specialAbility == SpecialAbility.critical) {
             v = SpecialAbilityInfo.getPercent(itemStack);
         }
         return v;
     }
 
-    public static double getKillPointExp(ItemStack itemStack) {
+    public static double getKillPointExpByItemStack(ItemStack itemStack) {
         double v = 0;
         SpecialAbility specialAbility = getSpecialAbility(itemStack);
         if (specialAbility == SpecialAbility.extraKillPointExp) {
+            v = SpecialAbilityInfo.getValue(itemStack);
+        }
+        return v;
+    }
+
+    public static double getCriticalDamageByItemStack(ItemStack itemStack) {
+        double v = 0;
+        SpecialAbility specialAbility = getSpecialAbility(itemStack);
+        if (specialAbility == SpecialAbility.extraCriticalDamage) {
             v = SpecialAbilityInfo.getValue(itemStack);
         }
         return v;

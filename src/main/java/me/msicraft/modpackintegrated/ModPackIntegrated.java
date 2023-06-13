@@ -5,6 +5,7 @@ import me.msicraft.modpackintegrated.Command.MainTabComplete;
 import me.msicraft.modpackintegrated.CraftingEquip.Event.CraftingEquipEvent;
 import me.msicraft.modpackintegrated.CraftingEquip.Event.CraftingEquipInvClick;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipStatUtil;
+import me.msicraft.modpackintegrated.DataFile.SpecialAbilityDataFile;
 import me.msicraft.modpackintegrated.DataFile.SpecialAbilityInfoFile;
 import me.msicraft.modpackintegrated.EntityBlockBreak.Event.EntityBlockBreakSpawn;
 import me.msicraft.modpackintegrated.EntityScaling.Event.EntityScalingRelated;
@@ -16,6 +17,7 @@ import me.msicraft.modpackintegrated.KillPoint.Event.PlayerKillEntityEvent;
 import me.msicraft.modpackintegrated.KillPoint.KillPointUtil;
 import me.msicraft.modpackintegrated.MainMenu.Event.MainMenuEvent;
 import me.msicraft.modpackintegrated.MainMenu.KillPointShop.Skill.KillPointShopSkill;
+import me.msicraft.modpackintegrated.PlaceholderApi.KillPointPlaceholder;
 import me.msicraft.modpackintegrated.Util.WorldUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -44,6 +46,7 @@ public final class ModPackIntegrated extends JavaPlugin {
 
     private static ModPackIntegrated plugin;
     public static SpecialAbilityInfoFile specialAbilityInfoFile;
+    public static SpecialAbilityDataFile specialAbilityDataFile;
 
     public static ModPackIntegrated getPlugin() { return plugin; }
     public static String getPrefix() { return "[ModPack Integrated]"; }
@@ -56,6 +59,7 @@ public final class ModPackIntegrated extends JavaPlugin {
     @Override
     public void onEnable() {
         plugin = this;
+        specialAbilityDataFile = new SpecialAbilityDataFile(this);
         specialAbilityInfoFile = new SpecialAbilityInfoFile(this);
         createConfigFile();
         configFilesReload();
@@ -99,11 +103,15 @@ public final class ModPackIntegrated extends JavaPlugin {
                 }
             }
         }.runTaskTimer(this, 20L, 100L);
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            Bukkit.getConsoleSender().sendMessage("Detect PlaceHolderApi plugin");
+            new KillPointPlaceholder(this).register();
+        }
         if (isDebugEnabled) {
             Bukkit.getConsoleSender().sendMessage("탭 리스트 월드 위치 표시 작업 스케쥴러 등록: " + tabListTask.getTaskId());
             Bukkit.getConsoleSender().sendMessage("버킷 버전: " + bukkitVersion);
+            Bukkit.getConsoleSender().sendMessage("Max Ram: " + Runtime.getRuntime().maxMemory() / 1024L / 1024L);
         }
-        Bukkit.getConsoleSender().sendMessage("Max Ram: " + Runtime.getRuntime().maxMemory() / 1024L / 1024L);
         getServer().getConsoleSender().sendMessage(getPrefix() + ChatColor.GREEN + " Plugin Enabled");
     }
 
@@ -115,6 +123,10 @@ public final class ModPackIntegrated extends JavaPlugin {
             if (player != null && player.isOnline()) {
                 player.getInventory().addItem(exportEnchantMap.get(player.getUniqueId()));
             }
+        }
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            Bukkit.getConsoleSender().sendMessage("Detect PlaceHolderApi plugin");
+            new KillPointPlaceholder(this).unregister();
         }
         getServer().getConsoleSender().sendMessage(getPrefix() + ChatColor.RED + " Plugin Disabled");
     }
@@ -156,6 +168,7 @@ public final class ModPackIntegrated extends JavaPlugin {
         specialAbilityInfoFile.reloadConfig();
         EntityScalingRelated.reloadVariables();
         CraftingEquipStatUtil.reloadVariables();
+        specialAbilityDataFile.reloadConfig();
         isDebugEnabled = getPlugin().getConfig().contains("Debug-Enabled") && getPlugin().getConfig().getBoolean("Debug-Enabled");
     }
 

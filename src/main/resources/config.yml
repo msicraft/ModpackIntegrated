@@ -46,6 +46,7 @@ Kill-Point-Setting:
 
 SpawnLocation: ""
 CraftingEquipment:
+  CriticalDamage: 1.5
   EquipmentTypeCheck: false
   DefenseEquations: "DA * (1 - (DE / (5 * DA + DE)))"
   MaxKillPoint: 10

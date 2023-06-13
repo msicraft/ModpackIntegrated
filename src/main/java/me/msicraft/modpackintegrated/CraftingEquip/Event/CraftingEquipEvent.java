@@ -34,6 +34,7 @@ public class CraftingEquipEvent implements Listener {
 
     private static String defenseEquations = null;
     private static Expression expression = null;
+    private static double baseCriticalDamage = 1.5;
 
     public static String getDefenseEquations() {
         return defenseEquations;
@@ -41,6 +42,7 @@ public class CraftingEquipEvent implements Listener {
 
     public static void reloadVariables() {
         defenseEquations = ModPackIntegrated.getPlugin().getConfig().contains("CraftingEquipment.DefenseEquations") ? ModPackIntegrated.getPlugin().getConfig().getString("CraftingEquipment.DefenseEquations") : null;
+        baseCriticalDamage = ModPackIntegrated.getPlugin().getConfig().contains("CraftingEquipment.CriticalDamage") ? ModPackIntegrated.getPlugin().getConfig().getDouble("CraftingEquipment.CriticalDamage") : 1.75;
         if (defenseEquations == null) {
             defenseEquations = "DA * (1 - (DE / (5 * DA + DE)))";
         }
@@ -83,7 +85,9 @@ public class CraftingEquipEvent implements Listener {
                         cal = Math.floor(cal*100)/100.0;
                         double criticalPercent = CraftingEquipStatUtil.getCriticalStat(player)/100.0;
                         if (Math.random() < criticalPercent) {
-                            cal = cal * 2;
+                            double extraCriticalDamage = CraftingEquipStatUtil.getCriticalDamageStat(player)/100.0;
+                            baseCriticalDamage = baseCriticalDamage + (baseCriticalDamage * extraCriticalDamage);
+                            cal = cal * baseCriticalDamage;
                             player.sendMessage(ChatColor.BOLD + "" + ChatColor.RED + "크리티컬");
                         }
                     }
@@ -124,7 +128,9 @@ public class CraftingEquipEvent implements Listener {
                             cal = Math.floor(cal*100)/100.0;
                             double criticalPercent = CraftingEquipStatUtil.getCriticalStat(player)/100.0;
                             if (Math.random() < criticalPercent) {
-                                cal = cal * 2;
+                                double extraCriticalDamage = CraftingEquipStatUtil.getCriticalDamageStat(player)/100.0;
+                                baseCriticalDamage = baseCriticalDamage + (baseCriticalDamage * extraCriticalDamage);
+                                cal = cal * baseCriticalDamage;
                                 player.sendMessage(ChatColor.BOLD + "" + ChatColor.RED + "크리티컬");
                             }
                         }

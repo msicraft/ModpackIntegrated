@@ -21,8 +21,9 @@ public class KillPointTask extends BukkitRunnable {
             if (requiredKillPointExp != -1) {
                 double getKillPointExp = KillPointUtil.getKillPointExp(player);
                 if (getKillPointExp >= requiredKillPointExp) {
-                    double cal = getKillPointExp - requiredKillPointExp;
-                    KillPointUtil.addKillPoint(player, 1);
+                    int restValue = (int) (getKillPointExp / requiredKillPointExp);
+                    double cal = getKillPointExp - (requiredKillPointExp * restValue);
+                    KillPointUtil.addKillPoint(player, restValue);
                     KillPointUtil.setKillPointExp(player, cal);
                 }
             }

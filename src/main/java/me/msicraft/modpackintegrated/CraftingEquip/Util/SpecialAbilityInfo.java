@@ -15,7 +15,7 @@ import java.util.List;
 
 public class SpecialAbilityInfo {
 
-    private static final List<SpecialAbility> percentSpecialAbilities = Arrays.asList(SpecialAbility.doubleDamage, SpecialAbility.lifeDrain);
+    private static final List<SpecialAbility> percentSpecialAbilities = Arrays.asList(SpecialAbility.critical, SpecialAbility.lifeDrain);
 
     private static final List<SpecialAbility> multiValueSpecialAbilities = Arrays.asList(SpecialAbility.increaseTakeDamageAndExtraDamage,
             SpecialAbility.increaseMaxHealthAndDecreaseDamage,SpecialAbility.decreaseTakeAndAttackDamage);
@@ -37,56 +37,64 @@ public class SpecialAbilityInfo {
 
     public static double getMaxPercent(SpecialAbility specialAbility) {
         double p = 0;
-        switch (specialAbility) {
-            case doubleDamage -> p = 15.0;
-            case lifeDrain -> p = 15;
+        if (ModPackIntegrated.specialAbilityDataFile.getConfig().contains("SpecialAbility." + specialAbility.name() + ".MaxPercent")) {
+            p = ModPackIntegrated.specialAbilityDataFile.getConfig().getDouble("SpecialAbility." + specialAbility.name() + ".MaxPercent");
+        }
+        return p;
+    }
+
+    public static double getMinPercent(SpecialAbility specialAbility) {
+        double p = 0;
+        if (ModPackIntegrated.specialAbilityDataFile.getConfig().contains("SpecialAbility." + specialAbility.name() + ".MinPercent")) {
+            p = ModPackIntegrated.specialAbilityDataFile.getConfig().getDouble("SpecialAbility." + specialAbility.name() + ".MinPercent");
         }
         return p;
     }
 
     public static double getMaxValue(SpecialAbility specialAbility) {
         double v = 0;
-        switch (specialAbility) {
-            case lifeDrain -> v = 20;
-            case extraDamage -> v = 5;
-            case extraDamagePlayerBaseHealth -> v = 10;
-            case extraAttackSpeed -> v = 10;
-            case extraMovementSpeed -> v = 5;
-            case extraDamageToDay -> v = 15;
-            case extraDamageToNight -> v = 15.0;
-            case heal -> v = 3;
-            case changeDamageToRange -> v = 25.0;
-            case increaseMaxHealth -> v = 8;
-            case extraDamageTargetMaxHealth -> v = 4.0;
-            case extraDamageTargetCurrentHealth -> v = 10;
-            case damageConvertTrueDamage -> v = 8;
-            case healBaseMaxHealth -> v = 5.0;
-            case takeDamageConvertDotDamage -> v = 20;
-            case extraBackAttackDamage -> v = 20;
-            case extraArmor -> v = 10;
-            case addArmor -> v = 4.5;
-            case extraKillPointExp -> v = 15;
+        if (ModPackIntegrated.specialAbilityDataFile.getConfig().contains("SpecialAbility." + specialAbility.name() + ".MaxValue")) {
+            v = ModPackIntegrated.specialAbilityDataFile.getConfig().getDouble("SpecialAbility." + specialAbility.name() + ".MaxValue");
+        }
+        return v;
+    }
+
+    public static double getMinValue(SpecialAbility specialAbility) {
+        double v = 0;
+        if (ModPackIntegrated.specialAbilityDataFile.getConfig().contains("SpecialAbility." + specialAbility.name() + ".MinValue")) {
+            v = ModPackIntegrated.specialAbilityDataFile.getConfig().getDouble("SpecialAbility." + specialAbility.name() + ".MinValue");
         }
         return v;
     }
 
     public static double getMaxValue_1(SpecialAbility specialAbility) {
         double v = 0;
-        switch (specialAbility) {
-            case increaseTakeDamageAndExtraDamage -> v = 15;
-            case increaseMaxHealthAndDecreaseDamage -> v = 15;
-            case decreaseTakeAndAttackDamage -> v = 10;
+        if (ModPackIntegrated.specialAbilityDataFile.getConfig().contains("SpecialAbility." + specialAbility.name() + ".MaxValue-1")) {
+            v = ModPackIntegrated.specialAbilityDataFile.getConfig().getDouble("SpecialAbility." + specialAbility.name() + ".MaxValue-1");
+        }
+        return v;
+    }
+
+    public static double getMinValue_1(SpecialAbility specialAbility) {
+        double v = 0;
+        if (ModPackIntegrated.specialAbilityDataFile.getConfig().contains("SpecialAbility." + specialAbility.name() + ".MinValue-1")) {
+            v = ModPackIntegrated.specialAbilityDataFile.getConfig().getDouble("SpecialAbility." + specialAbility.name() + ".MinValue-1");
         }
         return v;
     }
 
     public static double getMaxValue_2(SpecialAbility specialAbility) {
         double v = 0;
-        switch (specialAbility) {
-            case increaseTakeDamageAndExtraDamage -> v = 15;
-            case increaseMaxHealthAndDecreaseDamage -> v = 20;
-            case decreaseTakeAndAttackDamage -> v = 15.0
-            ;
+        if (ModPackIntegrated.specialAbilityDataFile.getConfig().contains("SpecialAbility." + specialAbility.name() + ".MaxValue-2")) {
+            v = ModPackIntegrated.specialAbilityDataFile.getConfig().getDouble("SpecialAbility." + specialAbility.name() + ".MaxValue-2");
+        }
+        return v;
+    }
+
+    public static double getMinValue_2(SpecialAbility specialAbility) {
+        double v = 0;
+        if (ModPackIntegrated.specialAbilityDataFile.getConfig().contains("SpecialAbility." + specialAbility.name() + ".MinValue-2")) {
+            v = ModPackIntegrated.specialAbilityDataFile.getConfig().getDouble("SpecialAbility." + specialAbility.name() + ".MinValue-2");
         }
         return v;
     }
@@ -97,17 +105,17 @@ public class SpecialAbilityInfo {
             a = ModPackIntegrated.specialAbilityInfoFile.getConfig().getString("Ability." + specialAbility.name());
             if (a != null) {
                 if (hasPercent(specialAbility)) {
-                    double percent = getMaxPercent(specialAbility);
-                    a = a.replace("<percent>", String.valueOf(percent));
+                    String s = "(" + getMinPercent(specialAbility) + "-" + getMaxPercent(specialAbility) + ")";
+                    a = a.replace("<percent>", s);
                 }
                 if (hasMultiValue(specialAbility)) {
-                    double value1 = getMaxValue_1(specialAbility);
-                    double value2 = getMaxValue_2(specialAbility);
-                    a = a.replace("<value-1>", String.valueOf(value1));
-                    a = a.replace("<value-2>", String.valueOf(value2));
+                    String s1 = "(" + getMinValue_1(specialAbility) + "-" + getMaxValue_1(specialAbility) + ")";
+                    String s2 = "(" + getMinValue_2(specialAbility) + "-" + getMaxValue_2(specialAbility) + ")";
+                    a = a.replace("<value-1>", s1);
+                    a = a.replace("<value-2>", s2);
                 } else {
-                    double value = getMaxValue(specialAbility);
-                    a = a.replace("<value>", String.valueOf(value));
+                    String s = "(" + getMinValue(specialAbility) + "-" + getMaxValue(specialAbility) + ")";
+                    a = a.replace("<value>", s);
                 }
                 a = ChatColor.translateAlternateColorCodes('&', a);
             }
@@ -121,16 +129,16 @@ public class SpecialAbilityInfo {
             PersistentDataContainer data = itemMeta.getPersistentDataContainer();
             data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-SpecialAbility"), PersistentDataType.STRING, specialAbility.name());
             if (hasPercent(specialAbility)) {
-                double percent = MathUtil.getRandomValueDouble(getMaxPercent(specialAbility), 0);
+                double percent = MathUtil.getRandomValueDouble(getMaxPercent(specialAbility), getMinPercent(specialAbility));
                 data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-SpecialAbility_Percent"), PersistentDataType.STRING, String.valueOf(percent));
             }
             if (hasMultiValue(specialAbility)) {
-                double value1 = MathUtil.getRandomValueDouble(getMaxValue_1(specialAbility), 0);
-                double value2 = MathUtil.getRandomValueDouble(getMaxValue_2(specialAbility), 0);
+                double value1 = MathUtil.getRandomValueDouble(getMaxValue_1(specialAbility), getMinValue_1(specialAbility));
+                double value2 = MathUtil.getRandomValueDouble(getMaxValue_2(specialAbility), getMinValue_2(specialAbility));
                 data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-SpecialAbility_Value1"), PersistentDataType.STRING, String.valueOf(value1));
                 data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-SpecialAbility_Value2"), PersistentDataType.STRING, String.valueOf(value2));
             } else {
-                double value = MathUtil.getRandomValueDouble(getMaxValue(specialAbility), 0);
+                double value = MathUtil.getRandomValueDouble(getMaxValue(specialAbility), getMinValue(specialAbility));
                 data.set(new NamespacedKey(ModPackIntegrated.getPlugin(), "MPI-CE-SpecialAbility_Value"), PersistentDataType.STRING, String.valueOf(value));
             }
             itemStack.setItemMeta(itemMeta);

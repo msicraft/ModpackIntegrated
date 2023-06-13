@@ -2,8 +2,9 @@ package me.msicraft.modpackintegrated.CraftingEquip.Enum;
 
 public enum SpecialAbility {
 
-    doubleDamage,lifeDrain,extraDamage,extraDamagePlayerBaseHealth,extraAttackSpeed,extraMovementSpeed,extraDamageToDay,extraDamageToNight,increaseTakeDamageAndExtraDamage
-    ,heal,changeDamageToRange,increaseMaxHealth,extraDamageTargetMaxHealth,extraDamageTargetCurrentHealth,increaseMaxHealthAndDecreaseDamage,damageConvertTrueDamage
-    ,decreaseTakeAndAttackDamage,healBaseMaxHealth,takeDamageConvertDotDamage,extraBackAttackDamage,extraArmor,addArmor,extraKillPointExp
+    critical,lifeDrain,addDamage,extraDamagePlayerBaseHealth,extraAttackSpeed,extraMovementSpeed,extraDamageToDay,extraDamageToNight
+    ,increaseTakeDamageAndExtraDamage,heal,changeDamageToRange,increaseMaxHealth,extraDamageTargetMaxHealth,extraDamageTargetCurrentHealth
+    ,increaseMaxHealthAndDecreaseDamage,damageConvertTrueDamage,decreaseTakeAndAttackDamage,healBaseMaxHealth,takeDamageConvertDotDamage
+    ,extraBackAttackDamage,extraArmor,addArmor,extraKillPointExp,extraCriticalDamage
 
 }

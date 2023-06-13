@@ -31,7 +31,7 @@ public class CraftingEquipSpecialAbility {
                     SpecialAbilityUtil.applyLifeDrain(player, (damage * value));
                 }
             }
-            case extraDamage -> {
+            case addDamage -> {
                 value = playerSpecialAbility.getValue(specialAbility)*100.0;
                 double randomV = MathUtil.getRandomValueDouble(value, 0);
                 cal = cal + randomV;

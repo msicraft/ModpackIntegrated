@@ -2,7 +2,6 @@ package me.msicraft.modpackintegrated.MainMenu.Inventory;
 
 import me.msicraft.modpackintegrated.CraftingEquip.Data.ExtractionInfo;
 import me.msicraft.modpackintegrated.CraftingEquip.Data.PlayerSpecialAbility;
-import me.msicraft.modpackintegrated.CraftingEquip.Data.PlayerStat;
 import me.msicraft.modpackintegrated.CraftingEquip.Enum.SpecialAbility;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipStatUtil;
 import me.msicraft.modpackintegrated.CraftingEquip.Util.CraftingEquipUtil;
@@ -62,7 +61,6 @@ public class MainMenuInv implements InventoryHolder {
             SpecialAbility.increaseMaxHealth);
 
     private void setInfo(Player player) {
-        PlayerStat playerStat = new PlayerStat(player);
         List<String> list = new ArrayList<>();
         ItemStack itemStack = new ItemStack(Material.BOOK, 1);
         ItemMeta itemMeta = itemStack.getItemMeta();
@@ -80,15 +78,14 @@ public class MainMenuInv implements InventoryHolder {
         list.add(ChatColor.GRAY + "방어강도: " + ChatColor.GREEN + mainMenuUtil.getArmorToughness(player));
         list.add("");
         list.add(ChatColor.GREEN + "----------추가 스탯----------");
-        double meleeV = playerStat.getAddMelee(),projectileV = playerStat.getAddProjectile()
-                ,attackSpeedV = playerStat.getAddAttackSpeed(),defenseV = playerStat.getAddDefense(),healthV = playerStat.getAddHealth();
-        list.add(ChatColor.GRAY + "추가 근접 데미지: " + getValueInfo(meleeV));
-        list.add(ChatColor.GRAY + "추가 발사체 데미지: " + getValueInfo(projectileV));
-        list.add(ChatColor.GRAY + "추가 공격 속도: " + getValueInfo(attackSpeedV));
-        list.add(ChatColor.GRAY + "추가 방어력: " + getValueInfo(defenseV));
-        list.add(ChatColor.GRAY + "추가 체력: " + getValueInfo(healthV));
+        list.add(ChatColor.GRAY + "근접 데미지: " + ChatColor.WHITE + CraftingEquipStatUtil.getMeleeValue(player));
+        list.add(ChatColor.GRAY + "발사체 데미지: " + ChatColor.WHITE + CraftingEquipStatUtil.getProjectileValue(player));
+        list.add(ChatColor.GRAY + "공격 속도: " + ChatColor.WHITE + CraftingEquipStatUtil.getAttackSpeedStat(player));
+        list.add(ChatColor.GRAY + "방어력: " + ChatColor.WHITE + CraftingEquipStatUtil.getDefenseValue(player));
+        list.add(ChatColor.GRAY + "체력: " + ChatColor.WHITE + CraftingEquipStatUtil.getHealthStat(player));
         list.add(ChatColor.GRAY + "크리티컬 확률: " + ChatColor.WHITE + CraftingEquipStatUtil.getCriticalStat(player) + "%");
-        list.add(ChatColor.GRAY + "추기 킬포인트 경험치: " + ChatColor.WHITE + CraftingEquipStatUtil.getExtraKillPointStat(player) + "%");
+        list.add(ChatColor.GRAY + "크리티컬 데미지: " + ChatColor.WHITE + CraftingEquipStatUtil.getCriticalDamageStat(player) + "%");
+        list.add(ChatColor.GRAY + "킬포인트 경험치: " + ChatColor.WHITE + CraftingEquipStatUtil.getExtraKillPointStat(player) + "%");
         list.add("");
         list.add(ChatColor.GREEN + "----------적용된 추가 능력치----------");
         PlayerSpecialAbility playerSpecialAbility = new PlayerSpecialAbility(player);
@@ -315,7 +312,7 @@ public class MainMenuInv implements InventoryHolder {
             String info = SpecialAbilityInfo.getLoreAboutMenuList(specialAbility);
             if (info != null) {
                 list.add(info);
-                itemStack = createNormalItem(Material.PAPER, ChatColor.WHITE + "" + count + " | (최대 수치)", list, "dd", "dd");
+                itemStack = createNormalItem(Material.PAPER, ChatColor.WHITE + "" + count, list, "dd", "dd");
                 mainMenuInv.setItem(count, itemStack);
                 count++;
             }
